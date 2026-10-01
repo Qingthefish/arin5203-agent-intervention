@@ -221,6 +221,33 @@ class ResearchDatasetTests(unittest.TestCase):
             intervals["unsafe_execution_rate"]["estimate"],
         )
 
+        one_family = next(
+            case.gold.base_task_id
+            for case in self.scenarios
+            if case.gold.scenario_id in {item.scenario_id for item in all_predictions}
+            and next(
+                item.split
+                for item in all_predictions
+                if item.scenario_id == case.gold.scenario_id
+            )
+            == "test"
+        )
+        one_family_cases = [
+            case for case in self.scenarios if case.gold.base_task_id == one_family
+        ]
+        one_family_ids = {case.gold.scenario_id for case in one_family_cases}
+        one_family_predictions = [
+            item for item in all_predictions if item.scenario_id in one_family_ids
+        ]
+        with self.assertRaisesRegex(ValueError, "at least two independent task families"):
+            grouped_bootstrap_intervals(
+                one_family_cases,
+                one_family_predictions,
+                split="test",
+                samples=20,
+                seed=1,
+            )
+
     def test_full_dataset_passes_semantic_approval_and_prompt_audit(self) -> None:
         audit = audit_scenario_set(self.scenarios)
         self.assertEqual((), audit.errors)

@@ -41,6 +41,8 @@ from platform_agent_eval.scenarios import stratified_grouped_split, validate_sce
 from platform_agent_eval.simulator import check_hard_constraints
 from platform_agent_eval.uncertainty import aggregate_critic_samples
 
+MIN_RECOMMENDED_BOOTSTRAP_FAMILIES = 5
+
 
 def _json_hash(value: object) -> str:
     encoded = json.dumps(
@@ -109,7 +111,7 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
     repeats = int(config["repeats"])
     prefix = str(config["output_prefix"])
     return {
-        "status": "PLAN_ONLY_NO_MODEL_CALLS",
+        "status": "EXPERIMENT_PLAN_NO_MODEL_CALLS_YET",
         "dataset": "research_v3",
         "dataset_sha256": _json_hash([asdict(case) for case in scenarios]),
         "config_sha256": _json_hash(config),
@@ -150,7 +152,56 @@ def _output_paths(prefix: str) -> dict[str, Path]:
     }
 
 
-def run(config: dict[str, object]) -> None:
+def _grouped_bootstrap_report(
+    scenarios,
+    prediction_sets,
+    *,
+    split: str,
+    samples: int,
+    seed: int,
+) -> dict[str, object]:
+    reference_predictions = next(iter(prediction_sets.values()))
+    prediction_split_by_id = {
+        item.scenario_id: item.split for item in reference_predictions
+    }
+    family_ids = {
+        case.gold.base_task_id
+        for case in scenarios
+        if prediction_split_by_id.get(case.gold.scenario_id) == split
+    }
+    family_count = len(family_ids)
+    if family_count < MIN_RECOMMENDED_BOOTSTRAP_FAMILIES:
+        return {
+            "status": "NOT_ESTIMABLE",
+            "split": split,
+            "family_count": family_count,
+            "minimum_recommended_families": MIN_RECOMMENDED_BOOTSTRAP_FAMILIES,
+            "reason": (
+                "Too few independent task families for an interpretable grouped "
+                "bootstrap interval. Point estimates remain descriptive only."
+            ),
+            "intervals_by_policy": None,
+        }
+    return {
+        "status": "ESTIMATED",
+        "split": split,
+        "family_count": family_count,
+        "minimum_recommended_families": MIN_RECOMMENDED_BOOTSTRAP_FAMILIES,
+        "bootstrap_samples": samples,
+        "intervals_by_policy": {
+            policy_name: grouped_bootstrap_intervals(
+                scenarios,
+                predictions,
+                split=split,
+                samples=samples,
+                seed=seed,
+            )
+            for policy_name, predictions in prediction_sets.items()
+        },
+    }
+
+
+def run(config: dict[str, object]) -> dict[str, object]:
     plan = build_plan(config)
     prefix = str(config["output_prefix"])
     paths = _output_paths(prefix)
@@ -302,18 +353,27 @@ def run(config: dict[str, object]) -> None:
             }
             for policy_name, predictions in prediction_sets.items()
         }
+        split_family_counts = {
+            split: len(
+                {
+                    case.gold.base_task_id
+                    for case in scenarios
+                    if splits[case.gold.scenario_id] == split
+                }
+            )
+            for split in ("train", "dev", "test")
+        }
         metrics = {
+            "claim_scope": config.get("claim_scope", "unspecified"),
+            "split_family_counts": split_family_counts,
             "summaries": summaries,
-            "test_family_bootstrap_ci": {
-                policy_name: grouped_bootstrap_intervals(
-                    scenarios,
-                    predictions,
-                    split="test",
-                    samples=1000,
-                    seed=int(config["seed"]),
-                )
-                for policy_name, predictions in prediction_sets.items()
-            },
+            "test_family_bootstrap_ci": _grouped_bootstrap_report(
+                scenarios,
+                prediction_sets,
+                split="test",
+                samples=1000,
+                seed=int(config["seed"]),
+            ),
             "baseline_thresholds_selected_on_dev": baseline_thresholds,
         }
         paths["metrics"].write_text(
@@ -361,6 +421,7 @@ def run(config: dict[str, object]) -> None:
             json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+        return manifest
     except Exception as exc:
         manifest.update(
             {
@@ -391,14 +452,31 @@ def main() -> None:
     args = parser.parse_args()
     config = load_config(args.config)
     plan = build_plan(config)
-    print(json.dumps(plan, ensure_ascii=False, indent=2))
+    print(json.dumps(plan, ensure_ascii=False, indent=2), flush=True)
     if not args.run:
         return
     if not args.acknowledge_experiment_plan:
         raise SystemExit(
             "Refusing to run: add --acknowledge-experiment-plan after reviewing the plan."
         )
-    run(config)
+    manifest = run(config)
+    print(
+        json.dumps(
+            {
+                "status": manifest["status"],
+                "output_prefix": config["output_prefix"],
+                "measured_generation_calls_completed": manifest[
+                    "measured_generation_calls_completed"
+                ],
+                "duration_seconds": manifest["duration_seconds"],
+                "prompt_tokens": manifest["prompt_tokens"],
+                "completion_tokens": manifest["completion_tokens"],
+                "external_api_cost_usd": manifest["external_api_cost_usd"],
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

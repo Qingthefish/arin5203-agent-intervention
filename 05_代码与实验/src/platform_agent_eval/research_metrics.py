@@ -144,6 +144,11 @@ def grouped_bootstrap_intervals(
     if not grouped:
         raise ValueError(f"No grouped cases for split {split}")
     family_ids = sorted(grouped)
+    if len(family_ids) < 2:
+        raise ValueError(
+            "Grouped bootstrap requires at least two independent task families; "
+            f"split {split} has {len(family_ids)}"
+        )
     rng = random.Random(seed)
     values: dict[str, list[float]] = {metric: [] for metric in metrics}
     for bootstrap_index in range(samples):

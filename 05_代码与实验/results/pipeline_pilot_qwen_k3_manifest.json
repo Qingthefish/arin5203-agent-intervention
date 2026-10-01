@@ -1,0 +1,130 @@
+{
+  "status": "COMPLETE",
+  "dataset": "research_v3",
+  "dataset_sha256": "08b47c37880c06f17a0998fb7c9a305a8a8e6fc04536321a073f12d779b96ce7",
+  "config_sha256": "3e3acffc7fde62304d05985e06afe25f81fd98190a4f3dafa7b293f01db374f1",
+  "model": "qwen3.5:9b",
+  "provider": "ollama",
+  "location": "local_machine",
+  "base_tasks": 5,
+  "cases": 15,
+  "hard_guarded_cases": 2,
+  "critic_eligible_cases": 13,
+  "samples_per_case": 3,
+  "measured_generation_calls": 39,
+  "warmup_calls": 1,
+  "temperature": 0.7,
+  "base_seed": 5203,
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "wall_time_minutes": "5-10 after model load",
+    "prompt_tokens": "20000-30000",
+    "completion_tokens": "2000-4000",
+    "external_api_cost_usd": 0.0,
+    "outputs": "isolated pilot sample cache, aggregates, predictions, policies, metrics, and manifest"
+  },
+  "outputs_if_run": [
+    "results/pipeline_pilot_qwen_k3_samples.jsonl",
+    "results/pipeline_pilot_qwen_k3_aggregates.jsonl",
+    "results/pipeline_pilot_qwen_k3_predictions.csv",
+    "results/pipeline_pilot_qwen_k3_metrics.json",
+    "results/pipeline_pilot_qwen_k3_policy.json",
+    "results/pipeline_pilot_qwen_k3_manifest.json"
+  ],
+  "started_at_utc": "2026-10-01T13:45:32.584042+00:00",
+  "started_at_hong_kong": "2026-10-01T21:45:32.584042+08:00",
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "pilot_type": "five_family_pipeline_validation",
+    "scenario_set": "research_v3",
+    "base_task_ids": [
+      "contrast-incident-reserve",
+      "contrast-canary-shed",
+      "contrast-rack-rebalance",
+      "contrast-emergency-rollback",
+      "contrast-carbon-window"
+    ],
+    "fixed_family_splits": {
+      "contrast-incident-reserve": "train",
+      "contrast-canary-shed": "train",
+      "contrast-rack-rebalance": "train",
+      "contrast-emergency-rollback": "dev",
+      "contrast-carbon-window": "test"
+    },
+    "output_prefix": "pipeline_pilot_qwen_k3",
+    "prompt_template": "platform-intervention-v3-scoped",
+    "provider": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0.7,
+    "seed": 5203,
+    "max_tokens": 128,
+    "timeout_seconds": 180,
+    "repeats": 3,
+    "routing_modes": [
+      "three_way"
+    ],
+    "human_costs": {
+      "AUTO_EXECUTE": 0.0,
+      "REQUEST_CONFIRMATION": 1.0,
+      "HANDOFF": 3.0,
+      "BLOCK": 0.0
+    },
+    "claim_scope": "pipeline validation only; not a research result",
+    "planning_estimates": {
+      "wall_time_minutes": "5-10 after model load",
+      "prompt_tokens": "20000-30000",
+      "completion_tokens": "2000-4000",
+      "external_api_cost_usd": 0.0,
+      "outputs": "isolated pilot sample cache, aggregates, predictions, policies, metrics, and manifest"
+    }
+  },
+  "split_by_scenario": {
+    "contrast-incident-reserve-low": "train",
+    "contrast-incident-reserve-medium": "train",
+    "contrast-incident-reserve-high": "train",
+    "contrast-canary-shed-low": "train",
+    "contrast-canary-shed-medium": "train",
+    "contrast-canary-shed-high": "train",
+    "contrast-rack-rebalance-low": "train",
+    "contrast-rack-rebalance-medium": "train",
+    "contrast-rack-rebalance-high": "train",
+    "contrast-emergency-rollback-low": "dev",
+    "contrast-emergency-rollback-medium": "dev",
+    "contrast-emergency-rollback-high": "dev",
+    "contrast-carbon-window-low": "test",
+    "contrast-carbon-window-medium": "test",
+    "contrast-carbon-window-high": "test"
+  },
+  "finished_at_utc": "2026-10-01T13:48:00.653669+00:00",
+  "finished_at_hong_kong": "2026-10-01T21:48:00.653669+08:00",
+  "duration_seconds": 148.06942020799033,
+  "measured_generation_calls_completed": 39,
+  "prompt_tokens": 22035,
+  "completion_tokens": 1612,
+  "warmup_prompt_tokens": 22,
+  "warmup_completion_tokens": 6,
+  "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "frozen_thresholds": {
+    "calibrated_three_way": {
+      "execute_below": 0.05,
+      "confirm_if_resolvable_at_least": 0.2
+    },
+    "ablation_no_disagreement": {
+      "execute_below": 0.05,
+      "confirm_if_resolvable_at_least": 0.05
+    },
+    "ablation_no_critic_score": {
+      "execute_below": 0.05,
+      "confirm_if_resolvable_at_least": 0.4
+    },
+    "ablation_no_approval_features": {
+      "execute_below": 0.05,
+      "confirm_if_resolvable_at_least": 0.45
+    },
+    "ablation_critic_only": {
+      "execute_below": 0.1,
+      "confirm_if_resolvable_at_least": 0.05
+    }
+  }
+}
