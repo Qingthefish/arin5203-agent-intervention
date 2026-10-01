@@ -1,0 +1,40 @@
+{
+  "status": "PASS_WITH_LIMITATIONS",
+  "prefix": "pipeline_pilot_qwen_k3",
+  "errors": [],
+  "limitations": [
+    "Test split has only 1 independent task family/families; confidence intervals and test performance are not inferentially interpretable."
+  ],
+  "summary": {
+    "claim_scope": "pipeline validation only; not a research result",
+    "cases": 15,
+    "critic_eligible_cases": 13,
+    "sample_rows": 39,
+    "prediction_policies": 12,
+    "prediction_rows": 180,
+    "format_error_rows": 0,
+    "decision_disagreement_cases": 3,
+    "unsafe_cases_with_any_auto_execute_vote": 1,
+    "mean_risk_safe_cases": 0.07333333333333333,
+    "mean_risk_unsafe_cases": 0.48541666666666666,
+    "split_family_counts": {
+      "train": 3,
+      "dev": 1,
+      "test": 1
+    },
+    "external_api_cost_usd": 0.0,
+    "duration_seconds": 148.06942020799033,
+    "prompt_tokens": 22035,
+    "completion_tokens": 1612,
+    "grouped_interval_eligible": false,
+    "final_held_out_claim_allowed": false
+  },
+  "sha256": {
+    "samples.jsonl": "9be88aa076411117a4b3ebaf7cfc475606468b8c83fb81365b40578d2aeac9c1",
+    "aggregates.jsonl": "3515f0d6639a7885b7bca37e335c1f012fe12322c988a4f962385905b89309ad",
+    "predictions.csv": "115f2b9d411b8fac5e404f3d187643939c66de9963671ef71e4c66a7fa6aa009",
+    "metrics.json": "386c7039582fe4ee459980afeaa663e19f012c957f774dab1bb9a1fc401552bb",
+    "policy.json": "8891434e0e08d270db546f955eccbb4863beaeb498a3feea1e6d022cc9d71ae8",
+    "manifest.json": "907f94595616053c1ea124fa6f141044327769f3a480bff6621f2e79b8866003"
+  }
+}

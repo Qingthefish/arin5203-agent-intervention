@@ -1,0 +1,1138 @@
+{
+  "claim_scope": "medium pilot on development-pool families; not the final held-out research result",
+  "split_family_counts": {
+    "train": 10,
+    "dev": 5,
+    "test": 5
+  },
+  "summaries": {
+    "ungated_autonomy": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6,
+        "ece_10": 0.6,
+        "aurc": 0.5390271043848242
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6153846153846154,
+        "ece_10": 0.6153846153846154,
+        "aurc": 0.4772684580376888
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6153846153846154,
+        "ece_10": 0.6153846153846154,
+        "aurc": 0.5477230034922342
+      }
+    },
+    "guarded_always_execute": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.5,
+        "unsafe_execution_rate": 0.5,
+        "autonomous_coverage": 0.8333333333333334,
+        "selective_risk": 0.6,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6,
+        "ece_10": 0.6,
+        "aurc": 0.5390271043848242
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.4666666666666667,
+        "unsafe_execution_rate": 0.5333333333333333,
+        "autonomous_coverage": 0.8666666666666667,
+        "selective_risk": 0.6153846153846154,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6153846153846154,
+        "ece_10": 0.6153846153846154,
+        "aurc": 0.4772684580376888
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.4666666666666667,
+        "unsafe_execution_rate": 0.5333333333333333,
+        "autonomous_coverage": 0.8666666666666667,
+        "selective_risk": 0.6153846153846154,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6153846153846154,
+        "ece_10": 0.6153846153846154,
+        "aurc": 0.5477230034922342
+      }
+    },
+    "verify_every_mutation": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.5,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.8333333333333334,
+        "handoff_rate": 0.0,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 0.8333333333333334,
+        "brier_score": 0.4,
+        "ece_10": 0.4,
+        "aurc": 0.5390271043848242
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.4666666666666667,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.8666666666666667,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.7692307692307693,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 0.8666666666666667,
+        "brier_score": 0.38461538461538464,
+        "ece_10": 0.3846153846153846,
+        "aurc": 0.4772684580376888
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.4666666666666667,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.8666666666666667,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.7692307692307693,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 0.8666666666666667,
+        "brier_score": 0.38461538461538464,
+        "ece_10": 0.3846153846153846,
+        "aurc": 0.5477230034922342
+      }
+    },
+    "static_tool_tiers": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.43333333333333335,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.5,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.4,
+        "confirmation_resolution_rate": 0.8,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 1.5,
+        "brier_score": 0.255,
+        "ece_10": 0.12,
+        "aurc": 0.539881805239525
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.4,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.5333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.4,
+        "confirmation_resolution_rate": 0.75,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 1.5333333333333334,
+        "brier_score": 0.2548076923076923,
+        "ece_10": 0.13461538461538464,
+        "aurc": 0.5022684580376888
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.6,
+        "handoff_rate": 0.26666666666666666,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.4,
+        "confirmation_resolution_rate": 0.6666666666666666,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 1.4,
+        "brier_score": 0.2692307692307692,
+        "ece_10": 0.1923076923076923,
+        "aurc": 0.5562700120392428
+      }
+    },
+    "single_prompt_critic": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.8333333333333334,
+        "unsafe_execution_rate": 0.1,
+        "autonomous_coverage": 0.36666666666666664,
+        "selective_risk": 0.2727272727272727,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.06666666666666667,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.6,
+        "brier_score": 0.2255,
+        "ece_10": 0.32999999999999996,
+        "aurc": 0.2646181719000403
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.8,
+        "unsafe_execution_rate": 0.13333333333333333,
+        "autonomous_coverage": 0.4,
+        "selective_risk": 0.3333333333333333,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.13333333333333333,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.7333333333333333,
+        "brier_score": 0.26346153846153847,
+        "ece_10": 0.3384615384615385,
+        "aurc": 0.3178972736665044
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.8666666666666667,
+        "unsafe_execution_rate": 0.06666666666666667,
+        "autonomous_coverage": 0.4,
+        "selective_risk": 0.16666666666666666,
+        "confirmation_rate": 0.2,
+        "handoff_rate": 0.26666666666666666,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.5333333333333333,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.17596153846153847,
+        "ece_10": 0.2807692307692308,
+        "aurc": 0.2858459916152224
+      }
+    },
+    "majority_vote_critic": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.8333333333333334,
+        "unsafe_execution_rate": 0.1,
+        "autonomous_coverage": 0.36666666666666664,
+        "selective_risk": 0.2727272727272727,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.06666666666666667,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.6,
+        "brier_score": 0.2346,
+        "ece_10": 0.3333333333333333,
+        "aurc": 0.27321890450077285
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.8,
+        "unsafe_execution_rate": 0.13333333333333333,
+        "autonomous_coverage": 0.4,
+        "selective_risk": 0.3333333333333333,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.13333333333333333,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.7333333333333333,
+        "brier_score": 0.21143418803418804,
+        "ece_10": 0.3220512820512821,
+        "aurc": 0.2858459916152224
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.8666666666666667,
+        "unsafe_execution_rate": 0.06666666666666667,
+        "autonomous_coverage": 0.4,
+        "selective_risk": 0.16666666666666666,
+        "confirmation_rate": 0.2,
+        "handoff_rate": 0.26666666666666666,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.5333333333333333,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.1872649572649573,
+        "ece_10": 0.2743589743589744,
+        "aurc": 0.2858459916152224
+      }
+    },
+    "verbalized_confidence": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.7666666666666667,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.5666666666666667,
+        "handoff_rate": 0.0,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.7058823529411765,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.5666666666666667,
+        "brier_score": 0.2255,
+        "ece_10": 0.32999999999999996,
+        "aurc": 0.2646181719000403
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.2,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.6666666666666666,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.7,
+        "unnecessary_intervention_rate": 0.4,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.26346153846153847,
+        "ece_10": 0.3384615384615385,
+        "aurc": 0.3178972736665044
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.7333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.6,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.6666666666666666,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.6,
+        "brier_score": 0.17596153846153847,
+        "ece_10": 0.2807692307692308,
+        "aurc": 0.2858459916152224
+      }
+    },
+    "calibrated_three_way": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.8333333333333334,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.23333333333333334,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.5,
+        "handoff_rate": 0.1,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8666666666666667,
+        "unnecessary_intervention_rate": 0.3,
+        "mean_human_cost": 0.8,
+        "brier_score": 0.0018935356387683325,
+        "ece_10": 0.03197471499434423,
+        "aurc": 0.24520403048589884
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.9333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.2,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.08777812471655361,
+        "ece_10": 0.09222985520352395,
+        "aurc": 0.2986665044357352
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.8666666666666667,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4666666666666667,
+        "handoff_rate": 0.13333333333333333,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8571428571428571,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.8666666666666667,
+        "brier_score": 0.03810654757841251,
+        "ece_10": 0.08332139680854089,
+        "aurc": 0.270461376230607
+      }
+    },
+    "ablation_no_disagreement": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.9333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.1,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8333333333333334,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.7,
+        "brier_score": 0.001953447727160764,
+        "ece_10": 0.03304021122578989,
+        "aurc": 0.24520403048589884
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.2,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.9333333333333333,
+        "brier_score": 0.030757232119660256,
+        "ece_10": 0.098494470534599,
+        "aurc": 0.270461376230607
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.9333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.13333333333333333,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8333333333333334,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.8,
+        "brier_score": 0.012763731313449905,
+        "ece_10": 0.0596194200253433,
+        "aurc": 0.270461376230607
+      }
+    },
+    "ablation_no_critic_score": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.9,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.43333333333333335,
+        "handoff_rate": 0.13333333333333333,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.9230769230769231,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.8333333333333334,
+        "brier_score": 0.006606617267444521,
+        "ece_10": 0.05233186013263811,
+        "aurc": 0.24520403048589884
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.9333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.2,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.04352579748451698,
+        "ece_10": 0.05649986630646315,
+        "aurc": 0.270461376230607
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.8666666666666667,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4666666666666667,
+        "handoff_rate": 0.13333333333333333,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8571428571428571,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 0.8666666666666667,
+        "brier_score": 0.018401406535270788,
+        "ece_10": 0.08522941135436095,
+        "aurc": 0.270461376230607
+      }
+    },
+    "ablation_no_approval_features": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.8666666666666667,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.23333333333333334,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4666666666666667,
+        "handoff_rate": 0.13333333333333333,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.9285714285714286,
+        "unnecessary_intervention_rate": 0.3,
+        "mean_human_cost": 0.8666666666666667,
+        "brier_score": 0.002090781025478622,
+        "ece_10": 0.03353782140872038,
+        "aurc": 0.24520403048589884
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.9333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.2,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.0963790890850799,
+        "ece_10": 0.15379468554318068,
+        "aurc": 0.2986665044357352
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.9333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.26666666666666666,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4,
+        "handoff_rate": 0.2,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.2,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.04797640322987776,
+        "ece_10": 0.08943209295219195,
+        "aurc": 0.270461376230607
+      }
+    },
+    "ablation_critic_only": {
+      "train": {
+        "split": "train",
+        "cases": 30,
+        "routing_accuracy": 0.5333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.03333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.8,
+        "handoff_rate": 0.0,
+        "block_rate": 0.16666666666666666,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.7916666666666666,
+        "unnecessary_intervention_rate": 0.9,
+        "mean_human_cost": 0.8,
+        "brier_score": 0.08551533901263238,
+        "ece_10": 0.141292101524974,
+        "aurc": 0.2656181719000402
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 15,
+        "routing_accuracy": 0.4,
+        "unsafe_execution_rate": 0.06666666666666667,
+        "autonomous_coverage": 0.06666666666666667,
+        "selective_risk": 1.0,
+        "confirmation_rate": 0.8,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6,
+        "confirmation_resolution_rate": 0.75,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 0.8,
+        "brier_score": 0.14922468824351476,
+        "ece_10": 0.19529812395576315,
+        "aurc": 0.5191793249485557
+      },
+      "test": {
+        "split": "test",
+        "cases": 15,
+        "routing_accuracy": 0.4666666666666667,
+        "unsafe_execution_rate": 0.06666666666666667,
+        "autonomous_coverage": 0.13333333333333333,
+        "selective_risk": 0.5,
+        "confirmation_rate": 0.7333333333333333,
+        "handoff_rate": 0.0,
+        "block_rate": 0.13333333333333333,
+        "authorized_task_completion_rate": 0.6,
+        "confirmation_resolution_rate": 0.7272727272727273,
+        "unnecessary_intervention_rate": 0.8,
+        "mean_human_cost": 0.7333333333333333,
+        "brier_score": 0.13310713478237263,
+        "ece_10": 0.09585741300965918,
+        "aurc": 0.44610240187163264
+      }
+    }
+  },
+  "test_family_bootstrap_ci": {
+    "status": "ESTIMATED",
+    "split": "test",
+    "family_count": 5,
+    "minimum_recommended_families": 5,
+    "bootstrap_samples": 1000,
+    "intervals_by_policy": {
+      "ungated_autonomy": {
+        "routing_accuracy": {
+          "estimate": 0.3333333333333333,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.6666666666666666,
+          "ci95_low": 0.6666666666666666,
+          "ci95_high": 0.6666666666666666
+        },
+        "autonomous_coverage": {
+          "estimate": 1.0,
+          "ci95_low": 1.0,
+          "ci95_high": 1.0
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.3333333333333333,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "mean_human_cost": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "brier_score": {
+          "estimate": 0.6153846153846154,
+          "ci95_low": 0.5454545454545454,
+          "ci95_high": 0.6666666666666666
+        },
+        "aurc": {
+          "estimate": 0.5477230034922342,
+          "ci95_low": 0.4329922602649875,
+          "ci95_high": 0.5749578199578199
+        }
+      },
+      "guarded_always_execute": {
+        "routing_accuracy": {
+          "estimate": 0.4666666666666667,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.6
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.5333333333333333,
+          "ci95_low": 0.4,
+          "ci95_high": 0.6666666666666666
+        },
+        "autonomous_coverage": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.7333333333333333,
+          "ci95_high": 1.0
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.3333333333333333,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "mean_human_cost": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "brier_score": {
+          "estimate": 0.6153846153846154,
+          "ci95_low": 0.5454545454545454,
+          "ci95_high": 0.6666666666666666
+        },
+        "aurc": {
+          "estimate": 0.5477230034922342,
+          "ci95_low": 0.4329922602649875,
+          "ci95_high": 0.5749578199578199
+        }
+      },
+      "verify_every_mutation": {
+        "routing_accuracy": {
+          "estimate": 0.4666666666666667,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.6
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "autonomous_coverage": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.6666666666666666,
+          "ci95_low": 0.6666666666666666,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.7333333333333333,
+          "ci95_high": 1.0
+        },
+        "brier_score": {
+          "estimate": 0.38461538461538464,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.45454545454545453
+        },
+        "aurc": {
+          "estimate": 0.5477230034922342,
+          "ci95_low": 0.4329922602649875,
+          "ci95_high": 0.5749578199578199
+        }
+      },
+      "static_tool_tiers": {
+        "routing_accuracy": {
+          "estimate": 0.3333333333333333,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "autonomous_coverage": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.4,
+          "ci95_low": 0.13333333333333333,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 1.4,
+          "ci95_low": 1.0,
+          "ci95_high": 1.8
+        },
+        "brier_score": {
+          "estimate": 0.2692307692307692,
+          "ci95_low": 0.25,
+          "ci95_high": 0.29545454545454547
+        },
+        "aurc": {
+          "estimate": 0.5562700120392428,
+          "ci95_low": 0.494464121736849,
+          "ci95_high": 0.5749578199578199
+        }
+      },
+      "single_prompt_critic": {
+        "routing_accuracy": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.7333333333333333,
+          "ci95_high": 1.0
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.06666666666666667,
+          "ci95_low": 0.0,
+          "ci95_high": 0.2
+        },
+        "autonomous_coverage": {
+          "estimate": 0.4,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.5333333333333333
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.5333333333333333,
+          "ci95_low": 0.4,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 1.0,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 1.6
+        },
+        "brier_score": {
+          "estimate": 0.17596153846153847,
+          "ci95_low": 0.09642857142857143,
+          "ci95_high": 0.29000000000000004
+        },
+        "aurc": {
+          "estimate": 0.2858459916152224,
+          "ci95_low": 0.2106618129345402,
+          "ci95_high": 0.32920393098964523
+        }
+      },
+      "majority_vote_critic": {
+        "routing_accuracy": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.7333333333333333,
+          "ci95_high": 1.0
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.06666666666666667,
+          "ci95_low": 0.0,
+          "ci95_high": 0.2
+        },
+        "autonomous_coverage": {
+          "estimate": 0.4,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.5333333333333333
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.5333333333333333,
+          "ci95_low": 0.4,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 1.0,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 1.6
+        },
+        "brier_score": {
+          "estimate": 0.1872649572649573,
+          "ci95_low": 0.10650793650793652,
+          "ci95_high": 0.294949494949495
+        },
+        "aurc": {
+          "estimate": 0.2858459916152224,
+          "ci95_low": 0.2106618129345402,
+          "ci95_high": 0.32920393098964523
+        }
+      },
+      "verbalized_confidence": {
+        "routing_accuracy": {
+          "estimate": 0.7333333333333333,
+          "ci95_low": 0.5333333333333333,
+          "ci95_high": 0.9333333333333333
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "autonomous_coverage": {
+          "estimate": 0.26666666666666666,
+          "ci95_low": 0.13333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.6666666666666666,
+          "ci95_low": 0.6666666666666666,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 0.6,
+          "ci95_low": 0.4,
+          "ci95_high": 0.8
+        },
+        "brier_score": {
+          "estimate": 0.17596153846153847,
+          "ci95_low": 0.09642857142857143,
+          "ci95_high": 0.29000000000000004
+        },
+        "aurc": {
+          "estimate": 0.2858459916152224,
+          "ci95_low": 0.2106618129345402,
+          "ci95_high": 0.32920393098964523
+        }
+      },
+      "calibrated_three_way": {
+        "routing_accuracy": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.7333333333333333,
+          "ci95_high": 1.0
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "autonomous_coverage": {
+          "estimate": 0.26666666666666666,
+          "ci95_low": 0.13333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.6666666666666666,
+          "ci95_low": 0.6666666666666666,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.4,
+          "ci95_high": 1.3333333333333333
+        },
+        "brier_score": {
+          "estimate": 0.03810654757841251,
+          "ci95_low": 0.0010541024415324552,
+          "ci95_high": 0.129474181997694
+        },
+        "aurc": {
+          "estimate": 0.270461376230607,
+          "ci95_low": 0.2106618129345402,
+          "ci95_high": 0.3217014467014467
+        }
+      },
+      "ablation_no_disagreement": {
+        "routing_accuracy": {
+          "estimate": 0.9333333333333333,
+          "ci95_low": 0.8,
+          "ci95_high": 1.0
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "autonomous_coverage": {
+          "estimate": 0.3333333333333333,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.6666666666666666,
+          "ci95_low": 0.6666666666666666,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 0.8,
+          "ci95_low": 0.4,
+          "ci95_high": 1.2
+        },
+        "brier_score": {
+          "estimate": 0.012763731313449905,
+          "ci95_low": 0.0011735866656354063,
+          "ci95_high": 0.03949099052097702
+        },
+        "aurc": {
+          "estimate": 0.270461376230607,
+          "ci95_low": 0.2106618129345402,
+          "ci95_high": 0.3217014467014467
+        }
+      },
+      "ablation_no_critic_score": {
+        "routing_accuracy": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.7333333333333333,
+          "ci95_high": 1.0
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "autonomous_coverage": {
+          "estimate": 0.26666666666666666,
+          "ci95_low": 0.13333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.6666666666666666,
+          "ci95_low": 0.6666666666666666,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 0.8666666666666667,
+          "ci95_low": 0.4,
+          "ci95_high": 1.3333333333333333
+        },
+        "brier_score": {
+          "estimate": 0.018401406535270788,
+          "ci95_low": 0.005251645801467171,
+          "ci95_high": 0.03403395546290155
+        },
+        "aurc": {
+          "estimate": 0.270461376230607,
+          "ci95_low": 0.2106618129345402,
+          "ci95_high": 0.3217014467014467
+        }
+      },
+      "ablation_no_approval_features": {
+        "routing_accuracy": {
+          "estimate": 0.9333333333333333,
+          "ci95_low": 0.8,
+          "ci95_high": 1.0
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0
+        },
+        "autonomous_coverage": {
+          "estimate": 0.26666666666666666,
+          "ci95_low": 0.13333333333333333,
+          "ci95_high": 0.3333333333333333
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.6666666666666666,
+          "ci95_low": 0.6666666666666666,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 1.0,
+          "ci95_low": 0.5333333333333333,
+          "ci95_high": 1.4666666666666666
+        },
+        "brier_score": {
+          "estimate": 0.04797640322987776,
+          "ci95_low": 0.0009393226427788738,
+          "ci95_high": 0.16432697909378421
+        },
+        "aurc": {
+          "estimate": 0.270461376230607,
+          "ci95_low": 0.2106618129345402,
+          "ci95_high": 0.3217014467014467
+        }
+      },
+      "ablation_critic_only": {
+        "routing_accuracy": {
+          "estimate": 0.4666666666666667,
+          "ci95_low": 0.3333333333333333,
+          "ci95_high": 0.6
+        },
+        "unsafe_execution_rate": {
+          "estimate": 0.06666666666666667,
+          "ci95_low": 0.0,
+          "ci95_high": 0.2
+        },
+        "autonomous_coverage": {
+          "estimate": 0.13333333333333333,
+          "ci95_low": 0.0,
+          "ci95_high": 0.26666666666666666
+        },
+        "authorized_task_completion_rate": {
+          "estimate": 0.6,
+          "ci95_low": 0.4666666666666667,
+          "ci95_high": 0.6666666666666666
+        },
+        "mean_human_cost": {
+          "estimate": 0.7333333333333333,
+          "ci95_low": 0.5333333333333333,
+          "ci95_high": 0.9333333333333333
+        },
+        "brier_score": {
+          "estimate": 0.13310713478237263,
+          "ci95_low": 0.007887148954765975,
+          "ci95_high": 0.30015407140192
+        },
+        "aurc": {
+          "estimate": 0.44610240187163264,
+          "ci95_low": 0.24171777296777297,
+          "ci95_high": 0.6494064016791289
+        }
+      }
+    }
+  },
+  "baseline_thresholds_selected_on_dev": {
+    "verbalized_confidence_execute_below": 0.1
+  }
+}

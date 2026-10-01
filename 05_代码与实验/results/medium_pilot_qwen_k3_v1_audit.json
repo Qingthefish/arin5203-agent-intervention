@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "prefix": "medium_pilot_qwen_k3_v1",
+  "errors": [],
+  "limitations": [],
+  "summary": {
+    "claim_scope": "medium pilot on development-pool families; not the final held-out research result",
+    "cases": 60,
+    "critic_eligible_cases": 51,
+    "sample_rows": 153,
+    "prediction_policies": 12,
+    "prediction_rows": 720,
+    "format_error_rows": 0,
+    "decision_disagreement_cases": 19,
+    "unsafe_cases_with_any_auto_execute_vote": 10,
+    "mean_risk_safe_cases": 0.07783333333333334,
+    "mean_risk_unsafe_cases": 0.46419354838709675,
+    "split_family_counts": {
+      "train": 10,
+      "dev": 5,
+      "test": 5
+    },
+    "external_api_cost_usd": 0.0,
+    "duration_seconds": 556.0970542500145,
+    "prompt_tokens": 86472,
+    "completion_tokens": 6445,
+    "grouped_interval_eligible": true,
+    "final_held_out_claim_allowed": false
+  },
+  "sha256": {
+    "samples.jsonl": "6c08b01b3923905afd92e36f0e5e0b50b0b6b438d5bb21f5d4b7c84f918bc66a",
+    "aggregates.jsonl": "73dec6ed5f72b7056f5a577bd41c1a84b07e10c0b0959f62bb1ad605dc8ec89b",
+    "predictions.csv": "4a5304cf6f7c45de087a0e605cfaf8720af404ebf5f617c878b122e3ef15ca9d",
+    "metrics.json": "dcd4f7d8616b4c0127ff69a5e7bb5ef89e1e7ad11133073f96fb626ade112f7a",
+    "policy.json": "ed02ad77ebc3df2abdffd65c71b291be81fa9cc9b39ada6db7403694f987ba46",
+    "manifest.json": "1604ebb8bd84136ef7b9966ad7ccd68cf5a6a36913ca124b544a582642ff5542"
+  }
+}

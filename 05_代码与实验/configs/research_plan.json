@@ -1,0 +1,32 @@
+{
+  "pilot_type": "formal_candidate_plan_only",
+  "scenario_set": "research_v3",
+  "output_prefix": "research_v3_qwen_k5",
+  "prompt_template": "platform-intervention-v3-scoped",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.7,
+  "seed": 5203,
+  "max_tokens": 128,
+  "timeout_seconds": 180,
+  "repeats": 5,
+  "require_clean_git": true,
+  "routing_modes": [
+    "three_way"
+  ],
+  "human_costs": {
+    "AUTO_EXECUTE": 0.0,
+    "REQUEST_CONFIRMATION": 1.0,
+    "HANDOFF": 3.0,
+    "BLOCK": 0.0
+  },
+  "claim_scope": "plan only; thresholds and protocol must be frozen before any formal run",
+  "planning_estimates": {
+    "wall_time_minutes": "35-60 after model load",
+    "prompt_tokens": "220000-320000",
+    "completion_tokens": "20000-40000",
+    "external_api_cost_usd": 0.0,
+    "outputs": "raw sample cache, aggregates, calibrated predictions, fitted policy, metrics with family-bootstrap intervals, manifest"
+  }
+}

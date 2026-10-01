@@ -1,0 +1,1125 @@
+{
+  "summaries": {
+    "ungated_autonomy": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.5714285714285714,
+        "ece_10": 0.5714285714285714,
+        "aurc": 0.42925170068027213
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6666666666666666,
+        "ece_10": 0.6666666666666666,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6666666666666666,
+        "ece_10": 0.6666666666666666,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "guarded_always_execute": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 0.5555555555555556,
+        "unsafe_execution_rate": 0.4444444444444444,
+        "autonomous_coverage": 0.7777777777777778,
+        "selective_risk": 0.5714285714285714,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.5714285714285714,
+        "ece_10": 0.5714285714285714,
+        "aurc": 0.42925170068027213
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6666666666666666,
+        "ece_10": 0.6666666666666666,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.6666666666666666,
+        "autonomous_coverage": 1.0,
+        "selective_risk": 0.6666666666666666,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.3333333333333333,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.0,
+        "brier_score": 0.6666666666666666,
+        "ece_10": 0.6666666666666666,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "verify_every_mutation": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 0.5555555555555556,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.7777777777777778,
+        "handoff_rate": 0.0,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8571428571428571,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 0.7777777777777778,
+        "brier_score": 0.42857142857142855,
+        "ece_10": 0.4285714285714286,
+        "aurc": 0.42925170068027213
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 1.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.6666666666666666,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.3333333333333333,
+        "ece_10": 0.33333333333333337,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 1.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.6666666666666666,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.3333333333333333,
+        "ece_10": 0.33333333333333337,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "static_tool_tiers": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 0.4444444444444444,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.5555555555555556,
+        "handoff_rate": 0.2222222222222222,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.4444444444444444,
+        "confirmation_resolution_rate": 0.8,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 1.2222222222222223,
+        "brier_score": 0.26785714285714285,
+        "ece_10": 0.14285714285714285,
+        "aurc": 0.42925170068027213
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 1.0,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.6666666666666666,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 1.0,
+        "brier_score": 0.25,
+        "ece_10": 0.16666666666666663,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.3333333333333333,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.0,
+        "selective_risk": null,
+        "confirmation_rate": 0.0,
+        "handoff_rate": 1.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.0,
+        "confirmation_resolution_rate": null,
+        "unnecessary_intervention_rate": 1.0,
+        "mean_human_cost": 3.0,
+        "brier_score": 0.22916666666666666,
+        "ece_10": 0.08333333333333337,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "single_prompt_critic": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 0.8888888888888888,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.2222222222222222,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4444444444444444,
+        "handoff_rate": 0.1111111111111111,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.3333333333333333,
+        "mean_human_cost": 0.7777777777777778,
+        "brier_score": 0.13392857142857145,
+        "ece_10": 0.2928571428571428,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.18916666666666668,
+        "ece_10": 0.2833333333333333,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.3333333333333333,
+        "autonomous_coverage": 0.6666666666666666,
+        "selective_risk": 0.5,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.3333333333333333,
+        "brier_score": 0.32916666666666666,
+        "ece_10": 0.48333333333333334,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "majority_vote_critic": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 0.8888888888888888,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.2222222222222222,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.4444444444444444,
+        "handoff_rate": 0.1111111111111111,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.3333333333333333,
+        "mean_human_cost": 0.7777777777777778,
+        "brier_score": 0.1561904761904762,
+        "ece_10": 0.3142857142857143,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.16499999999999998,
+        "ece_10": 0.2666666666666667,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.3333333333333333,
+        "autonomous_coverage": 0.6666666666666666,
+        "selective_risk": 0.5,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.3333333333333333,
+        "brier_score": 0.34620370370370374,
+        "ece_10": 0.49444444444444446,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "verbalized_confidence": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 0.7777777777777778,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.2222222222222222,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.5555555555555556,
+        "handoff_rate": 0.0,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.8,
+        "unnecessary_intervention_rate": 0.3333333333333333,
+        "mean_human_cost": 0.5555555555555556,
+        "brier_score": 0.13392857142857145,
+        "ece_10": 0.2928571428571428,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.6666666666666666,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.5,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.18916666666666668,
+        "ece_10": 0.2833333333333333,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.6666666666666666,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.5,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.32916666666666666,
+        "ece_10": 0.48333333333333334,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "calibrated_three_way": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.1111111111111111,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.00042022067296692926,
+        "ece_10": 0.017680739090823003,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.16010203101818693,
+        "ece_10": 0.2465600316163143,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.0008296663989962116,
+        "ece_10": 0.024545700145988985,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "ablation_no_disagreement": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.1111111111111111,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.0005791925065345271,
+        "ece_10": 0.020163600733063496,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.09107620802068334,
+        "ece_10": 0.18251463610508625,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.6666666666666666,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.5,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.0002180193447779362,
+        "ece_10": 0.013045839597411202,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "ablation_no_critic_score": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.1111111111111111,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.0007152189565411551,
+        "ece_10": 0.023434417918160956,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.20697260639823745,
+        "ece_10": 0.31016412460253334,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.0003441555606566934,
+        "ece_10": 0.015402899265772834,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "ablation_no_approval_features": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.1111111111111111,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.00044404290541597767,
+        "ece_10": 0.018142656968024997,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.22187477384150558,
+        "ece_10": 0.2858160554380039,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.3333333333333333,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 1.3333333333333333,
+        "brier_score": 0.001646971203695488,
+        "ece_10": 0.03178504937585624,
+        "aurc": 0.38888888888888884
+      }
+    },
+    "ablation_critic_only": {
+      "train": {
+        "split": "train",
+        "cases": 9,
+        "routing_accuracy": 1.0,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.1111111111111111,
+        "block_rate": 0.2222222222222222,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.0031669081743244043,
+        "ece_10": 0.04740970190394563,
+        "aurc": 0.24591836734693878
+      },
+      "dev": {
+        "split": "dev",
+        "cases": 3,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.0,
+        "autonomous_coverage": 0.3333333333333333,
+        "selective_risk": 0.0,
+        "confirmation_rate": 0.6666666666666666,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 0.5,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.6666666666666666,
+        "brier_score": 0.07529895894683318,
+        "ece_10": 0.17500075690899963,
+        "aurc": 0.38888888888888884
+      },
+      "test": {
+        "split": "test",
+        "cases": 3,
+        "routing_accuracy": 0.6666666666666666,
+        "unsafe_execution_rate": 0.3333333333333333,
+        "autonomous_coverage": 0.6666666666666666,
+        "selective_risk": 0.5,
+        "confirmation_rate": 0.3333333333333333,
+        "handoff_rate": 0.0,
+        "block_rate": 0.0,
+        "authorized_task_completion_rate": 0.6666666666666666,
+        "confirmation_resolution_rate": 1.0,
+        "unnecessary_intervention_rate": 0.0,
+        "mean_human_cost": 0.3333333333333333,
+        "brier_score": 0.3026731287841233,
+        "ece_10": 0.351652028207738,
+        "aurc": 0.7222222222222222
+      }
+    }
+  },
+  "test_family_bootstrap_ci": {
+    "ungated_autonomy": {
+      "routing_accuracy": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "autonomous_coverage": {
+        "estimate": 1.0,
+        "ci95_low": 1.0,
+        "ci95_high": 1.0
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "mean_human_cost": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "brier_score": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "guarded_always_execute": {
+      "routing_accuracy": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "autonomous_coverage": {
+        "estimate": 1.0,
+        "ci95_low": 1.0,
+        "ci95_high": 1.0
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "mean_human_cost": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "brier_score": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "verify_every_mutation": {
+      "routing_accuracy": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "autonomous_coverage": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 1.0,
+        "ci95_low": 1.0,
+        "ci95_high": 1.0
+      },
+      "brier_score": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "static_tool_tiers": {
+      "routing_accuracy": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "autonomous_coverage": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_human_cost": {
+        "estimate": 3.0,
+        "ci95_low": 3.0,
+        "ci95_high": 3.0
+      },
+      "brier_score": {
+        "estimate": 0.22916666666666666,
+        "ci95_low": 0.22916666666666666,
+        "ci95_high": 0.22916666666666666
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "single_prompt_critic": {
+      "routing_accuracy": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "autonomous_coverage": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "brier_score": {
+        "estimate": 0.32916666666666666,
+        "ci95_low": 0.32916666666666666,
+        "ci95_high": 0.32916666666666666
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "majority_vote_critic": {
+      "routing_accuracy": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "autonomous_coverage": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "brier_score": {
+        "estimate": 0.34620370370370374,
+        "ci95_low": 0.34620370370370374,
+        "ci95_high": 0.34620370370370374
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "verbalized_confidence": {
+      "routing_accuracy": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "autonomous_coverage": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "brier_score": {
+        "estimate": 0.32916666666666666,
+        "ci95_low": 0.32916666666666666,
+        "ci95_high": 0.32916666666666666
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "calibrated_three_way": {
+      "routing_accuracy": {
+        "estimate": 1.0,
+        "ci95_low": 1.0,
+        "ci95_high": 1.0
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "autonomous_coverage": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 1.3333333333333333,
+        "ci95_low": 1.3333333333333333,
+        "ci95_high": 1.3333333333333333
+      },
+      "brier_score": {
+        "estimate": 0.0008296663989962116,
+        "ci95_low": 0.0008296663989962116,
+        "ci95_high": 0.0008296663989962116
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "ablation_no_disagreement": {
+      "routing_accuracy": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "autonomous_coverage": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "brier_score": {
+        "estimate": 0.0002180193447779362,
+        "ci95_low": 0.0002180193447779362,
+        "ci95_high": 0.0002180193447779362
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "ablation_no_critic_score": {
+      "routing_accuracy": {
+        "estimate": 1.0,
+        "ci95_low": 1.0,
+        "ci95_high": 1.0
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "autonomous_coverage": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 1.3333333333333333,
+        "ci95_low": 1.3333333333333333,
+        "ci95_high": 1.3333333333333333
+      },
+      "brier_score": {
+        "estimate": 0.0003441555606566934,
+        "ci95_low": 0.0003441555606566934,
+        "ci95_high": 0.0003441555606566934
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "ablation_no_approval_features": {
+      "routing_accuracy": {
+        "estimate": 1.0,
+        "ci95_low": 1.0,
+        "ci95_high": 1.0
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "autonomous_coverage": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 1.3333333333333333,
+        "ci95_low": 1.3333333333333333,
+        "ci95_high": 1.3333333333333333
+      },
+      "brier_score": {
+        "estimate": 0.001646971203695488,
+        "ci95_low": 0.001646971203695488,
+        "ci95_high": 0.001646971203695488
+      },
+      "aurc": {
+        "estimate": 0.38888888888888884,
+        "ci95_low": 0.38888888888888884,
+        "ci95_high": 0.38888888888888884
+      }
+    },
+    "ablation_critic_only": {
+      "routing_accuracy": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "unsafe_execution_rate": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "autonomous_coverage": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "authorized_task_completion_rate": {
+        "estimate": 0.6666666666666666,
+        "ci95_low": 0.6666666666666666,
+        "ci95_high": 0.6666666666666666
+      },
+      "mean_human_cost": {
+        "estimate": 0.3333333333333333,
+        "ci95_low": 0.3333333333333333,
+        "ci95_high": 0.3333333333333333
+      },
+      "brier_score": {
+        "estimate": 0.3026731287841233,
+        "ci95_low": 0.3026731287841233,
+        "ci95_high": 0.3026731287841233
+      },
+      "aurc": {
+        "estimate": 0.7222222222222222,
+        "ci95_low": 0.7222222222222222,
+        "ci95_high": 0.7222222222222222
+      }
+    }
+  },
+  "baseline_thresholds_selected_on_dev": {
+    "verbalized_confidence_execute_below": 0.25
+  }
+}

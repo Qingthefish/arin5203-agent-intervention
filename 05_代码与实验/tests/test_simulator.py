@@ -16,13 +16,16 @@ from platform_agent_eval.approvals import (
     missing_requirements,
 )
 from platform_agent_eval.domain import Decision, PolicyInput
+from platform_agent_eval.dataset_audit import audit_scenario_set
 from platform_agent_eval.evaluation import evaluate_policy, summarize
+from platform_agent_eval.intervention import resolve_after_confirmation
 from platform_agent_eval.model_routing import (
     GenerationConfig,
     ModelResponse,
     ModelRouter,
     SCOPED_PROMPT_TEMPLATE_VERSION,
     build_policy_prompt,
+    generation_for_sample,
     parse_router_output,
 )
 from platform_agent_eval.policies import POLICIES, PolicyDefinition, decide, route
@@ -322,6 +325,15 @@ class SimulatorTests(unittest.TestCase):
         self.assertEqual(0.62, result.risk_score)
         self.assertEqual(100, result.prompt_tokens)
 
+    def test_stochastic_samples_use_distinct_reproducible_seeds(self) -> None:
+        base = GenerationConfig(model="fake", seed=5203, temperature=0.7)
+        sampled = [generation_for_sample(base, index) for index in range(5)]
+        self.assertEqual([5203, 5204, 5205, 5206, 5207], [item.seed for item in sampled])
+        self.assertTrue(all(item.temperature == 0.7 for item in sampled))
+        self.assertEqual(5203, base.seed)
+        with self.assertRaises(ValueError):
+            generation_for_sample(base, -1)
+
     def test_hard_guard_prevents_model_call(self) -> None:
         class CountingClient:
             calls = 0
@@ -468,6 +480,24 @@ class ScopedApprovalScenarioTests(unittest.TestCase):
             },
         )
 
+    def test_scoped_semantics_pass_machine_audit(self) -> None:
+        audit = audit_scenario_set(self.scenarios)
+        self.assertEqual((), audit.errors)
+        self.assertEqual((), audit.constant_features)
+        rollout = next(
+            case
+            for case in self.scenarios
+            if case.gold.scenario_id == "scoped-rollout-high"
+        )
+        self.assertTrue(rollout.policy_input.production)
+        self.assertTrue(rollout.policy_input.active_incident)
+        rollout_medium = next(
+            case
+            for case in self.scenarios
+            if case.gold.scenario_id == "scoped-rollout-medium"
+        )
+        self.assertTrue(rollout_medium.policy_input.production)
+
     def test_scoped_matcher_rejects_each_invalid_dimension(self) -> None:
         case = next(
             item
@@ -559,12 +589,53 @@ class ScopedApprovalScenarioTests(unittest.TestCase):
         )
         fixed_input = replace(
             case.policy_input,
-            approval_evidence=(canonical_evidence(requirement),),
+            approval_evidence=tuple(
+                canonical_evidence(item)
+                for item in case.oracle.approval_requirements
+            ),
         )
         self.assertIs(
             Decision.AUTO_EXECUTE,
             derive_expected_decision(fixed_input, case.oracle),
         )
+
+    def test_confirmation_round_trip_executes_only_after_valid_evidence(self) -> None:
+        confirm = next(
+            case
+            for case in self.scenarios
+            if case.gold.expected_decision is Decision.REQUEST_CONFIRMATION
+        )
+        unresolved = resolve_after_confirmation(confirm, supply_valid_approval=False)
+        self.assertTrue(unresolved.attempted)
+        self.assertFalse(unresolved.resolved)
+        self.assertIsNotNone(unresolved.outcome)
+        self.assertTrue(unresolved.outcome.prohibited_attempt)
+
+        resolved = resolve_after_confirmation(confirm)
+        self.assertTrue(resolved.attempted)
+        self.assertTrue(resolved.resolved)
+        self.assertTrue(resolved.outcome.task_completed)
+        self.assertFalse(resolved.outcome.prohibited_attempt)
+
+    def test_confirmation_cannot_repair_handoff_or_block(self) -> None:
+        handoff = next(
+            case
+            for case in self.scenarios
+            if case.gold.expected_decision is Decision.HANDOFF
+        )
+        handoff_resolution = resolve_after_confirmation(handoff)
+        self.assertTrue(handoff_resolution.attempted)
+        self.assertFalse(handoff_resolution.resolved)
+        self.assertTrue(handoff_resolution.outcome.prohibited_attempt)
+
+        blocked = next(
+            case
+            for case in self.scenarios
+            if case.gold.expected_decision is Decision.BLOCK
+        )
+        block_resolution = resolve_after_confirmation(blocked)
+        self.assertFalse(block_resolution.attempted)
+        self.assertIsNone(block_resolution.outcome)
 
     def test_handoff_and_block_survive_valid_approval(self) -> None:
         for route in (Decision.HANDOFF, Decision.BLOCK):

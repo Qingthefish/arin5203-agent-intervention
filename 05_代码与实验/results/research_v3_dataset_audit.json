@@ -1,0 +1,174 @@
+{
+  "cases": 120,
+  "families": 40,
+  "route_counts": {
+    "AUTO_EXECUTE": 40,
+    "BLOCK": 18,
+    "HANDOFF": 22,
+    "REQUEST_CONFIRMATION": 40
+  },
+  "operation_counts": {
+    "CHANGE_GPU_QUOTA": 24,
+    "PREEMPT_WORKLOAD": 24,
+    "RECLAIM_CAPACITY": 24,
+    "ROLLOUT_MODEL": 24,
+    "TRANSFER_RESOURCE": 24
+  },
+  "feature_route_counts": {
+    "production": {
+      "false": {
+        "AUTO_EXECUTE": 25,
+        "BLOCK": 15,
+        "HANDOFF": 1,
+        "REQUEST_CONFIRMATION": 30
+      },
+      "true": {
+        "AUTO_EXECUTE": 15,
+        "BLOCK": 3,
+        "HANDOFF": 21,
+        "REQUEST_CONFIRMATION": 10
+      }
+    },
+    "reversible": {
+      "false": {
+        "AUTO_EXECUTE": 1,
+        "BLOCK": 2,
+        "HANDOFF": 22,
+        "REQUEST_CONFIRMATION": 5
+      },
+      "true": {
+        "AUTO_EXECUTE": 39,
+        "BLOCK": 16,
+        "REQUEST_CONFIRMATION": 35
+      }
+    },
+    "checkpoint_available": {
+      "false": {
+        "AUTO_EXECUTE": 1,
+        "BLOCK": 2,
+        "HANDOFF": 7,
+        "REQUEST_CONFIRMATION": 5
+      },
+      "true": {
+        "AUTO_EXECUTE": 39,
+        "BLOCK": 16,
+        "HANDOFF": 15,
+        "REQUEST_CONFIRMATION": 35
+      }
+    },
+    "rollback_available": {
+      "false": {
+        "HANDOFF": 5
+      },
+      "true": {
+        "AUTO_EXECUTE": 40,
+        "BLOCK": 18,
+        "HANDOFF": 17,
+        "REQUEST_CONFIRMATION": 40
+      }
+    },
+    "migration_target_available": {
+      "false": {
+        "HANDOFF": 5
+      },
+      "true": {
+        "AUTO_EXECUTE": 40,
+        "BLOCK": 18,
+        "HANDOFF": 17,
+        "REQUEST_CONFIRMATION": 40
+      }
+    },
+    "quota_borrowing": {
+      "false": {
+        "AUTO_EXECUTE": 40,
+        "BLOCK": 18,
+        "HANDOFF": 21,
+        "REQUEST_CONFIRMATION": 33
+      },
+      "true": {
+        "HANDOFF": 1,
+        "REQUEST_CONFIRMATION": 7
+      }
+    },
+    "active_incident": {
+      "false": {
+        "AUTO_EXECUTE": 36,
+        "BLOCK": 18,
+        "HANDOFF": 14,
+        "REQUEST_CONFIRMATION": 40
+      },
+      "true": {
+        "AUTO_EXECUTE": 4,
+        "HANDOFF": 8
+      }
+    },
+    "cross_tenant": {
+      "false": {
+        "AUTO_EXECUTE": 36,
+        "BLOCK": 13,
+        "HANDOFF": 9,
+        "REQUEST_CONFIRMATION": 16
+      },
+      "true": {
+        "AUTO_EXECUTE": 4,
+        "BLOCK": 5,
+        "HANDOFF": 13,
+        "REQUEST_CONFIRMATION": 24
+      }
+    },
+    "approval_evidence_present": {
+      "false": {
+        "AUTO_EXECUTE": 19,
+        "BLOCK": 3,
+        "HANDOFF": 2,
+        "REQUEST_CONFIRMATION": 17
+      },
+      "true": {
+        "AUTO_EXECUTE": 21,
+        "BLOCK": 15,
+        "HANDOFF": 20,
+        "REQUEST_CONFIRMATION": 23
+      }
+    },
+    "approval_missing_or_invalid": {
+      "false": {
+        "AUTO_EXECUTE": 40,
+        "BLOCK": 12,
+        "HANDOFF": 18
+      },
+      "true": {
+        "BLOCK": 6,
+        "HANDOFF": 4,
+        "REQUEST_CONFIRMATION": 40
+      }
+    }
+  },
+  "constant_features": [],
+  "findings": [
+    {
+      "severity": "warning",
+      "code": "route_pure_feature_slice",
+      "message": "rollback_available=False predicts HANDOFF for all 5 cases; add counterexamples or justify the rule.",
+      "scenario_ids": [
+        "scoped-rollout-high",
+        "scoped-canary-promotion-high",
+        "scoped-accelerator-build-high",
+        "contrast-emergency-rollback-high",
+        "contrast-regional-promotion-high"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "route_pure_feature_slice",
+      "message": "migration_target_available=False predicts HANDOFF for all 5 cases; add counterexamples or justify the rule.",
+      "scenario_ids": [
+        "scoped-reclaim-high",
+        "scoped-autoscale-in-high",
+        "scoped-power-response-high",
+        "contrast-carbon-window-high",
+        "contrast-rack-powerdown-high"
+      ]
+    }
+  ],
+  "errors": 0
+}
