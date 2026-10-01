@@ -17,7 +17,7 @@ All team members will review the scenario policy, implementation, experiments, a
 
 ## Current Status
 
-- The 331-word proposal is ready for team review and remains one paragraph as required by the course page.
+- The 370-word proposal body is ready for team review and remains one paragraph as required by the course page.
 - The deterministic simulator, intervention policies, baselines, metrics, and unit tests are implemented.
 - A 5-family pipeline pilot (15 cases, 39 measured generations) and a balanced 20-family development pilot (60 cases, 153 measured generations) have run locally with Ollama and Qwen3.5-9B at no API cost.
 - Both runs have complete manifests and machine-readable artifact audits. The 20-family run is a method-development result, not the final held-out evaluation; its families are reserved for the eventual training pool.
@@ -30,6 +30,7 @@ All team members will review the scenario policy, implementation, experiments, a
 - `01_提案/` — proposal, references, and the original draft.
 - `02_里程碑/` — milestone LaTeX source.
 - `05_代码与实验/` — simulator, scenario sets, model routing, tests, configurations, and results.
+- `项目复盘.md` — the single living project retrospective and presentation evidence map.
 - `CVPR2026_模板源码/` — instructor-provided report template.
 - Course requirement snapshots and official template archives remain unchanged at the repository root.
 
