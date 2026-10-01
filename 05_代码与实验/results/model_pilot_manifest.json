@@ -1,0 +1,67 @@
+{
+  "status": "COMPLETED",
+  "model": "qwen3.5:9b",
+  "provider": "ollama",
+  "location": "local_machine",
+  "base_tasks": 5,
+  "cases": 15,
+  "hard_guarded_cases_per_policy": 2,
+  "llm_eligible_cases_per_policy": 13,
+  "routing_modes": [
+    "binary",
+    "three_way"
+  ],
+  "repeats": 1,
+  "planned_measured_generation_calls": 26,
+  "warmup_calls": 1,
+  "planned_total_generation_calls": 27,
+  "planned_metadata_requests": 1,
+  "planned_total_local_http_requests": 28,
+  "temperature": 0.0,
+  "seed": 5203,
+  "max_output_tokens_per_call": 128,
+  "api_cost_usd": 0.0,
+  "outputs_if_run": [
+    "results/model_pilot_raw.jsonl",
+    "results/model_pilot_summary.csv",
+    "results/model_pilot_manifest.json"
+  ],
+  "claim_scope": "LLM routing feasibility and failure-mode pilot only",
+  "started_at_utc": "2026-10-01T01:07:11.215467+00:00",
+  "started_at_hong_kong": "2026-10-01T09:07:11.215467+08:00",
+  "python_version": "3.12.14",
+  "prompt_template": "platform-intervention-v1",
+  "config_snapshot": {
+    "pilot_type": "local_llm_feasibility",
+    "provider": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0.0,
+    "seed": 5203,
+    "max_tokens": 128,
+    "timeout_seconds": 180,
+    "repeats": 1,
+    "routing_modes": [
+      "binary",
+      "three_way"
+    ],
+    "human_costs": {
+      "AUTO_EXECUTE": 0.0,
+      "REQUEST_CONFIRMATION": 1.0,
+      "HANDOFF": 3.0,
+      "BLOCK": 0.0
+    }
+  },
+  "finished_at_utc": "2026-10-01T01:08:44.019605+00:00",
+  "finished_at_hong_kong": "2026-10-01T09:08:44.019605+08:00",
+  "duration_seconds": 92.80372066699783,
+  "warmup": {
+    "text": "{\"ready\": true}",
+    "prompt_tokens": 22,
+    "completion_tokens": 6,
+    "latency_ms": 528.9305420010351,
+    "model_id": "qwen3.5:9b",
+    "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+  },
+  "actual_evaluation_records": 30
+}

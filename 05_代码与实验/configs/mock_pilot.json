@@ -1,0 +1,15 @@
+{
+  "seed": 5203,
+  "split_ratios": {
+    "train": 0.6,
+    "dev": 0.2,
+    "test": 0.2
+  },
+  "human_costs": {
+    "AUTO_EXECUTE": 0.0,
+    "REQUEST_CONFIRMATION": 1.0,
+    "HANDOFF": 3.0,
+    "BLOCK": 0.0
+  }
+}
+

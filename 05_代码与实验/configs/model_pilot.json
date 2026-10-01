@@ -1,0 +1,23 @@
+{
+  "pilot_type": "local_llm_feasibility",
+  "scenario_set": "mock",
+  "output_prefix": "model_pilot",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.0,
+  "seed": 5203,
+  "max_tokens": 128,
+  "timeout_seconds": 180,
+  "repeats": 1,
+  "routing_modes": [
+    "binary",
+    "three_way"
+  ],
+  "human_costs": {
+    "AUTO_EXECUTE": 0.0,
+    "REQUEST_CONFIRMATION": 1.0,
+    "HANDOFF": 3.0,
+    "BLOCK": 0.0
+  }
+}

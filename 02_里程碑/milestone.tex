@@ -1,0 +1,276 @@
+% ARIN 5203 Project Milestone -- CVPR 2026 course template
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\makeatletter
+\def\input@path{{../CVPR2026_模板源码/官方源码/}}
+\makeatother
+% Use the teacher-provided CVPR 2026 style whenever it is available.  The
+% fallback reproduces its page geometry so Codex's single-file preview compiler
+% can still validate this source without importing external project files.
+\IfFileExists{cvpr.sty}{%
+  \usepackage[pagenumbers]{cvpr}
+}{%
+  \usepackage{times}
+  \usepackage{xspace}
+  \usepackage[dvipsnames]{xcolor}
+  \usepackage{graphicx}
+  \usepackage{amsmath,amssymb}
+  \usepackage{booktabs}
+  \usepackage[numbers,sort&compress]{natbib}
+  \usepackage[format=plain,labelformat=simple,labelsep=period,font=small]{caption}
+  \setlength{\textheight}{8.875in}
+  \setlength{\textwidth}{6.875in}
+  \setlength{\columnsep}{0.3125in}
+  \setlength{\topmargin}{0in}
+  \setlength{\headheight}{0in}
+  \setlength{\headsep}{0in}
+  \setlength{\parindent}{1pc}
+  \setlength{\oddsidemargin}{-0.1875in}
+  \setlength{\evensidemargin}{-0.1875in}
+}
+\usepackage{microtype}
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\def\paperID{}
+\def\confName{ARIN 5203 Project Milestone}
+\def\confYear{2026}
+
+\title{Do AI Platform Agents Know When to Ask for Help?\\
+\large Context-Aware Intervention Before State-Changing Operations}
+\author{Qingcheng Yu\\
+Hong Kong University of Science and Technology}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction and Related Work}
+
+Tool-using agents are increasingly asked to operate AI infrastructure rather
+than merely answer questions. An AI-platform agent may adjust a GPU quota,
+preempt a workload, transfer resources between tenants, roll out a model, or
+reclaim a serving node. These actions are useful precisely because they change
+external state, but an incorrect call can interrupt production, cross an
+authorization boundary, or create an irreversible deployment failure. The same
+tool is not uniformly safe: increasing a sandbox quota with explicit owner
+consent may be routine, while the same mutation in production or across tenants
+should require additional intervention.
+
+Existing evaluations motivate, but do not directly resolve, this decision.
+$\tau$-bench evaluates policy-following agents through conversational tool use
+and final database state~\cite{yao2024tau}. ToolSandbox emphasizes stateful,
+interactive evaluation and dynamic milestone checks~\cite{lu2025toolsandbox}.
+SABER shows that deviations at mutating steps are especially predictive of
+failure and applies verification selectively before such steps
+~\cite{cuadron2025saber}. Work on semantic-entropy probes also suggests that
+disagreement across generations can be a useful uncertainty signal, although
+the present pilot does not yet implement this component
+~\cite{kossen2024semantic}.
+
+This project asks one experimentally testable question: \emph{before a proposed
+AI-platform mutation, can a context-aware gate reduce unsafe autonomous actions
+while preserving useful autonomous coverage by choosing among Execute,
+Confirm, and Handoff?} The contribution is intentionally scoped as an empirical
+course project: a reproducible stateful testbed, an explicit intervention
+policy, and a safety--autonomy analysis rather than a production deployment or
+a claim of a new foundation model.
+
+\section{Problem Statement and Pilot Data}
+
+Each case contains a user request, the proposed tool call and arguments, actor
+and resource ownership, consent and approval facts, environment criticality,
+reversibility, checkpoint availability, blast radius, and current world state.
+A deterministic first-stage guard may return \textsc{Block} for strictly
+inadmissible or malformed actions. Guard-eligible cases are routed to one of
+three interventions: \textsc{Execute} applies the mutation; \textsc{Confirm}
+asks the user for missing or ambiguous information; and \textsc{Handoff} sends
+the case to an authorized operator when risk or policy conflict cannot be
+resolved by ordinary confirmation.
+
+Safety is measured from the resulting state transition, not merely from
+agreement with a route label. For every case, an independent postcondition
+oracle checks whether hypothetical execution would violate constraints such as
+missing approval, cross-tenant transfer without consent, irreversible
+production rollout during an active incident, production preemption without a
+checkpoint, or reclaim without a safe migration target. A emph{harmful
+mutation} requires both an applied state change and a policy violation; a
+prohibited but unsuccessful call is recorded separately as an attempted
+violation. The main outcomes are harmful-mutation rate, autonomous coverage,
+selective risk among executed cases, the composition of interventions, and a
+transparent human-burden proxy. Selective prediction motivates reporting risk
+jointly with coverage rather than accuracy alone~\cite{geifman2017selective}.
+
+The expanded pilot contains 20 base tasks with three matched context variants
+each (60 cases total). Four independent task families cover each of five
+operations: quota change, workload preemption, resource transfer, model
+rollout, and capacity reclamation. Labels contain 20 Execute, 20 Confirm, 12
+Handoff, and eight Block cases. Under forced execution, 39/60 cases cause a
+harmful mutation and one further case is a prohibited no-op. An
+operation-stratified grouped split assigns 30/15/15 cases to train/dev/test;
+the three variants of one base task never cross splits. This risk-enriched,
+author-constructed set cannot estimate production incident frequency, and the
+present analysis pools all 60 cases as descriptive pilot evidence rather than
+claiming held-out generalization.
+
+\section{Technical Approach}
+
+The implementation is a two-stage intervention gate. Stage 1 applies hard,
+deterministic rules. These rules cover malformed arguments and constraints that
+cannot be repaired by asking for ordinary confirmation. Stage 2 sends only
+guard-eligible cases to an LLM critic. The shared structured prompt includes
+operational facts and the proposed call, but excludes scenario identifiers,
+variant names, gold decisions, and evaluator-only metadata. Invalid JSON is
+recorded as a format failure and conservatively falls back to an intervention;
+it cannot silently count as a successful safe decision.
+
+Two prompted policies isolate the role of the action space. The \emph{binary
+verify gate} chooses Execute or Confirm. The \emph{context-aware three-way
+gate} may additionally choose Handoff. Both use the same model, facts,
+generation settings, and hard guard. If Execute is selected, a local simulator
+applies the tool call and records a state diff; the independent oracle then
+scores the postcondition. The code also implements ungated autonomy, verify
+every mutation, a preregistered static tool tier, and a transparent heuristic
+verifier as engineering baselines. The heuristic is not presented as a SABER
+reproduction.
+
+\begin{figure}[t]
+  \centering
+  \fbox{\begin{minipage}{0.94\columnwidth}
+  \centering\small
+  Proposed mutation $\rightarrow$ Hard-policy guard\\[-1pt]
+  $\swarrow$ \textsc{Block}\hspace{9pt}$\searrow$ LLM gate\\[-1pt]
+  \textsc{Execute}\quad|\quad\textsc{Confirm}\quad|\quad\textsc{Handoff}\\[-1pt]
+  \textsc{Execute} $\rightarrow$ Stateful simulator $\rightarrow$ Safety oracle
+  \end{minipage}}
+  \caption{Two-stage evaluation path. Route labels and state-transition safety
+  are recorded separately.}
+  \label{fig:pipeline}
+\end{figure}
+
+\section{Experimental Setup}
+
+The local pilot used Qwen3.5-9B through Ollama on an Apple M4 machine with
+16~GB unified memory. Generation used temperature 0, seed 5203, and a maximum
+of 128 output tokens. For each prompted policy, 52 cases reached the LLM and
+eight were stopped by the shared hard guard. The run therefore contains 104
+measured generations plus one warm-up and 120 evaluation records. It completed
+in 498.2 seconds (8~min 18~s) with no external API call or fee. Measured
+generations consumed 42,438 input and 4,112 output tokens; all 104 responses
+matched the JSON schema. Mean model latency was 4.56 seconds for the binary
+prompt and 4.93 seconds for the three-way prompt. The manifest stores the model
+digest, prompt hashes, configuration, raw outputs, token counts, and latency.
+Twenty-four regression tests check label/oracle consistency, grouped splits,
+hard-guard behavior, prompt/gold separation, state diffs, and metrics.
+
+\section{Intermediate and Preliminary Results}
+
+Table~\ref{tab:pilot} presents descriptive results. Ungated autonomy establishes
+the unsafe extreme, while verify-every-mutation establishes a conservative
+zero-coverage endpoint. The binary gate executed 27 cases and caused seven
+harmful mutations; the three-way gate executed 24 and caused four. Selective
+risk consequently fell from 25.9\% to 16.7\%, while coverage fell from 45.0\%
+to 40.0\%. Both policies safely auto-completed the same 20 cases, so the
+three-way configuration avoided three harmful executions without sacrificing
+a safe completion in this run. Its weighted intervention burden, however,
+increased from 0.417 to 0.900.
+
+\begin{table}[t]
+  \centering
+  \small
+  \setlength{\tabcolsep}{3.2pt}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Policy & Harmful & Coverage & Sel. risk & Burden \\
+    \midrule
+    Ungated & 39/60 & 100.0\% & 65.0\% & 0.000 \\
+    Verify all & 0/60 & 0.0\% & -- & 0.867 \\
+    Binary prompt & 7/60 & 45.0\% & 25.9\% & 0.417 \\
+    Three-way prompt & 4/60 & 40.0\% & 16.7\% & 0.900 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Single-run results on 60 handcrafted matched cases. ``Harmful''
+  requires an applied state change plus a policy violation. Burden uses weights
+  Confirm$=1$, Handoff$=3$, Block$=0$; it is not measured labor time.}
+  \label{tab:pilot}
+\end{table}
+
+The paired error pattern is more informative than route accuracy. All 12
+Handoff-labelled cases were correctly handed off by the three-way prompt,
+whereas the binary prompt necessarily mapped them to Confirm. However, the
+three avoided harmful executions were also routed to Confirm, not Handoff.
+Thus the run supports the complete prompt and action-space configuration but
+does not isolate Handoff itself as the causal mechanism. The three-way gate's
+four residual harmful executions were all Confirm-labelled cases with missing
+required approval. This points to an explicit approval-completeness signal as
+a higher-value next step than further prompt elaboration. On the fairer
+Execute-versus-intervene distinction, binary was correct on 53/60 cases and
+three-way on 56/60; their four-class route accuracies are not directly
+comparable because binary cannot emit Handoff.
+
+The model-provided scores are not calibrated probabilities. On 52 LLM-routed
+cases per policy, Brier scores were 0.184 for binary and 0.233 for three-way.
+Their mean predicted risks were 0.354 and 0.319, respectively, while the
+unsafe-if-executed prevalence was 0.615. The scores rank many risky cases above
+safe ones but substantially underestimate absolute risk; calibration remains a
+planned method rather than a completed result.
+
+\section{Limitations and Next Steps}
+
+The experiment evaluates a gate for an already proposed tool call; it does not
+test whether an end-to-end agent generates the correct tool and arguments. The
+scenario set and policy text were authored for this project, and the present
+evidence comes from one local model, one seed, and one run. The held-out test
+split contains only five correlated task families, so its zero observed harmful
+executions under both prompts is not a generalization or safety guarantee.
+More importantly, after hard guarding, the current Boolean consent field alone
+separates all Execute-labelled cases from all intervention-labelled cases. The
+pilot therefore exposes model rule-following failures, but cannot yet establish
+that the gate learned a non-trivial notion of uncertainty.
+Confirm/Handoff outcomes after human intervention are not simulated, and the
+human-burden weights are assumptions requiring sensitivity analysis.
+
+The next stage will freeze the current run as a diagnostic pilot, replace the
+single consent flag with scoped approval evidence, and add counterexamples that
+decouple approval presence from the correct route. The revised set will target
+40 base families (120 cases), split by family and operation into 20/10/10
+train/dev/test families. A structured approval-completeness signal and
+probability calibration will then be fitted on train, thresholds selected on
+development data, and the final policy evaluated once on the frozen test split.
+Repeated local samples and paired cluster bootstrap intervals over base tasks
+will quantify instability without treating sibling variants as independent.
+Ablations will compare two-way and three-way routing, remove context signals,
+and vary human-cost weights. Routing disagreement will be added through repeated
+critic samples; argument consistency will be reserved for a later setting in
+which an upstream agent actually generates candidate tool calls. A small
+compatible subset of the revised $\tau$ benchmark remains a secondary external
+evaluation candidate, not a prerequisite for the core AI-platform study.
+
+{\small
+\begin{thebibliography}{9}
+\bibitem{yao2024tau}
+Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan.
+$\tau$-bench: A benchmark for tool-agent-user interaction in real-world
+domains. \emph{arXiv:2406.12045}, 2024.
+
+\bibitem{lu2025toolsandbox}
+Jiarui Lu et al. ToolSandbox: A stateful, conversational, interactive
+evaluation benchmark for LLM tool use capabilities.
+\emph{arXiv:2408.04682}, 2025.
+
+\bibitem{kossen2024semantic}
+Jannik Kossen et al. Semantic entropy probes: Robust and cheap hallucination
+detection in LLMs. \emph{arXiv:2406.15927}, 2024.
+
+\bibitem{cuadron2025saber}
+Alejandro Cuadron, Pengfei Yu, Yang Liu, and Arpit Gupta.
+SABER: Small actions, big errors---safeguarding mutating steps in LLM agents.
+\emph{arXiv:2512.07850}, 2025.
+
+\bibitem{geifman2017selective}
+Yonatan Geifman and Ran El-Yaniv. Selective classification for deep neural
+networks. In \emph{NeurIPS}, 2017.
+\end{thebibliography}
+}
+
+\end{document}
