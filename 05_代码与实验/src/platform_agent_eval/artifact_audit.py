@@ -168,10 +168,18 @@ def audit_research_artifacts(
     )
 
     status = "FAIL" if errors else ("PASS_WITH_LIMITATIONS" if limitations else "PASS")
+    claim_scope = str(
+        manifest.get("config_snapshot", {}).get("claim_scope", "unspecified")
+    )
+    grouped_interval_eligible = (
+        not errors and test_families >= minimum_inference_families
+    )
+    final_scope = not any(
+        marker in claim_scope.lower()
+        for marker in ("pilot", "not the final", "not a research result")
+    )
     summary = {
-        "claim_scope": manifest.get("config_snapshot", {}).get(
-            "claim_scope", "unspecified"
-        ),
+        "claim_scope": claim_scope,
         "cases": expected_cases,
         "critic_eligible_cases": len(aggregates),
         "sample_rows": len(samples),
@@ -187,8 +195,8 @@ def audit_research_artifacts(
         "duration_seconds": manifest.get("duration_seconds"),
         "prompt_tokens": manifest.get("prompt_tokens"),
         "completion_tokens": manifest.get("completion_tokens"),
-        "research_claim_allowed": not errors
-        and test_families >= minimum_inference_families,
+        "grouped_interval_eligible": grouped_interval_eligible,
+        "final_held_out_claim_allowed": grouped_interval_eligible and final_scope,
     }
     return ArtifactAudit(
         status=status,

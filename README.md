@@ -19,7 +19,10 @@ All team members will review the scenario policy, implementation, experiments, a
 
 - The 331-word proposal is ready for team review and remains one paragraph as required by the course page.
 - The deterministic simulator, intervention policies, baselines, metrics, and unit tests are implemented.
-- A 5-task pilot and an expanded 20-task, 60-case pilot have run locally with Ollama and Qwen3.5-9B at no API cost.
+- A 5-family pipeline pilot (15 cases, 39 measured generations) and a balanced 20-family development pilot (60 cases, 153 measured generations) have run locally with Ollama and Qwen3.5-9B at no API cost.
+- Both runs have complete manifests and machine-readable artifact audits. The 20-family run is a method-development result, not the final held-out evaluation; its families are reserved for the eventual training pool.
+- The `medium_pilot_qwen_k3_v1` artifacts preserve the original edge-biased threshold tie-break. The subsequent code revision selects maximum-margin thresholds on development predictions; no v1 artifact is silently overwritten.
+- The remaining 20 untouched families are reserved for the frozen formal development and test splits.
 - `02_里程碑/milestone.tex` is a working milestone draft with preliminary results. It is not yet the final milestone submission.
 
 ## Repository Structure
@@ -38,10 +41,11 @@ From `05_代码与实验/`:
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 scripts/run_model_pilot.py --config configs/scoped_pilot.json
+python3 scripts/run_research_experiment.py --config configs/research_medium_pilot.json
+python3 scripts/audit_research_artifacts.py --prefix medium_pilot_qwen_k3_v1
 ```
 
-The second command is plan-only and makes no model request. A real local run requires both `--run` and `--acknowledge-experiment-plan`. Existing experiments use local Ollama and Qwen3.5-9B; they do not require a paid API key.
+The research runner is plan-only unless both `--run` and `--acknowledge-experiment-plan` are present. Existing experiments use local Ollama and Qwen3.5-9B; they do not require a paid API key. Existing output prefixes are immutable so an accidental rerun cannot overwrite the evidence.
 
 ## Collaboration Workflow
 

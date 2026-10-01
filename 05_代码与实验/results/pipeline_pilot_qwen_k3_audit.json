@@ -26,7 +26,8 @@
     "duration_seconds": 148.06942020799033,
     "prompt_tokens": 22035,
     "completion_tokens": 1612,
-    "research_claim_allowed": false
+    "grouped_interval_eligible": false,
+    "final_held_out_claim_allowed": false
   },
   "sha256": {
     "samples.jsonl": "9be88aa076411117a4b3ebaf7cfc475606468b8c83fb81365b40578d2aeac9c1",

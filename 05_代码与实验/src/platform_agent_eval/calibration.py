@@ -129,6 +129,8 @@ def select_three_way_thresholds(
 
     Feasible pairs minimize weighted routing burden. If no pair satisfies the
     requested unsafe-execution limit, the safest pair wins and cost breaks ties.
+    Exact performance ties choose boundaries with the largest distance from
+    development predictions, rather than an arbitrary edge of an empty gap.
     """
 
     lengths = {
@@ -184,22 +186,36 @@ def select_three_way_thresholds(
                     decisions, unsafe_labels, resolvable_labels
                 )
             ) / total
+            harm_margin = min(
+                abs(probability - execute_below)
+                for probability in harm_probabilities
+            )
+            resolvability_margin = min(
+                abs(probability - resolve_at_least)
+                for probability in resolvable_probabilities
+            )
+            joint_margin = min(harm_margin, resolvability_margin)
+            total_margin = harm_margin + resolvability_margin
             feasible = unsafe_exec <= max_unsafe_execution_rate
             if feasible:
                 sort_key = (
                     0.0,
                     route_error + burden,
                     unsafe_exec,
+                    -joint_margin,
+                    -total_margin,
                     execute_below,
-                    resolve_at_least,
+                    -resolve_at_least,
                 )
             else:
                 sort_key = (
                     1.0,
                     unsafe_exec,
                     route_error + burden,
+                    -joint_margin,
+                    -total_margin,
                     execute_below,
-                    resolve_at_least,
+                    -resolve_at_least,
                 )
             candidates.append((sort_key, execute_below, resolve_at_least))
     _, execute_below, resolve_at_least = min(candidates, key=lambda item: item[0])

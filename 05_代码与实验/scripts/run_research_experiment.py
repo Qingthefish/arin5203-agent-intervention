@@ -5,6 +5,7 @@ import csv
 import hashlib
 import json
 import platform
+import subprocess
 import sys
 import time
 from dataclasses import asdict
@@ -56,6 +57,30 @@ def _json_hash(value: object) -> str:
 
 def load_config(path: Path) -> dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def git_provenance() -> dict[str, object]:
+    try:
+        revision = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        status = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=normal"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return {"git_commit": None, "git_worktree_dirty_at_start": None}
+    return {
+        "git_commit": revision,
+        "git_worktree_dirty_at_start": bool(status),
+    }
 
 
 def select_scenarios_and_splits(
@@ -128,6 +153,7 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
         "temperature": config["temperature"],
         "base_seed": config["seed"],
         "external_api_cost_usd": 0.0,
+        "require_clean_git": bool(config.get("require_clean_git", False)),
         "planning_estimates": config.get("planning_estimates", {}),
         "outputs_if_run": [
             f"results/{prefix}_samples.jsonl",
@@ -212,6 +238,12 @@ def run(config: dict[str, object]) -> dict[str, object]:
             "Refusing to overwrite formal artifacts; choose a new output_prefix: "
             + ", ".join(collisions)
         )
+    provenance = git_provenance()
+    if config.get("require_clean_git") and provenance["git_worktree_dirty_at_start"]:
+        raise RuntimeError(
+            "Refusing to run with an uncommitted worktree because "
+            "require_clean_git=true"
+        )
 
     scenarios, splits = select_scenarios_and_splits(config)
     started = datetime.now(timezone.utc)
@@ -222,6 +254,7 @@ def run(config: dict[str, object]) -> dict[str, object]:
         "started_at_utc": started.isoformat(),
         "started_at_hong_kong": started.astimezone(ZoneInfo("Asia/Hong_Kong")).isoformat(),
         "python_version": platform.python_version(),
+        **provenance,
         "config_snapshot": config,
         "split_by_scenario": splits,
     }

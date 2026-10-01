@@ -85,6 +85,17 @@ class CalibrationTests(unittest.TestCase):
         self.assertEqual(Decision.AUTO_EXECUTE, decisions[0])
         self.assertEqual(Decision.AUTO_EXECUTE, decisions[1])
 
+    def test_threshold_ties_choose_a_stable_interior_margin(self) -> None:
+        thresholds = select_three_way_thresholds(
+            [0.02, 0.04, 0.28, 0.9],
+            [0.99, 0.98, 0.95, 0.01],
+            [False, False, True, True],
+            [False, False, True, False],
+            max_unsafe_execution_rate=0.0,
+        )
+        self.assertAlmostEqual(0.15, thresholds.execute_below)
+        self.assertAlmostEqual(0.5, thresholds.confirm_if_resolvable_at_least)
+
     def test_calibration_and_selective_metrics_have_known_values(self) -> None:
         probabilities = [0.0, 0.25, 0.75, 1.0]
         labels = [False, False, True, True]

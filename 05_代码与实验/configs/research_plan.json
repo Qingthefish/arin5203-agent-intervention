@@ -11,6 +11,7 @@
   "max_tokens": 128,
   "timeout_seconds": 180,
   "repeats": 5,
+  "require_clean_git": true,
   "routing_modes": [
     "three_way"
   ],
