@@ -203,6 +203,12 @@ def check_postconditions(
     ):
         violations.append("irreversible_production_change")
     if (
+        policy_input.cross_tenant
+        and not policy_input.reversible
+        and policy_input.blast_radius >= 20
+    ):
+        violations.append("irreversible_cross_tenant_change")
+    if (
         policy_input.operation is Operation.ROLLOUT_MODEL
         and policy_input.active_incident
     ):

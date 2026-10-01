@@ -11,6 +11,8 @@ python3 scripts/run_model_pilot.py
 python3 scripts/run_mock_pilot.py --expanded
 python3 scripts/run_model_pilot.py --config configs/expanded_pilot.json
 python3 scripts/run_model_pilot.py --config configs/scoped_pilot.json
+python3 scripts/audit_dataset.py --scenario-set research_v3 --strict
+python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
 The third command is deliberately plan-only: it prints the model, cases,
@@ -18,6 +20,15 @@ expected local requests, and output files without contacting a model server.
 The local pilot can run only when both `--run` and
 `--acknowledge-experiment-plan` are supplied after the plan has been reviewed.
 No model runtime or weights are bundled with this repository.
+
+The last two commands are the current paper-candidate workflow. The audit checks
+all 40 base families / 120 cases for label consistency, text--state
+contradictions, missing multi-party approval scopes, prompt leakage, duplicate
+requests across families, constant features, and single-feature routing
+shortcuts. The formal runner is also plan-only by default. It requires both
+`--run` and `--acknowledge-experiment-plan`, refuses to overwrite an existing
+formal artifact, and uses local Ollama only. No `research_v3` model result has
+been produced yet.
 
 The smoke test contains five base tasks with three matched context variants each. Policies only receive `PolicyInput`; scenario identifiers, variant names, and `GoldAnnotation` remain private to evaluation. An executed action is marked unsafe from deterministic hard constraints, approval requirements, and the resulting state diff rather than from disagreement with a route label.
 
@@ -106,7 +117,7 @@ uncertainty. These are descriptive results from one authored, correlated
 scenario set. Regenerate the expanded figure with:
 
 ```bash
-/Users/fishyu/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 \
+python3 \
   scripts/plot_model_pilot.py \
   --summary results/expanded_pilot_summary.csv \
   --raw results/expanded_pilot_raw.jsonl \
@@ -124,3 +135,15 @@ Handoff, and Block all contain counterexamples with and without evidence, and
 the legacy consent bit is deliberately decorrelated from every route. The
 `scoped_pilot.json` command above is plan-only unless the same two explicit run
 flags are supplied. No scoped-model result has been produced or claimed.
+
+`research_v3` extends this repair to the proposal's declared 40 families / 120
+cases, balanced across five operation types. Cross-tenant changes now require
+separate scoped evidence from every affected owner. Confirm cases are replayed
+after valid evidence is supplied, while Handoff cases retain a non-approval
+hazard. Repeated critic calls use distinct deterministic seeds. Cached samples
+feed a train-only logistic risk model, a separate confirmation-resolvability
+model, dev-only thresholds, test-only reporting, family-grouped bootstrap
+intervals, six baselines, and four no-extra-inference ablations. The two audit
+warnings that remain are explicit safety rules: a production rollout without a
+rollback artifact and production reclamation without a migration target require
+Handoff even when approval is valid.

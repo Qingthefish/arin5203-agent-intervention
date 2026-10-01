@@ -22,8 +22,10 @@ from platform_agent_eval.model_routing import (
     OllamaClient,
     PROMPT_TEMPLATE_VERSION,
     SCOPED_PROMPT_TEMPLATE_VERSION,
+    generation_for_sample,
 )
 from platform_agent_eval.policies import PolicyDefinition
+from platform_agent_eval.research_scenarios import build_research_scenarios
 from platform_agent_eval.scenarios import (
     build_expanded_scenarios,
     build_mock_scenarios,
@@ -54,6 +56,14 @@ def scenario_set(config: dict[str, object]):
                 "scoped_v2 requires platform-intervention-v3-scoped"
             )
         scenarios = build_scoped_approval_scenarios()
+        validate_scenario_set(scenarios)
+        return scenarios
+    if name == "research_v3":
+        if config.get("prompt_template") != SCOPED_PROMPT_TEMPLATE_VERSION:
+            raise ValueError(
+                "research_v3 requires platform-intervention-v3-scoped"
+            )
+        scenarios = build_research_scenarios()
         validate_scenario_set(scenarios)
         return scenarios
     raise ValueError(f"Unknown scenario_set: {name}")
@@ -179,17 +189,24 @@ def run(config: dict[str, object]) -> None:
             generation,
         )
         scenarios = scenario_set(config)
-        if str(config.get("scenario_set", "mock")) in {"expanded", "scoped_v2"}:
+        if str(config.get("scenario_set", "mock")) in {
+            "expanded",
+            "scoped_v2",
+            "research_v3",
+        }:
             splits = stratified_grouped_split(scenarios, seed=int(config["seed"]))
         else:
             splits = {case.gold.scenario_id: "pilot" for case in scenarios}
         for repeat in range(1, int(config["repeats"]) + 1):
+            # Repeated samples must be independent enough to measure routing
+            # disagreement. Reusing the same seed would create pseudo-repeats.
+            repeat_generation = generation_for_sample(generation, repeat - 1)
             for mode in config["routing_modes"]:
                 policy_name = f"prompt_{mode}_critic_r{repeat:02d}"
                 policy = PolicyDefinition(
                     ModelRouter(
                         client,
-                        generation,
+                        repeat_generation,
                         str(mode),
                         prompt_template=str(
                             config.get("prompt_template", PROMPT_TEMPLATE_VERSION)
@@ -209,6 +226,7 @@ def run(config: dict[str, object]) -> None:
                 if str(config.get("scenario_set", "mock")) in {
                     "expanded",
                     "scoped_v2",
+                    "research_v3",
                 }:
                     for split_name in ("train", "dev", "test"):
                         split_records = [

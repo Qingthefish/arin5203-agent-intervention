@@ -5,7 +5,7 @@ import json
 import time
 import urllib.error
 import urllib.request
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from typing import Literal, Protocol
 
 from .domain import Decision, PolicyInput, RouterResult
@@ -32,6 +32,17 @@ class ModelResponse:
     latency_ms: float
     model_id: str
     model_digest: str | None = None
+
+
+def generation_for_sample(
+    config: GenerationConfig,
+    sample_index: int,
+) -> GenerationConfig:
+    """Derive a reproducible, distinct seed for one stochastic sample."""
+
+    if sample_index < 0:
+        raise ValueError("sample_index must be non-negative")
+    return replace(config, seed=config.seed + sample_index)
 
 
 class ModelClient(Protocol):
