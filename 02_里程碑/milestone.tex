@@ -1,12 +1,11 @@
-% ARIN 5203 Project Milestone -- CVPR 2026 course template
+% ARIN 5203 Project Milestone -- instructor-provided CVPR 2026 template
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 \makeatletter
 \def\input@path{{../CVPR2026_模板源码/官方源码/}}
 \makeatother
-% Use the teacher-provided CVPR 2026 style whenever it is available.  The
-% fallback reproduces its page geometry so Codex's single-file preview compiler
-% can still validate this source without importing external project files.
+% Prefer the instructor-provided style. The fallback keeps this single source
+% compilable in the built-in editor, which cannot import a multi-file project.
 \IfFileExists{cvpr.sty}{%
   \usepackage[pagenumbers]{cvpr}
 }{%
@@ -38,215 +37,218 @@
 
 \title{Do AI Platform Agents Know When to Ask for Help?\\
 \large Context-Aware Intervention Before State-Changing Operations}
-\author{Qingcheng Yu\\
+\author{Qingcheng Yu \quad Siu Kwun Yeung \quad Qingyin Guo\\
 Hong Kong University of Science and Technology}
 \date{}
 
 \begin{document}
 \maketitle
 
-\section{Introduction and Related Work}
+\section{Motivation and Research Question}
 
 Tool-using agents are increasingly asked to operate AI infrastructure rather
-than merely answer questions. An AI-platform agent may adjust a GPU quota,
-preempt a workload, transfer resources between tenants, roll out a model, or
-reclaim a serving node. These actions are useful precisely because they change
-external state, but an incorrect call can interrupt production, cross an
-authorization boundary, or create an irreversible deployment failure. The same
-tool is not uniformly safe: increasing a sandbox quota with explicit owner
-consent may be routine, while the same mutation in production or across tenants
-should require additional intervention.
+than only answer questions. A platform agent may adjust a GPU quota, preempt a
+workload, transfer resources between tenants, roll out a model, or reclaim
+capacity. These actions are useful because they change external state, but an
+incorrect call can interrupt production, cross an authorization boundary, or
+remove a recovery path. Safety also depends on context: the same tool may be
+routine in a sandbox with scoped approval and unacceptable during an incident
+or across tenants.
 
-Existing evaluations motivate, but do not directly resolve, this decision.
-$\tau$-bench evaluates policy-following agents through conversational tool use
-and final database state~\cite{yao2024tau}. ToolSandbox emphasizes stateful,
-interactive evaluation and dynamic milestone checks~\cite{lu2025toolsandbox}.
-SABER shows that deviations at mutating steps are especially predictive of
-failure and applies verification selectively before such steps
-~\cite{cuadron2025saber}. Work on semantic-entropy probes also suggests that
-disagreement across generations can be a useful uncertainty signal, although
-the present pilot does not yet implement this component
-~\cite{kossen2024semantic}.
+This project asks one falsifiable question: \emph{before a proposed platform
+mutation, can a calibrated gate reduce unsafe autonomous execution while
+preserving useful coverage by choosing among Execute, Confirm, and Handoff?}
+Here Confirm means that one additional round of valid user or owner evidence
+can make the action safe. Handoff is reserved for residual operational risk or
+policy conflict that ordinary confirmation cannot repair. A deterministic
+first stage may also Block malformed or strictly inadmissible calls.
 
-This project asks one experimentally testable question: \emph{before a proposed
-AI-platform mutation, can a context-aware gate reduce unsafe autonomous actions
-while preserving useful autonomous coverage by choosing among Execute,
-Confirm, and Handoff?} The contribution is intentionally scoped as an empirical
-course project: a reproducible stateful testbed, an explicit intervention
-policy, and a safety--autonomy analysis rather than a production deployment or
-a claim of a new foundation model.
+Prior benchmarks motivate individual parts of this setup. $\tau$-bench scores
+policy-following agents through conversational tool use and final database
+state~\cite{yao2024tau}; ToolSandbox emphasizes stateful interaction and
+dynamic milestone checks~\cite{lu2025toolsandbox}. SABER identifies mutating
+steps as high-value verification points~\cite{cuadron2025saber}, while
+semantic-entropy work motivates disagreement across repeated generations as an
+uncertainty signal~\cite{kossen2024semantic}. Our scope is narrower and more
+operational: a controlled pre-action gate for AI-platform mutations, with
+explicit separation between execution risk and whether confirmation can
+resolve that risk. The contribution is a reproducible course-project testbed
+and an empirical safety--autonomy analysis, not a production guarantee or a
+new foundation model.
 
-\section{Problem Statement and Pilot Data}
+\section{Benchmark and Ground Truth}
 
-Each case contains a user request, the proposed tool call and arguments, actor
-and resource ownership, consent and approval facts, environment criticality,
-reversibility, checkpoint availability, blast radius, and current world state.
-A deterministic first-stage guard may return \textsc{Block} for strictly
-inadmissible or malformed actions. Guard-eligible cases are routed to one of
-three interventions: \textsc{Execute} applies the mutation; \textsc{Confirm}
-asks the user for missing or ambiguous information; and \textsc{Handoff} sends
-the case to an authorized operator when risk or policy conflict cannot be
-resolved by ordinary confirmation.
+The current benchmark contains 40 base task families with three matched
+context variants each, for 120 cases. Five operations are equally represented:
+GPU quota change, workload preemption, resource transfer, model rollout, and
+capacity reclamation. Labels comprise 40 Execute, 40 Confirm, 22 Handoff, and
+18 Block cases. Sibling variants retain a similar requested operation while
+approval evidence, ownership scope, production status, reversibility,
+checkpoint or migration availability, incident state, and blast radius change.
+All siblings remain in the same split so that surface-level task wording cannot
+leak across train and test.
 
-Safety is measured from the resulting state transition, not merely from
-agreement with a route label. For every case, an independent postcondition
-oracle checks whether hypothetical execution would violate constraints such as
-missing approval, cross-tenant transfer without consent, irreversible
-production rollout during an active incident, production preemption without a
-checkpoint, or reclaim without a safe migration target. A emph{harmful
-mutation} requires both an applied state change and a policy violation; a
-prohibited but unsuccessful call is recorded separately as an attempted
-violation. The main outcomes are harmful-mutation rate, autonomous coverage,
-selective risk among executed cases, the composition of interventions, and a
-transparent human-burden proxy. Selective prediction motivates reporting risk
-jointly with coverage rather than accuracy alone~\cite{geifman2017selective}.
+The policy sees only the request, proposed call and arguments, runtime state,
+and raw approval evidence. Scenario identifiers, variant names, gold routes,
+and evaluator-only facts are excluded from prompts. Approval is not a single
+Boolean shortcut: evidence includes approver identity, authenticity, stance,
+operation scope, resource-owner scope, tenant scope, and blast-radius limit.
+Cross-tenant actions require valid evidence for every affected owner. Paired
+counterexamples ensure that production, incident state, reversibility,
+approval presence, and recovery availability are not individually sufficient
+to determine the route. Automated audits currently report no prompt leakage,
+constant feature, invalid label, or cross-split family error.
 
-The expanded pilot contains 20 base tasks with three matched context variants
-each (60 cases total). Four independent task families cover each of five
-operations: quota change, workload preemption, resource transfer, model
-rollout, and capacity reclamation. Labels contain 20 Execute, 20 Confirm, 12
-Handoff, and eight Block cases. Under forced execution, 39/60 cases cause a
-harmful mutation and one further case is a prohibited no-op. An
-operation-stratified grouped split assigns 30/15/15 cases to train/dev/test;
-the three variants of one base task never cross splits. This risk-enriched,
-author-constructed set cannot estimate production incident frequency, and the
-present analysis pools all 60 cases as descriptive pilot evidence rather than
-claiming held-out generalization.
+Ground truth comes from state transitions rather than agreement with an
+author-written route alone. A deterministic simulator applies a hypothetical
+tool call and an independent oracle records whether the attempt is prohibited,
+whether state actually changed, and whether the requested task completed.
+Confirmation is replayed by supplying correctly scoped evidence and evaluating
+the action again. A Confirm case must become safe after this replay; Handoff
+retains a residual hazard even with valid approval; Block cannot be repaired by
+confirmation. This counterfactual construction yields two private targets for
+eligible cases: whether immediate execution is unsafe and whether one
+confirmation round resolves the problem.
 
-\section{Technical Approach}
+\section{Calibrated Hybrid Intervention}
 
-The implementation is a two-stage intervention gate. Stage 1 applies hard,
-deterministic rules. These rules cover malformed arguments and constraints that
-cannot be repaired by asking for ordinary confirmation. Stage 2 sends only
-guard-eligible cases to an LLM critic. The shared structured prompt includes
-operational facts and the proposed call, but excludes scenario identifiers,
-variant names, gold decisions, and evaluator-only metadata. Invalid JSON is
-recorded as a format failure and conservatively falls back to an intervention;
-it cannot silently count as a successful safe decision.
+Figure~\ref{fig:pipeline} summarizes the implementation. Stage 1 enforces hard
+constraints before any model call. Stage 2 queries a shared LLM critic $K$
+times with distinct reproducible seeds. Every response must contain a route,
+risk score, and reason codes in JSON; malformed output is visible and falls
+back conservatively. The samples provide mean stated risk, risk variance,
+route entropy, route disagreement, and reason disagreement. The gate combines
+these noisy critic measurements with observable runtime features such as
+ownership, scoped-approval consistency, production status, reversibility,
+recovery paths, incident state, and blast radius.
 
-Two prompted policies isolate the role of the action space. The \emph{binary
-verify gate} chooses Execute or Confirm. The \emph{context-aware three-way
-gate} may additionally choose Handoff. Both use the same model, facts,
-generation settings, and hard guard. If Execute is selected, a local simulator
-applies the tool call and records a state diff; the independent oracle then
-scores the postcondition. The code also implements ungated autonomy, verify
-every mutation, a preregistered static tool tier, and a transparent heuristic
-verifier as engineering baselines. The heuristic is not presented as a SABER
-reproduction.
+Two regularized logistic calibrators are fitted only on training families. The
+first estimates $P(\text{unsafe if executed})$; among unsafe training cases,
+the second estimates $P(\text{resolvable by confirmation})$. Development-only
+thresholds then map low predicted harm to Execute, higher harm with high
+resolvability to Confirm, and higher harm with low resolvability to Handoff.
+Exact objective ties select a boundary with maximal distance from development
+predictions rather than an arbitrary edge of an empty probability interval.
+Hard constraints remain outside these learned thresholds.
 
 \begin{figure}[t]
   \centering
   \fbox{\begin{minipage}{0.94\columnwidth}
   \centering\small
-  Proposed mutation $\rightarrow$ Hard-policy guard\\[-1pt]
-  $\swarrow$ \textsc{Block}\hspace{9pt}$\searrow$ LLM gate\\[-1pt]
+  Proposed mutation $\rightarrow$ deterministic hard guard\\[-1pt]
+  $\swarrow$ \textsc{Block}\hspace{10pt}$\searrow$ repeated LLM critic\\[-1pt]
+  Runtime evidence $+$ critic statistics $\rightarrow$ calibration\\[-1pt]
   \textsc{Execute}\quad|\quad\textsc{Confirm}\quad|\quad\textsc{Handoff}\\[-1pt]
-  \textsc{Execute} $\rightarrow$ Stateful simulator $\rightarrow$ Safety oracle
+  \textsc{Execute} $\rightarrow$ simulator $\rightarrow$ state-transition oracle
   \end{minipage}}
-  \caption{Two-stage evaluation path. Route labels and state-transition safety
-  are recorded separately.}
+  \caption{The proposed pre-action intervention and evaluation path.}
   \label{fig:pipeline}
 \end{figure}
 
-\section{Experimental Setup}
+Baselines reuse the same cached critic outputs: ungated autonomy, guarded
+always-execute, verify every mutation, static tool tiers, verbalized confidence
+with a development-selected threshold, one prompted critic, and majority vote.
+Ablations remove disagreement statistics, critic scores, or approval features,
+and a critic-only variant removes all explicit runtime features. Metrics include
+unsafe execution rate, autonomous coverage, selective risk among executions,
+authorized task completion after confirmation, intervention rates, human-cost
+proxy, routing accuracy, Brier score, expected calibration error, area under the
+risk--coverage curve, latency, and tokens. Bootstrap resampling is grouped by
+base task rather than treating sibling variants as independent
+~\cite{geifman2017selective}.
 
-The local pilot used Qwen3.5-9B through Ollama on an Apple M4 machine with
-16~GB unified memory. Generation used temperature 0, seed 5203, and a maximum
-of 128 output tokens. For each prompted policy, 52 cases reached the LLM and
-eight were stopped by the shared hard guard. The run therefore contains 104
-measured generations plus one warm-up and 120 evaluation records. It completed
-in 498.2 seconds (8~min 18~s) with no external API call or fee. Measured
-generations consumed 42,438 input and 4,112 output tokens; all 104 responses
-matched the JSON schema. Mean model latency was 4.56 seconds for the binary
-prompt and 4.93 seconds for the three-way prompt. The manifest stores the model
-digest, prompt hashes, configuration, raw outputs, token counts, and latency.
-Twenty-four regression tests check label/oracle consistency, grouped splits,
-hard-guard behavior, prompt/gold separation, state diffs, and metrics.
+\section{Development Pilot}
 
-\section{Intermediate and Preliminary Results}
+We selected 20 families as a method-development pool, balanced at four
+families per operation. An internal grouped split uses 10/5/5 families for
+train/dev/test (30/15/15 cases); none of these internal test results will be
+presented as the final held-out evaluation. The local run used Qwen3.5-9B via
+Ollama on an Apple M4 machine with $K=3$, temperature 0.7, seeds beginning at
+5203, and at most 128 output tokens. Nine cases were stopped by the hard guard;
+51 eligible cases produced 153 measured generations plus one warm-up. The run
+finished in 556.1 seconds (9 min 16 s), consumed 86,472 input and 6,445 output
+tokens, had 0/153 format failures, and made no external API call. The raw cache
+and manifest preserve the configuration, model digest, outputs, latency, and
+token counts; a separate audit records artifact hashes. Forty-nine regression
+tests cover scenario semantics, approval scope, prompt/gold separation, split
+grouping, state transitions, calibration, and metrics.
 
-Table~\ref{tab:pilot} presents descriptive results. Ungated autonomy establishes
-the unsafe extreme, while verify-every-mutation establishes a conservative
-zero-coverage endpoint. The binary gate executed 27 cases and caused seven
-harmful mutations; the three-way gate executed 24 and caused four. Selective
-risk consequently fell from 25.9\% to 16.7\%, while coverage fell from 45.0\%
-to 40.0\%. Both policies safely auto-completed the same 20 cases, so the
-three-way configuration avoided three harmful executions without sacrificing
-a safe completion in this run. Its weighted intervention burden, however,
-increased from 0.417 to 0.900.
+The critic signal is informative but not reliable enough to be the safety
+boundary. Across 51 eligible cases, mean stated risk was 0.078 for safe cases
+and 0.464 for unsafe cases. Nineteen cases showed route disagreement, and ten
+unsafe cases received at least one erroneous Execute vote. Resource transfer
+was especially difficult: its unsafe cases had mean stated risk 0.227. These
+errors justify treating the critic as a noisy sensor combined with explicit
+runtime evidence.
+
+Table~\ref{tab:pilot} reports the 15-case internal test split for the original
+development policy (v1). Ungated autonomy executed every case and was unsafe
+on 66.7\%. Verify-all avoided unsafe execution but provided no autonomous
+coverage. A single critic and majority vote each made one unsafe execution.
+The calibrated hybrid gate made no unsafe execution, reached 26.7\% autonomous
+coverage, and reduced Brier score to 0.038. Its 86.7\% route accuracy reflects
+one unnecessary confirmation and one futile confirmation where Handoff was
+required; neither case autonomously executed the mutation. These values are
+descriptive development evidence over only five families.
 
 \begin{table}[t]
   \centering
   \small
-  \setlength{\tabcolsep}{3.2pt}
-  \begin{tabular}{lrrrr}
+  \setlength{\tabcolsep}{2.4pt}
+  \begin{tabular}{lrrrrr}
     \toprule
-    Policy & Harmful & Coverage & Sel. risk & Burden \\
+    Policy & Route & Unsafe & Cover. & Brier & Cost \\
     \midrule
-    Ungated & 39/60 & 100.0\% & 65.0\% & 0.000 \\
-    Verify all & 0/60 & 0.0\% & -- & 0.867 \\
-    Binary prompt & 7/60 & 45.0\% & 25.9\% & 0.417 \\
-    Three-way prompt & 4/60 & 40.0\% & 16.7\% & 0.900 \\
+    Ungated & 33.3 & 66.7 & 100.0 & .615 & .000 \\
+    Verify all & 46.7 & 0.0 & 0.0 & .385 & .867 \\
+    Single critic & 86.7 & 6.7 & 40.0 & .176 & 1.000 \\
+    Majority vote & 86.7 & 6.7 & 40.0 & .187 & 1.000 \\
+    Verbalized conf. & 73.3 & 0.0 & 26.7 & .176 & .600 \\
+    Hybrid v1 & 86.7 & 0.0 & 26.7 & .038 & .867 \\
     \bottomrule
   \end{tabular}
-  \caption{Single-run results on 60 handcrafted matched cases. ``Harmful''
-  requires an applied state change plus a policy violation. Burden uses weights
-  Confirm$=1$, Handoff$=3$, Block$=0$; it is not measured labor time.}
+  \caption{Internal development-test results. Route, Unsafe, and Coverage are
+  percentages. Cost assigns Confirm$=1$, Handoff$=3$, Execute/Block$=0$.}
   \label{tab:pilot}
 \end{table}
 
-The paired error pattern is more informative than route accuracy. All 12
-Handoff-labelled cases were correctly handed off by the three-way prompt,
-whereas the binary prompt necessarily mapped them to Confirm. However, the
-three avoided harmful executions were also routed to Confirm, not Handoff.
-Thus the run supports the complete prompt and action-space configuration but
-does not isolate Handoff itself as the causal mechanism. The three-way gate's
-four residual harmful executions were all Confirm-labelled cases with missing
-required approval. This points to an explicit approval-completeness signal as
-a higher-value next step than further prompt elaboration. On the fairer
-Execute-versus-intervene distinction, binary was correct on 53/60 cases and
-three-way on 56/60; their four-class route accuracies are not directly
-comparable because binary cannot emit Handoff.
+The ablations prevent a stronger claim than the evidence supports. Removing
+disagreement features improved route accuracy from 86.7\% to 93.3\% and Brier
+score from 0.038 to 0.013 on this small split; removing critic score left route
+accuracy unchanged. In contrast, the critic-only ablation fell to 46.7\%
+accuracy and again made an unsafe execution. Thus the pilot supports calibrated
+hybrid intervention and the importance of explicit runtime state, but it does
+\emph{not} yet show that repeated-sample disagreement adds value. Inspection
+also found that the original threshold selector chose the smallest boundary
+when several development thresholds had identical decisions. We retained the
+v1 artifacts, added a maximum-margin tie-break with a unit test, and will freeze
+this revision before the final held-out run rather than rewriting the pilot.
 
-The model-provided scores are not calibrated probabilities. On 52 LLM-routed
-cases per policy, Brier scores were 0.184 for binary and 0.233 for three-way.
-Their mean predicted risks were 0.354 and 0.319, respectively, while the
-unsafe-if-executed prevalence was 0.615. The scores rank many risky cases above
-safe ones but substantially underestimate absolute risk; calibration remains a
-planned method rather than a completed result.
+\section{Limitations and Frozen Next Stage}
 
-\section{Limitations and Next Steps}
+The benchmark is synthetic, risk-enriched, and authored for this project; it
+does not estimate production incident frequency. The gate evaluates an already
+proposed tool call, not whether an end-to-end agent chose the correct tool and
+arguments. Current evidence uses one local model, and human-cost weights are
+assumptions rather than observed labor. Correlated runtime features also make
+individual logistic coefficients unsuitable for causal interpretation. The
+five-family internal test is useful for debugging but too small for a final
+generalization claim, even with grouped bootstrap intervals.
 
-The experiment evaluates a gate for an already proposed tool call; it does not
-test whether an end-to-end agent generates the correct tool and arguments. The
-scenario set and policy text were authored for this project, and the present
-evidence comes from one local model, one seed, and one run. The held-out test
-split contains only five correlated task families, so its zero observed harmful
-executions under both prompts is not a generalization or safety guarantee.
-More importantly, after hard guarding, the current Boolean consent field alone
-separates all Execute-labelled cases from all intervention-labelled cases. The
-pilot therefore exposes model rule-following failures, but cannot yet establish
-that the gate learned a non-trivial notion of uncertainty.
-Confirm/Handoff outcomes after human intervention are not simulated, and the
-human-burden weights are assumptions requiring sensitivity analysis.
+To prevent further test contamination, all 20 inspected pilot families are now
+reserved for the formal training split. The remaining 20 untouched families
+will be frozen as 10 development and 10 test families, with two of each per
+operation. Hyperparameters, feature groups, thresholds, seeds, prompts,
+baselines, and metrics will be committed before the final test is evaluated.
+The planned primary run uses $K=5$ and requires 510 local generations; measured
+pilot throughput implies roughly 31--40 minutes, 220k--320k input tokens, and
+no API fee. A second-model subset is optional and will be run only if it adds a
+clear robustness check without threatening completion. The final report will
+present the held-out result even if disagreement remains neutral or harmful;
+that negative result is preferable to post-hoc feature selection.
 
-The next stage will freeze the current run as a diagnostic pilot, replace the
-single consent flag with scoped approval evidence, and add counterexamples that
-decouple approval presence from the correct route. The revised set will target
-40 base families (120 cases), split by family and operation into 20/10/10
-train/dev/test families. A structured approval-completeness signal and
-probability calibration will then be fitted on train, thresholds selected on
-development data, and the final policy evaluated once on the frozen test split.
-Repeated local samples and paired cluster bootstrap intervals over base tasks
-will quantify instability without treating sibling variants as independent.
-Ablations will compare two-way and three-way routing, remove context signals,
-and vary human-cost weights. Routing disagreement will be added through repeated
-critic samples; argument consistency will be reserved for a later setting in
-which an upstream agent actually generates candidate tool calls. A small
-compatible subset of the revised $\tau$ benchmark remains a secondary external
-evaluation candidate, not a prerequisite for the core AI-platform study.
-
-{\small
+{
+\small
 \begin{thebibliography}{9}
 \bibitem{yao2024tau}
 Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan.
