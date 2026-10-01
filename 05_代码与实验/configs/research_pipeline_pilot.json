@@ -1,0 +1,45 @@
+{
+  "pilot_type": "five_family_pipeline_validation",
+  "scenario_set": "research_v3",
+  "base_task_ids": [
+    "contrast-incident-reserve",
+    "contrast-canary-shed",
+    "contrast-rack-rebalance",
+    "contrast-emergency-rollback",
+    "contrast-carbon-window"
+  ],
+  "fixed_family_splits": {
+    "contrast-incident-reserve": "train",
+    "contrast-canary-shed": "train",
+    "contrast-rack-rebalance": "train",
+    "contrast-emergency-rollback": "dev",
+    "contrast-carbon-window": "test"
+  },
+  "output_prefix": "pipeline_pilot_qwen_k3",
+  "prompt_template": "platform-intervention-v3-scoped",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.7,
+  "seed": 5203,
+  "max_tokens": 128,
+  "timeout_seconds": 180,
+  "repeats": 3,
+  "routing_modes": [
+    "three_way"
+  ],
+  "human_costs": {
+    "AUTO_EXECUTE": 0.0,
+    "REQUEST_CONFIRMATION": 1.0,
+    "HANDOFF": 3.0,
+    "BLOCK": 0.0
+  },
+  "claim_scope": "pipeline validation only; not a research result",
+  "planning_estimates": {
+    "wall_time_minutes": "5-10 after model load",
+    "prompt_tokens": "20000-30000",
+    "completion_tokens": "2000-4000",
+    "external_api_cost_usd": 0.0,
+    "outputs": "isolated pilot sample cache, aggregates, predictions, policies, metrics, and manifest"
+  }
+}

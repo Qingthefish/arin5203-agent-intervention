@@ -56,6 +56,40 @@ def load_config(path: Path) -> dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def select_scenarios_and_splits(
+    config: dict[str, object],
+):
+    scenarios = build_research_scenarios()
+    selected_ids = config.get("base_task_ids")
+    if selected_ids is not None:
+        selected = {str(item) for item in selected_ids}
+        scenarios = [
+            case for case in scenarios if case.gold.base_task_id in selected
+        ]
+        found = {case.gold.base_task_id for case in scenarios}
+        if found != selected:
+            raise ValueError(
+                f"Unknown or missing base_task_ids: {sorted(selected - found)}"
+            )
+    validate_scenario_set(scenarios)
+
+    fixed = config.get("fixed_family_splits")
+    if fixed is None:
+        splits = stratified_grouped_split(scenarios, seed=int(config["seed"]))
+    else:
+        family_splits = {str(key): str(value) for key, value in fixed.items()}
+        families = {case.gold.base_task_id for case in scenarios}
+        if set(family_splits) != families:
+            raise ValueError("fixed_family_splits must cover every selected family")
+        if set(family_splits.values()) != {"train", "dev", "test"}:
+            raise ValueError("fixed_family_splits must include train, dev, and test")
+        splits = {
+            case.gold.scenario_id: family_splits[case.gold.base_task_id]
+            for case in scenarios
+        }
+    return scenarios, splits
+
+
 def build_plan(config: dict[str, object]) -> dict[str, object]:
     if config.get("scenario_set") != "research_v3":
         raise ValueError("Formal runner requires scenario_set=research_v3")
@@ -66,8 +100,7 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
     if list(config.get("routing_modes", [])) != ["three_way"]:
         raise ValueError("Formal runner samples exactly one three-way critic")
 
-    scenarios = build_research_scenarios()
-    validate_scenario_set(scenarios)
+    scenarios, _ = select_scenarios_and_splits(config)
     audit = audit_scenario_set(scenarios)
     if audit.errors:
         raise ValueError(f"Dataset audit has {len(audit.errors)} error(s)")
@@ -83,8 +116,8 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
         "model": config["model"],
         "provider": "ollama",
         "location": "local_machine",
-        "base_tasks": 40,
-        "cases": 120,
+        "base_tasks": len({case.gold.base_task_id for case in scenarios}),
+        "cases": len(scenarios),
         "hard_guarded_cases": hard,
         "critic_eligible_cases": eligible,
         "samples_per_case": repeats,
@@ -129,8 +162,7 @@ def run(config: dict[str, object]) -> None:
             + ", ".join(collisions)
         )
 
-    scenarios = build_research_scenarios()
-    splits = stratified_grouped_split(scenarios, seed=int(config["seed"]))
+    scenarios, splits = select_scenarios_and_splits(config)
     started = datetime.now(timezone.utc)
     started_timer = time.perf_counter()
     manifest = {
