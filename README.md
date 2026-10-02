@@ -21,6 +21,7 @@ All team members will review the scenario policy, implementation, experiments, a
 - The deterministic simulator, intervention policies, baselines, metrics, and unit tests are implemented.
 - A 5-family pipeline pilot (15 cases, 39 measured generations) and a balanced 20-family development pilot (60 cases, 153 measured generations) have run locally with Ollama and Qwen3.5-9B at no API cost.
 - A separate five-scenario compaction feasibility pilot compared full context, tail truncation, generic summarization, rule pinning, and selective human review in 35 measured local generations. It observed routing degradation after lossy compaction but no harmful execution, so it supports feasibility and a light proposal reframe rather than a safety claim.
+- The literature scope is now locked around Governance Decay, Slipstream, Control Under Compression, SelfCompact, and ACON. The original τ-bench, ToolSandbox, Semantic Entropy Probes, and SABER papers remain as supporting evaluation and intervention background.
 - Both runs have complete manifests and machine-readable artifact audits. The 20-family run is a method-development result, not the final held-out evaluation; its families are reserved for the eventual training pool.
 - The `medium_pilot_qwen_k3_v1` artifacts preserve the original edge-biased threshold tie-break. The subsequent code revision selects maximum-margin thresholds on development predictions; no v1 artifact is silently overwritten.
 - The remaining 20 untouched families are reserved for the frozen formal development and test splits.
@@ -28,7 +29,7 @@ All team members will review the scenario policy, implementation, experiments, a
 
 ## Repository Structure
 
-- `01_提案/` — proposal, references, and the original draft.
+- `01_提案/` — proposal, original draft, and the deliberately limited primary-paper set.
 - `02_里程碑/` — milestone LaTeX source.
 - `05_代码与实验/` — simulator, scenario sets, model routing, tests, configurations, and results.
 - `项目复盘.md` — the single living project retrospective and presentation evidence map.
