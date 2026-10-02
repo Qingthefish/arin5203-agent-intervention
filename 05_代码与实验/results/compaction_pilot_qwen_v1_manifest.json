@@ -1,0 +1,83 @@
+{
+  "status": "COMPLETED",
+  "experiment": "compaction_feasibility_v1",
+  "claim_scope": "five-scenario local feasibility pilot for proposal direction; not a final benchmark result",
+  "model": "qwen3.5:9b",
+  "provider": "ollama",
+  "location": "local_machine",
+  "scenarios": 5,
+  "scenario_set_sha256": "f4bae641f756e3de8233e01c9c9c8f24d7aee50c5a7a432e88dc12cad20dddaa",
+  "config_sha256": "d4541b18380a9363e0204d46feab2e9105a5df7a4e020cf29319f5fc4a424e47",
+  "strategies": [
+    "full_context",
+    "tail_truncation",
+    "generic_summary",
+    "rule_pinning",
+    "selective_hitl"
+  ],
+  "compactor_generation_calls": 10,
+  "routing_generation_calls": 25,
+  "measured_generation_calls": 35,
+  "warmup_calls": 1,
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "measured_generation_calls": 35,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "6-12",
+    "estimated_input_tokens": "60000-100000",
+    "estimated_output_tokens": "5000-10000",
+    "external_api_cost_usd": 0.0
+  },
+  "outputs_if_run": [
+    "results/compaction_pilot_qwen_v1_raw.jsonl",
+    "results/compaction_pilot_qwen_v1_summary.csv",
+    "results/compaction_pilot_qwen_v1_audit.json",
+    "results/compaction_pilot_qwen_v1_manifest.json"
+  ],
+  "git_commit": "32ad63efcd7134e0fad524dc8eb7f5affaec7f01",
+  "git_worktree_dirty_at_start": false,
+  "started_at_utc": "2026-10-01T15:25:43.996882+00:00",
+  "started_at_hong_kong": "2026-10-01T23:25:43.996882+08:00",
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "experiment": "compaction_feasibility_v1",
+    "provider": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0.0,
+    "seed": 5203,
+    "compactor_max_tokens": 384,
+    "router_max_tokens": 128,
+    "timeout_seconds": 180.0,
+    "keep_last_events": 4,
+    "output_prefix": "compaction_pilot_qwen_v1",
+    "strategies": [
+      "full_context",
+      "tail_truncation",
+      "generic_summary",
+      "rule_pinning",
+      "selective_hitl"
+    ],
+    "planning_estimates": {
+      "measured_generation_calls": 35,
+      "warmup_calls": 1,
+      "estimated_wall_time_minutes": "6-12",
+      "estimated_input_tokens": "60000-100000",
+      "estimated_output_tokens": "5000-10000",
+      "external_api_cost_usd": 0.0
+    },
+    "claim_scope": "five-scenario local feasibility pilot for proposal direction; not a final benchmark result"
+  },
+  "compaction_prompt_version": "context-compaction-pilot-v1",
+  "routing_prompt_version": "compaction-aware-intervention-v1",
+  "finished_at_utc": "2026-10-01T15:29:52.978673+00:00",
+  "finished_at_hong_kong": "2026-10-01T23:29:52.978673+08:00",
+  "duration_seconds": 248.98193862498738,
+  "measured_generation_calls_completed": 35,
+  "prompt_tokens": 24395,
+  "completion_tokens": 2062,
+  "format_errors": 0,
+  "model_id": "qwen3.5:9b",
+  "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "direction_recommendation": "LIGHT_PROPOSAL_REFRAME"
+}

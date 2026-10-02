@@ -2,10 +2,10 @@
 
 ## Project
 
-**Do AI Platform Agents Know When to Ask for Help**  
-Context Aware Intervention Before State Changing Operations
+**Do AI Platform Agents Know What They Must Not Forget**  
+Compaction Aware Intervention Before State Changing Operations
 
-This project studies a pre-action intervention gate for tool-using agents. Before a proposed state-changing operation, the gate chooses among autonomous execution, user confirmation, and human handoff. The evaluation focuses on harmful state changes, safe autonomous completion, coverage, calibration, intervention burden, latency, and token cost.
+This project studies how context compaction changes a tool-using agent's decision before consequential operations. The system removes recoverable tool noise, pins clearly safety-critical constraints, and requests a short human decision only when the validity or authority of a candidate memory is ambiguous. The compacted context then feeds a pre-action gate that chooses autonomous execution, user confirmation, or human handoff. Evaluation connects context reduction and critical-fact retention to harmful state changes, safe autonomous completion, intervention burden, latency, and token cost.
 
 ## Team
 
@@ -17,9 +17,10 @@ All team members will review the scenario policy, implementation, experiments, a
 
 ## Current Status
 
-- The 370-word proposal body is ready for team review and remains one paragraph as required by the course page.
+- The 354-word proposal body has been lightly reframed around compaction-aware intervention and remains one paragraph as required by the course page.
 - The deterministic simulator, intervention policies, baselines, metrics, and unit tests are implemented.
 - A 5-family pipeline pilot (15 cases, 39 measured generations) and a balanced 20-family development pilot (60 cases, 153 measured generations) have run locally with Ollama and Qwen3.5-9B at no API cost.
+- A separate five-scenario compaction feasibility pilot compared full context, tail truncation, generic summarization, rule pinning, and selective human review in 35 measured local generations. It observed routing degradation after lossy compaction but no harmful execution, so it supports feasibility and a light proposal reframe rather than a safety claim.
 - Both runs have complete manifests and machine-readable artifact audits. The 20-family run is a method-development result, not the final held-out evaluation; its families are reserved for the eventual training pool.
 - The `medium_pilot_qwen_k3_v1` artifacts preserve the original edge-biased threshold tie-break. The subsequent code revision selects maximum-margin thresholds on development predictions; no v1 artifact is silently overwritten.
 - The remaining 20 untouched families are reserved for the frozen formal development and test splits.

@@ -1,0 +1,6 @@
+strategy,cases,route_accuracy,unsafe_execution_rate,selective_risk,safe_autonomous_completion_rate,critical_fact_retention_rate,mean_context_reduction,human_review_requests,human_answers,format_errors,model_calls,prompt_tokens,completion_tokens,latency_seconds
+full_context,5,1.0,0.0,0.0,1.0,1.0,0.0,0,0,0,5,4570,204,34.772663748968625
+generic_summary,5,0.8,0.0,0.0,1.0,0.875,0.8482175571870305,0,0,0,10,5590,793,75.17640716899768
+rule_pinning,5,1.0,0.0,0.0,1.0,1.0,0.002377245842393405,0,0,0,5,4584,204,34.28129108098801
+selective_hitl,5,1.0,0.0,0.0,1.0,1.0,0.470396011656746,1,1,0,10,7334,648,75.89730000097188
+tail_truncation,5,0.6,0.0,0.0,0.5,0.25,0.634608157276741,0,0,0,5,2317,213,23.589690540015

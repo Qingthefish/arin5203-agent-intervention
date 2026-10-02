@@ -1,0 +1,29 @@
+{
+  "experiment": "compaction_feasibility_v1",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.0,
+  "seed": 5203,
+  "compactor_max_tokens": 384,
+  "router_max_tokens": 128,
+  "timeout_seconds": 180.0,
+  "keep_last_events": 4,
+  "output_prefix": "compaction_pilot_qwen_v1",
+  "strategies": [
+    "full_context",
+    "tail_truncation",
+    "generic_summary",
+    "rule_pinning",
+    "selective_hitl"
+  ],
+  "planning_estimates": {
+    "measured_generation_calls": 35,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "6-12",
+    "estimated_input_tokens": "60000-100000",
+    "estimated_output_tokens": "5000-10000",
+    "external_api_cost_usd": 0.0
+  },
+  "claim_scope": "five-scenario local feasibility pilot for proposal direction; not a final benchmark result"
+}
