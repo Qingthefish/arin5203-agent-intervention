@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "pre_registered_decision_rule": {
+    "generic_failure_observed": true,
+    "mitigation_effective": true,
+    "selective_hitl_incremental_value": true
+  },
+  "recommendation": "LIGHT_PROPOSAL_REFRAME",
+  "explanation": "The pilot observed behavior-changing compaction loss, a safer mitigation, and incremental value from selective human review. Reframe the proposal around compaction-aware intervention while retaining downstream mutation evaluation.",
+  "limitations": [
+    "Only five authored scenarios and one local model were evaluated.",
+    "Human answers were deterministic simulations, not a user study.",
+    "Character-count token estimates are used for context reduction; model usage comes from Ollama.",
+    "The pilot selects a proposal direction and is not a final benchmark result."
+  ]
+}
