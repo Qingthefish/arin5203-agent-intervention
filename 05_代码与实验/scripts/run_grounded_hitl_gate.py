@@ -315,6 +315,7 @@ def grounded_audit(
     format_valid = sum(bool(row["format_valid"]) for row in rescored)
     predicted = sum(int(row["predicted_factor_count"]) for row in rescored)
     grounded = sum(int(row["grounded_factor_count"]) for row in rescored)
+    unsupported = sum(int(row["unsupported_factor_count"]) for row in rescored)
     contradicted = sum(int(row["contradicted_factor_count"]) for row in rescored)
     decisive_total = sum(
         len(grounded_gold(scenarios[row["scenario_id"]], str(row["stage"])).decisive_factors)
@@ -377,8 +378,8 @@ def grounded_audit(
                 "grounded controlled factor assertions / all asserted factors"
             ),
             "contradiction_rate": (
-                "controlled factor assertions contradicted by the private evidence "
-                "key / all asserted factors"
+                "controlled factor assertions whose direct opposite is established "
+                "by the private evidence key / all asserted factors"
             ),
             "decisive_factor_recall": (
                 "grounded gold-decisive factors / all gold-decisive factors"
@@ -401,6 +402,7 @@ def grounded_audit(
             "domain_joint_grounded_route_accuracy": domain_joint_accuracy,
             "predicted_factor_assertions": predicted,
             "grounded_factor_assertions": grounded,
+            "unsupported_factor_assertions": unsupported,
             "contradicted_factor_assertions": contradicted,
             "harmful_false_executes": harmful_false_executes,
             "format_errors": len(rescored) - format_valid,
@@ -436,6 +438,7 @@ def summarize(records: list[dict[str, object]]) -> list[dict[str, object]]:
         ]
         predicted = sum(int(item["predicted_factor_count"]) for item in items)
         grounded = sum(int(item["grounded_factor_count"]) for item in items)
+        unsupported = sum(int(item["unsupported_factor_count"]) for item in items)
         contradicted = sum(int(item["contradicted_factor_count"]) for item in items)
         rows.append(
             {
@@ -445,6 +448,7 @@ def summarize(records: list[dict[str, object]]) -> list[dict[str, object]]:
                 "route_accuracy": sum(bool(item["route_correct"]) for item in items)
                 / len(items),
                 "reason_grounding_precision": grounded / predicted if predicted else 0.0,
+                "unsupported_rate": unsupported / predicted if predicted else 0.0,
                 "contradiction_rate": contradicted / predicted if predicted else 0.0,
                 "mean_decisive_factor_recall": sum(
                     float(item["decisive_factor_recall"]) for item in items

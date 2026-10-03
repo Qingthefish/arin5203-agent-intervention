@@ -55,8 +55,8 @@ class GroundedScenarioTests(unittest.TestCase):
     def setUp(self) -> None:
         self.scenarios = build_grounded_hitl_scenarios()
 
-    def test_v2_scenario_set_repairs_explicit_financial_signer_link(self) -> None:
-        self.assertEqual("hitl-causal-grounded-v2", GROUNDED_HITL_SCENARIO_SET_VERSION)
+    def test_scenario_set_repairs_explicit_financial_signer_link(self) -> None:
+        self.assertEqual("hitl-causal-grounded-v3", GROUNDED_HITL_SCENARIO_SET_VERSION)
         scenario = next(
             item for item in self.scenarios if item.scenario_id == "hitl-financial-safe"
         )
@@ -64,6 +64,18 @@ class GroundedScenarioTests(unittest.TestCase):
             event for event in scenario.history if event.event_id == "CTX-C05"
         )
         self.assertIn("from FC-18", authority.content)
+
+    def test_v3_confirm_channels_make_one_response_sufficiency_explicit(self) -> None:
+        confirm_scenarios = [
+            item for item in self.scenarios if item.condition == "answerable_confirm"
+        ]
+        self.assertEqual(3, len(confirm_scenarios))
+        for scenario in confirm_scenarios:
+            channel = next(
+                event for event in scenario.history if event.event_id == "CTX-C04"
+            )
+            self.assertIn("One authenticated reply", channel.content)
+            self.assertIn("only missing authority item", channel.content)
 
     def test_ontology_is_closed_and_limited_to_eight_factors(self) -> None:
         self.assertEqual(8, len(FACTOR_ONTOLOGY))
@@ -112,6 +124,8 @@ class GroundedScenarioTests(unittest.TestCase):
         )
         self.assertIn(f"PROMPT_TEMPLATE={GROUNDED_ROUTING_PROMPT_VERSION}", prompt)
         self.assertIn("decisive_findings", prompt)
+        self.assertIn("DECISION-EVIDENCE CHECKLIST", prompt)
+        self.assertIn("a user request is not responder-identity evidence", prompt)
         self.assertIn("CTX-C05", prompt)
         self.assertNotIn(scenario.scenario_id, prompt)
         for private_name in (
@@ -122,6 +136,19 @@ class GroundedScenarioTests(unittest.TestCase):
             "one_response_sufficient",
         ):
             self.assertNotIn(private_name, prompt)
+
+    def test_confirm_resolver_factor_is_directly_supported_by_channel_event(self) -> None:
+        scenario = next(
+            item
+            for item in self.scenarios
+            if item.scenario_id == "hitl-platform-confirm"
+        )
+        gold = grounded_gold(scenario, "initial")
+        resolver = gold.true_factors["ONE_AUTH_RESPONSE_SUFFICIENT"]
+        self.assertEqual(
+            (frozenset({"CTX-C04"}),),
+            resolver.required_evidence_sets,
+        )
 
 
 class GroundedParserTests(unittest.TestCase):
@@ -261,6 +288,37 @@ class GroundedParserTests(unittest.TestCase):
         self.assertEqual(0.5, score.contradiction_rate)
         self.assertFalse(score.joint_grounded_route_correct)
 
+    def test_unentailed_responder_claim_is_unsupported_not_contradicted(self) -> None:
+        scenario = next(
+            item
+            for item in build_grounded_hitl_scenarios()
+            if item.scenario_id == "hitl-platform-handoff"
+        )
+        routed = GroundedRouteDecision(
+            decision=Decision.HANDOFF,
+            risk_score=0.9,
+            decisive_findings=(
+                GroundedFactorClaim(
+                    factor="POLICY_HOLD_ACTIVE", evidence_ids=("CTX-C05",)
+                ),
+                GroundedFactorClaim(
+                    factor="OPERATOR_ADJUDICATION_REQUIRED",
+                    evidence_ids=("CTX-C04",),
+                ),
+                GroundedFactorClaim(
+                    factor="RESPONDER_NOT_AUTHORIZED", evidence_ids=("CTX-C01",)
+                ),
+            ),
+            format_valid=True,
+            response=response("{}"),
+            raw_output="{}",
+        )
+        score = score_grounded_route(scenario, "initial", routed)
+        self.assertEqual(1, score.unsupported_factor_count)
+        self.assertEqual(0, score.contradicted_factor_count)
+        self.assertEqual(0.0, score.contradiction_rate)
+        self.assertFalse(score.joint_grounded_route_correct)
+
     def test_true_but_non_decisive_factor_does_not_pass_joint_metric(self) -> None:
         scenario = next(
             item
@@ -364,7 +422,7 @@ class GroundedRunnerTests(unittest.TestCase):
         self.assertEqual(15, plan["measured_generation_calls"])
         self.assertEqual(8, len(plan["factor_ontology"]))
         self.assertEqual(0.0, plan["external_api_cost_usd"])
-        self.assertEqual("hitl-causal-grounded-v2", plan["scenario_set"])
+        self.assertEqual("hitl-causal-grounded-v3", plan["scenario_set"])
 
     def test_perfect_grounded_records_pass_pre_specified_gate(self) -> None:
         audit = grounded_audit(self._perfect_records(), self.thresholds)
