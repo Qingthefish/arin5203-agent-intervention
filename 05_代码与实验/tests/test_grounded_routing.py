@@ -124,8 +124,10 @@ class GroundedScenarioTests(unittest.TestCase):
         )
         self.assertIn(f"PROMPT_TEMPLATE={GROUNDED_ROUTING_PROMPT_VERSION}", prompt)
         self.assertIn("decisive_findings", prompt)
-        self.assertIn("DECISION-EVIDENCE CHECKLIST", prompt)
-        self.assertIn("a user request is not responder-identity evidence", prompt)
+        self.assertIn("ROUTE-SPECIFIC OUTPUT CONTRACT", prompt)
+        self.assertIn("CITATION COMPLETENESS CONTRACT", prompt)
+        self.assertIn("Never use an initial user request", prompt)
+        self.assertIn("not only the newest event", prompt)
         self.assertIn("CTX-C05", prompt)
         self.assertNotIn(scenario.scenario_id, prompt)
         for private_name in (
@@ -423,6 +425,7 @@ class GroundedRunnerTests(unittest.TestCase):
         self.assertEqual(8, len(plan["factor_ontology"]))
         self.assertEqual(0.0, plan["external_api_cost_usd"])
         self.assertEqual("hitl-causal-grounded-v3", plan["scenario_set"])
+        self.assertIn("final prompt iteration", plan["iteration_policy"])
 
     def test_perfect_grounded_records_pass_pre_specified_gate(self) -> None:
         audit = grounded_audit(self._perfect_records(), self.thresholds)

@@ -180,6 +180,7 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
         "scenario_set": config["scenario_set"],
         "grounded_prompt_version": config["grounded_prompt_version"],
         "factor_ontology": FACTOR_ONTOLOGY,
+        "iteration_policy": config["iteration_policy"],
         "claim_scope": config["claim_scope"],
         "model": config["model"],
         "provider": "ollama",

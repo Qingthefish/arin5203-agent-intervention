@@ -1,7 +1,7 @@
 {
-  "experiment": "grounded_hitl_gate_v3",
+  "experiment": "grounded_hitl_gate_v4",
   "scenario_set": "hitl-causal-grounded-v3",
-  "grounded_prompt_version": "grounded-intervention-v3",
+  "grounded_prompt_version": "grounded-intervention-v4",
   "provider": "ollama",
   "base_url": "http://127.0.0.1:11434",
   "model": "qwen3.5:9b",
@@ -9,7 +9,8 @@
   "seed": 5203,
   "router_max_tokens": 320,
   "timeout_seconds": 180.0,
-  "output_prefix": "grounded_hitl_qwen_v3",
+  "output_prefix": "grounded_hitl_qwen_v4",
+  "iteration_policy": "final prompt iteration on the authored 9-scenario development gate; freeze prompt, ontology, and gold key after this run",
   "planning_estimates": {
     "scenarios": 9,
     "initial_generation_calls": 9,
