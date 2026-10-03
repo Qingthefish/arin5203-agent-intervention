@@ -51,9 +51,12 @@ Exact experiment facts live in immutable artifacts rather than in this runbook:
 - `results/compaction_pilot_qwen_v1_{manifest,audit}.*` and its raw/summary files;
 - `results/proposal_alignment_qwen_v1_{manifest,audit}.*` and its raw/summary files;
 - `results/shortcut_causality_qwen_v3_{manifest,audit}.*` and its raw/summary files for the revised anti-shortcut causal gate;
+- `results/hitl_causal_qwen_v1_{manifest,audit}.*` and its raw/summary files for paired Confirm/Execute and Handoff/Handoff rerouting;
 - the versioned `pipeline_*` and `medium_*` artifacts for earlier intervention development runs.
 
 Use the manifest for model identity, calls, timing, token use, prompt hashes, and claim scope; use the summary for aggregate metrics; use the audit for deterministic validity checks. `shortcut_causality_qwen_v1` was stopped by design review before any measured output and is non-citable; `v2` contains only a local sandbox-connection failure. Earlier intervention artifacts and compaction pilots are different development stages and must not be pooled as one frozen evaluation. The `research_v3` dataset is a source of state-changing operations and counterfactuals, not yet a final compaction benchmark.
+
+The HITL v1 gate scores routes, not explanation faithfulness. A post-hoc independent review found recovery-related contradictions despite correct routes. Future runners must use a controlled factor ontology with cited evidence event IDs and must report contradiction rate, decisive-factor recall, and joint grounded route accuracy; do not infer faithful reasoning from the v1 route score.
 
 ## Experimental Discipline
 

@@ -173,12 +173,27 @@ for platform and financial patterns, but also identifies delegated-authority
 reasoning as a concrete failure mode. It does not demonstrate safety
 superiority or generalization.
 
+To separate Confirm from Handoff, a second development pilot used nine
+scenarios and six paired follow-ups. Confirm meant that one authenticated
+response from a pre-identified authority was sufficient for automatic resume;
+Handoff meant that a policy conflict required independent adjudication. All
+nine initial routes were correct, all three Confirm cases became Execute after
+the authorized response, and all three Handoff cases remained Handoff after an
+ordinary requester replied. The 15 calls took 73.8 seconds, used 8,503 input
+and 572 output tokens, and cost no API fee. However, a post-hoc independent
+review found four contradicted and one unsupported reason code among 41; in two
+cases the model claimed that recovery was unavailable although a verified
+recovery record was visible. Thus correct routing does not establish faithful
+use of evidence. This rationale count is exploratory, not a pre-specified
+metric.
+
 \section{Next Stage and Limitations}
 
-The next gate is a matched HITL pilot containing, per evidence family, a safe
-action, an omission repairable by one answer, and a residual-risk action that
-must be handed off. Only after this gate will we implement the 20-scenario
-budget-matched development set, U-Fold-inspired baseline, precise pinning, and
+Before the budget-matched pilot, the output schema will replace open-ended
+reason codes with controlled factors that cite concrete context event IDs. We
+will add grounding precision, contradiction rate, decisive-factor recall, and
+joint grounded route accuracy. Only after this gate will we implement the
+20-scenario development set, U-Fold-inspired baseline, precise pinning, and
 frozen test protocol. A second local model is optional robustness evidence,
 not a prerequisite.
 
