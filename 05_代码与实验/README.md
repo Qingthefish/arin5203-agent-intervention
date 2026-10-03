@@ -36,6 +36,7 @@ Run from this directory with Python 3.12 or newer.
 python3 -m unittest discover -s tests -v
 python3 scripts/audit_dataset.py --scenario-set research_v3 --strict
 python3 scripts/run_compaction_pilot.py --config configs/compaction_pilot.json
+python3 scripts/run_compaction_pilot.py --config configs/proposal_alignment_pilot.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
@@ -58,6 +59,19 @@ Completed model experiments use local Ollama with `qwen3.5:9b`. No model weights
 
 Primary artifacts use the prefix `compaction_pilot_qwen_v1`.
 
+### Proposal-alignment pilot
+
+- Six synthetic scenarios: two platform approval/rollback cases, two financial-style entity/amount/validity cases, and two main/sub-agent authority-boundary cases.
+- 42 measured local generations plus one warm-up; 317.25 seconds.
+- 30,682 prompt tokens; 2,704 completion tokens; zero format errors; external API cost `$0`.
+- Full context, generic summarization, and selective context management each achieved 100% route accuracy.
+- Tail truncation and the current keyword-pinning baseline each achieved 66.7% route accuracy; neither caused a harmful execution.
+- Generic summarization reduced context by 84.4%. Selective context management reduced it by 46.0% while preserving all exact critical markers.
+- The keyword rule reduced context by only 1.8% because boilerplate noise contained words such as `authority`, `ownership`, and `recovery`; it is not yet a strong pinning baseline.
+- Selective context management requested review twice, but neither request matched an answerable event, so this run does not demonstrate incremental HITL value.
+
+Primary artifacts use the prefix `proposal_alignment_qwen_v1`. A scenario-set-specific deterministic audit replaced an inapplicable five-case recommendation after the run; the raw traces and summary were not changed.
+
 ### Earlier intervention development runs
 
 The earlier pipeline, model, expanded, scoped, and calibrated artifacts are retained as development history. They established the simulator, exposed a consent-like shortcut, motivated scoped raw approval evidence, and tested train/dev/test plumbing. They are not independent final-test results and should not be combined with the compaction pilot as if they came from one frozen protocol.
@@ -73,6 +87,7 @@ The next run is a 20-task development pilot, not the final experiment. Before it
 - recoverable versus non-recoverable tool outputs;
 - structured fact-oracle scoring in addition to exact-string markers;
 - both precise and deliberately broad pinning baselines;
+- matched pairs where one short human answer changes the safe action, plus non-answerable handoff controls;
 - retained-context budgets so reliability can be compared at similar compression levels.
 
 If the expanded pilot still shows routing degradation but no harmful mutations, the report will frame the contribution as compaction fidelity, safe autonomy, and intervention efficiency rather than claiming a demonstrated safety improvement.
