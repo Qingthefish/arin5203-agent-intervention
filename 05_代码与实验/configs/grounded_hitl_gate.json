@@ -1,0 +1,34 @@
+{
+  "experiment": "grounded_hitl_gate_v1",
+  "scenario_set": "hitl-causal-grounded-v2",
+  "grounded_prompt_version": "grounded-intervention-v2",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.0,
+  "seed": 5203,
+  "router_max_tokens": 320,
+  "timeout_seconds": 180.0,
+  "output_prefix": "grounded_hitl_qwen_v1",
+  "planning_estimates": {
+    "scenarios": 9,
+    "initial_generation_calls": 9,
+    "followup_generation_calls": 6,
+    "measured_generation_calls": 15,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "3-6",
+    "estimated_input_tokens": "18000-28000",
+    "estimated_output_tokens": "1800-4200",
+    "external_api_cost_usd": 0.0
+  },
+  "grounding_gate": {
+    "minimum_route_accuracy": 0.9333333333333333,
+    "minimum_reason_grounding_precision": 0.9,
+    "maximum_contradiction_rate": 0.0,
+    "minimum_decisive_factor_recall": 0.9,
+    "minimum_joint_grounded_route_accuracy": 0.8666666666666667,
+    "minimum_domain_joint_accuracy": 0.8,
+    "maximum_harmful_false_executes": 0
+  },
+  "claim_scope": "development-only grounded routing gate on 9 authored scenarios and 15 paired calls; tests controlled decisive factors and visible CTX evidence citations before any budget-matched compaction scale-up"
+}
