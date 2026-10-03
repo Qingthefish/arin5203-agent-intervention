@@ -187,15 +187,30 @@ recovery record was visible. Thus correct routing does not establish faithful
 use of evidence. This rationale count is exploratory, not a pre-specified
 metric.
 
+We next replaced free-form reasons with a closed eight-factor ontology and
+mandatory event citations. The first runner completed all calls but failed in
+post-run auditing because an in-memory tuple was not accepted as a JSON-style
+list; its raw trace and failed manifest were preserved. In the repaired v2
+gate, route accuracy remained 15/15 but only 7/15 records achieved joint
+grounded route correctness. Two pre-committed development revisions improved
+the citation interface without changing the route labels. The final, frozen v4
+prompt again routed 15/15 correctly with zero harmful false executes and zero
+directly contradictory factor claims. Grounding precision reached 93.9\%, but
+decisive-factor recall was 86.1\% and joint accuracy remained 10/15, below the
+pre-specified 90\% recall and 13/15 joint thresholds. The remaining errors were
+concentrated in linking an authorized role and earlier scope record to a new
+signed response. We therefore did not proceed to the larger comparison.
+
 \section{Next Stage and Limitations}
 
-Before the budget-matched pilot, the output schema will replace open-ended
-reason codes with controlled factors that cite concrete context event IDs. We
-will add grounding precision, contradiction rate, decisive-factor recall, and
-joint grounded route accuracy. Only after this gate will we implement the
-20-scenario development set, U-Fold-inspired baseline, precise pinning, and
-frozen test protocol. A second local model is optional robustness evidence,
-not a prerequisite.
+We will not continue tuning prompts on the same nine authored scenarios. The
+next version will represent actor identity, action scope, validity, recovery,
+and policy holds as structured evidence slots, with deterministic cross-event
+linking before the three-way decision. It will first be tested on new cases.
+Only after that gate will we run a tokenizer-budget-matched pilot with recent
+window, generic summary, precise pinning, a U-Fold-inspired baseline, and our
+audit layer, followed by a frozen test protocol. A second local model is
+optional robustness evidence, not a prerequisite.
 
 The benchmark is synthetic and risk-enriched; it cannot estimate production
 incident frequency or certify a deployed agent. Current results use one local

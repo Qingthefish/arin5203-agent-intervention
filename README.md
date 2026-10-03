@@ -15,7 +15,7 @@ This project studies how context compaction changes a tool-using agent's decisio
 
 All team members will review the scenario policy, implementation, experiments, and report. The role descriptions identify primary ownership rather than isolated workstreams.
 
-## Current Status — 2026-10-03
+## Current Status — 2026-10-04
 
 - The proposal body is 351 whitespace-delimited English words, remains one paragraph, and now fixes the formal scope at 20 base scenarios / 60 matched cases with a U-Fold-inspired baseline.
 - The deterministic simulator, intervention policies, baselines, metrics, and unit tests are implemented.
@@ -25,7 +25,9 @@ All team members will review the scenario policy, implementation, experiments, a
 - All completed runs have manifests and machine-readable artifacts. The 20-family intervention run is a method-development result, not the final held-out compaction evaluation; its families are reserved for the eventual training pool.
 - The `medium_pilot_qwen_k3_v1` artifacts preserve the original edge-biased threshold tie-break. The subsequent code revision selects maximum-margin thresholds on development predictions; no v1 artifact is silently overwritten.
 - The 18-context anti-shortcut causal audit met its pre-specified development gate at the minimum boundary: all six full-evidence contexts were correct, matched-noise removal changed 0/6 decisions, and critical-evidence removal triggered intervention in 4/6. Both missed cases were main--sub-agent authority scenarios. This does not yet validate Confirm versus Handoff; the next gate explicitly separates answerable omissions from residual risk before any scale-up.
-- The subsequent 9-scenario / 15-call paired HITL pilot routed all initial and follow-up contexts correctly: three authenticated answers changed Confirm to Execute, while three ordinary-requester replies left operator-only cases at Handoff. An independent post-hoc audit nevertheless found 4 contradicted and 1 unsupported reason code out of 41, so correct routing is not treated as faithful evidence use. Before budget-matched compaction, the output schema will require controlled factors with event citations and report joint grounded route accuracy.
+- The subsequent 9-scenario / 15-call paired HITL pilot routed all initial and follow-up contexts correctly. An independent post-hoc audit nevertheless found ungrounded free-form reasons, so route correctness is not treated as faithful evidence use.
+- A closed eight-factor schema with mandatory `CTX-Cxx` citations was then tested on the same development gate. The first run is preserved as a failed runner artifact because a tuple/list audit mismatch occurred after all raw calls. In completed v2--v4 iterations, routing stayed at 15/15 with zero harmful false executes, but joint grounded route accuracy rose only from 46.7% to 66.7%. The frozen v4 prompt reached 93.9% grounding precision and zero direct contradictions, yet only 86.1% decisive-factor recall and 10/15 joint success; it therefore failed the pre-specified scale-up gate.
+- Prompt, ontology, and gold definitions are now frozen for this authored set. The next implementation step is structured evidence slots plus deterministic cross-event linking, evaluated on new cases before any budget-matched compaction scale-up. The old compaction pilots are not budget-fair comparisons and will not be presented as final method rankings.
 - `02_里程碑/milestone.tex` is now aligned with the compaction-aware topic and compiles successfully. It is a truthful working milestone draft, not the final November submission; later frozen results and template confirmation remain pending.
 
 ## Repository Structure
@@ -46,6 +48,7 @@ From `05_代码与实验/`:
 ```bash
 python3 -m unittest discover -s tests -v
 python3 scripts/run_compaction_pilot.py --config configs/proposal_alignment_pilot.json
+python3 scripts/run_grounded_hitl_gate.py --config configs/grounded_hitl_gate.json
 python3 scripts/run_research_experiment.py --config configs/research_medium_pilot.json
 python3 scripts/audit_research_artifacts.py --prefix medium_pilot_qwen_k3_v1
 ```
