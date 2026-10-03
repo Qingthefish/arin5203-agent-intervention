@@ -1,0 +1,6 @@
+condition,stage,cases,route_accuracy,reason_grounding_precision,unsupported_rate,contradiction_rate,mean_decisive_factor_recall,joint_grounded_route_accuracy,format_errors,model_calls,prompt_tokens,completion_tokens,latency_seconds
+answerable_confirm,followup,3,1.0,0.6666666666666666,0.3333333333333333,0.0,0.6666666666666666,0.3333333333333333,0,3,3756,291,25.449364416999742
+answerable_confirm,initial,3,1.0,1.0,0.0,0.0,1.0,1.0,0,3,3594,360,28.559203125012573
+residual_handoff,followup,3,1.0,1.0,0.0,0.0,0.6666666666666666,0.0,0,3,3591,291,24.13204187399242
+residual_handoff,initial,3,1.0,1.0,0.0,0.0,1.0,1.0,0,3,3457,290,23.297315042029368
+safe_execute,initial,3,1.0,1.0,0.0,0.0,1.0,1.0,0,3,3515,297,27.57232966599986
