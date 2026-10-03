@@ -1,0 +1,6 @@
+condition,stage,cases,route_accuracy,auto_execute_rate,request_confirmation_rate,handoff_rate,mean_active_context_estimated_tokens,format_errors,model_calls,prompt_tokens,completion_tokens,latency_seconds
+answerable_confirm,followup,3,1.0,1.0,0.0,0.0,395.6666666666667,0,3,1830,122,15.04827900097007
+answerable_confirm,initial,3,1.0,0.0,1.0,0.0,351.6666666666667,0,3,1668,96,12.487399208999705
+residual_handoff,followup,3,1.0,0.0,0.0,1.0,393.6666666666667,0,3,1740,112,13.291693167033372
+residual_handoff,initial,3,1.0,0.0,0.0,1.0,348.0,0,3,1606,121,13.405970874999184
+safe_execute,initial,3,1.0,1.0,0.0,0.0,342.3333333333333,0,3,1659,121,14.297452416998567
