@@ -1,0 +1,23 @@
+{
+  "experiment": "shortcut_causality_audit_v3",
+  "scenario_set": "shortcut-causality-v2",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.0,
+  "seed": 5203,
+  "router_max_tokens": 128,
+  "timeout_seconds": 180.0,
+  "output_prefix": "shortcut_causality_qwen_v3",
+  "planning_estimates": {
+    "families": 6,
+    "contexts_per_family": 3,
+    "measured_generation_calls": 18,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "3-5",
+    "estimated_input_tokens": "13000-25000",
+    "estimated_output_tokens": "1000-2000",
+    "external_api_cost_usd": 0.0
+  },
+  "claim_scope": "development-only causal shortcut audit; validates whether routing depends on decision-critical context before any scale-up"
+}

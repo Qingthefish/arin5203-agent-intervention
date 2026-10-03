@@ -292,7 +292,7 @@ def route_action(
         if not 0.0 <= score <= 1.0:
             raise ValueError("risk score outside [0, 1]")
         reasons = payload.get("reason_codes", [])
-        if not isinstance(reasons, list) or not all(
+        if not isinstance(reasons, list) or not reasons or not all(
             isinstance(item, str) and item for item in reasons
         ):
             raise ValueError("reason_codes must be nonempty strings")
