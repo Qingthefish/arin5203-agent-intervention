@@ -1,0 +1,70 @@
+{
+  "status": "FAILED",
+  "experiment": "shortcut_causality_audit_v2",
+  "scenario_set": "shortcut-causality-v2",
+  "claim_scope": "development-only causal shortcut audit; validates whether routing depends on decision-critical context before any scale-up",
+  "model": "qwen3.5:9b",
+  "provider": "ollama",
+  "location": "local_machine",
+  "families": 6,
+  "contexts": 18,
+  "conditions": [
+    "full_evidence",
+    "remove_critical_evidence",
+    "remove_matched_noise"
+  ],
+  "context_set_sha256": "364b57e4c68836d84c8a6f5f5542f0096576069358e29f1359bdcf4d76faefcb",
+  "config_sha256": "35dea0675408fe4b1010ccf296e4fd7b9cd3d62b067b08598658dea31a159ca8",
+  "routing_generation_calls": 18,
+  "measured_generation_calls": 18,
+  "warmup_calls": 1,
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "families": 6,
+    "contexts_per_family": 3,
+    "measured_generation_calls": 18,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "3-5",
+    "estimated_input_tokens": "13000-25000",
+    "estimated_output_tokens": "1000-2000",
+    "external_api_cost_usd": 0.0
+  },
+  "outputs_if_run": [
+    "results/shortcut_causality_qwen_v2_raw.jsonl",
+    "results/shortcut_causality_qwen_v2_summary.csv",
+    "results/shortcut_causality_qwen_v2_audit.json",
+    "results/shortcut_causality_qwen_v2_manifest.json"
+  ],
+  "git_commit": "1c401a7c87781fd5cf22a0cce1ffa9a49d20a248",
+  "git_worktree_dirty_at_start": true,
+  "started_at_utc": "2026-10-03T13:56:50.605368+00:00",
+  "started_at_hong_kong": "2026-10-03T21:56:50.605368+08:00",
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "experiment": "shortcut_causality_audit_v2",
+    "scenario_set": "shortcut-causality-v2",
+    "provider": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0.0,
+    "seed": 5203,
+    "router_max_tokens": 128,
+    "timeout_seconds": 180.0,
+    "output_prefix": "shortcut_causality_qwen_v2",
+    "planning_estimates": {
+      "families": 6,
+      "contexts_per_family": 3,
+      "measured_generation_calls": 18,
+      "warmup_calls": 1,
+      "estimated_wall_time_minutes": "3-5",
+      "estimated_input_tokens": "13000-25000",
+      "estimated_output_tokens": "1000-2000",
+      "external_api_cost_usd": 0.0
+    },
+    "claim_scope": "development-only causal shortcut audit; validates whether routing depends on decision-critical context before any scale-up"
+  },
+  "duration_seconds": 0.027709833986591548,
+  "error_type": "RuntimeError",
+  "error": "Local Ollama request failed: <urlopen error [Errno 1] Operation not permitted>",
+  "partial_records": 0
+}

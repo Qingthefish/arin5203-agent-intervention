@@ -1,0 +1,83 @@
+{
+  "status": "COMPLETED",
+  "experiment": "hitl_causal_pilot_v1",
+  "scenario_set": "hitl-causal-v1",
+  "claim_scope": "development-only paired counterfactual rerouting pilot; tests one in-band authenticated response against residual handoff, not a complete interactive agent trace",
+  "model": "qwen3.5:9b",
+  "provider": "ollama",
+  "location": "local_machine",
+  "scenarios": 9,
+  "domains": [
+    "financial",
+    "mas",
+    "platform"
+  ],
+  "conditions": [
+    "answerable_confirm",
+    "residual_handoff",
+    "safe_execute"
+  ],
+  "initial_generation_calls": 9,
+  "followup_generation_calls": 6,
+  "measured_generation_calls": 15,
+  "warmup_calls": 1,
+  "scenario_set_sha256": "0bbcca33c9d413ebfd4aaaab5c05a239145fb02bb1c398bce1dc851b0e4b11bb",
+  "config_sha256": "dfa7635fbc4c6c61e327aa1b7df7c71b3a3b31ab2d39feaf2aa0e0175d12ee0f",
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "scenarios": 9,
+    "initial_generation_calls": 9,
+    "followup_generation_calls": 6,
+    "measured_generation_calls": 15,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "2-4",
+    "estimated_input_tokens": "10000-18000",
+    "estimated_output_tokens": "700-1500",
+    "external_api_cost_usd": 0.0
+  },
+  "outputs_if_run": [
+    "results/hitl_causal_qwen_v1_raw.jsonl",
+    "results/hitl_causal_qwen_v1_summary.csv",
+    "results/hitl_causal_qwen_v1_audit.json",
+    "results/hitl_causal_qwen_v1_manifest.json"
+  ],
+  "git_commit": "f69a74e5eb47bef1ddfa0f4dfe1ff23271dfff66",
+  "git_worktree_dirty_at_start": false,
+  "started_at_utc": "2026-10-03T14:27:29.319339+00:00",
+  "started_at_hong_kong": "2026-10-03T22:27:29.319339+08:00",
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "experiment": "hitl_causal_pilot_v1",
+    "scenario_set": "hitl-causal-v1",
+    "provider": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0.0,
+    "seed": 5203,
+    "router_max_tokens": 128,
+    "timeout_seconds": 180.0,
+    "output_prefix": "hitl_causal_qwen_v1",
+    "planning_estimates": {
+      "scenarios": 9,
+      "initial_generation_calls": 9,
+      "followup_generation_calls": 6,
+      "measured_generation_calls": 15,
+      "warmup_calls": 1,
+      "estimated_wall_time_minutes": "2-4",
+      "estimated_input_tokens": "10000-18000",
+      "estimated_output_tokens": "700-1500",
+      "external_api_cost_usd": 0.0
+    },
+    "claim_scope": "development-only paired counterfactual rerouting pilot; tests one in-band authenticated response against residual handoff, not a complete interactive agent trace"
+  },
+  "finished_at_utc": "2026-10-03T14:28:43.093114+00:00",
+  "finished_at_hong_kong": "2026-10-03T22:28:43.093114+08:00",
+  "duration_seconds": 73.77310458401917,
+  "measured_generation_calls_completed": 15,
+  "prompt_tokens": 8503,
+  "completion_tokens": 572,
+  "format_errors": 0,
+  "model_id": "qwen3.5:9b",
+  "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "direction_recommendation": "PROCEED_TO_BUDGET_MATCHED_COMPACTION_PILOT"
+}

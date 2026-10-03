@@ -2,8 +2,8 @@
 
 ## Project
 
-**Do AI Platform Agents Know What They Must Not Forget**  
-Compaction Aware Intervention Before State Changing Operations
+**Do AI Platform Agents Know What They Must Not Forget?**<br>
+**Compaction-Aware Intervention Before State-Changing Operations**
 
 This project studies how context compaction changes a tool-using agent's decision before consequential operations. The system removes recoverable tool noise, pins clearly safety-critical constraints, and requests a short human decision only when the validity or authority of a candidate memory is ambiguous. The compacted context then feeds a pre-action gate that chooses autonomous execution, user confirmation, or human handoff. Evaluation connects context reduction and critical-fact retention to harmful state changes, safe autonomous completion, intervention burden, latency, and token cost.
 
@@ -15,18 +15,18 @@ This project studies how context compaction changes a tool-using agent's decisio
 
 All team members will review the scenario policy, implementation, experiments, and report. The role descriptions identify primary ownership rather than isolated workstreams.
 
-## Current Status
+## Current Status — 2026-10-03
 
-- The 354-word proposal body has been lightly reframed around compaction-aware intervention and remains one paragraph as required by the course page.
+- The proposal body is 351 whitespace-delimited English words, remains one paragraph, and now fixes the formal scope at 20 base scenarios / 60 matched cases with a U-Fold-inspired baseline.
 - The deterministic simulator, intervention policies, baselines, metrics, and unit tests are implemented.
 - A 5-family pipeline pilot (15 cases, 39 measured generations) and a balanced 20-family development pilot (60 cases, 153 measured generations) have run locally with Ollama and Qwen3.5-9B at no API cost.
-- A separate five-scenario compaction feasibility pilot compared full context, tail truncation, generic summarization, rule pinning, and selective human review in 35 measured local generations. It observed routing degradation after lossy compaction but no harmful execution, so it supports feasibility and a light proposal reframe rather than a safety claim.
-- A six-scenario proposal-alignment pilot then exercised the same pipeline across platform approval/rollback, financial-style entity/amount/validity evidence, and main/sub-agent authority boundaries. All 42 measured generations completed locally with zero format errors and zero API cost. The topic is feasible, but the run did not establish safety superiority or incremental value from a human answer.
-- The literature scope is now locked around Governance Decay, Slipstream, Control Under Compression, SelfCompact, and ACON. The original τ-bench, ToolSandbox, Semantic Entropy Probes, and SABER papers remain as supporting evaluation and intervention background.
+- Two small compaction feasibility pilots compared full context, tail truncation, generic summarization, rule pinning, and selective human review across platform, financial-style evidence, and main/sub-agent authority patterns. They ran locally with zero API cost and show that the pipeline is feasible and compaction can change routing. They do **not** establish safety superiority or incremental value from a human answer.
+- The core literature now covers constraint loss, when/what to compact, downstream behavioral validation, fixed-budget reliability, and selective human curation. The original τ-bench, ToolSandbox, Semantic Entropy Probes, and SABER papers remain supporting evaluation and intervention background.
 - All completed runs have manifests and machine-readable artifacts. The 20-family intervention run is a method-development result, not the final held-out compaction evaluation; its families are reserved for the eventual training pool.
 - The `medium_pilot_qwen_k3_v1` artifacts preserve the original edge-biased threshold tie-break. The subsequent code revision selects maximum-margin thresholds on development predictions; no v1 artifact is silently overwritten.
-- The remaining 20 untouched intervention families are reserved for later frozen development and test splits after they are adapted to the compaction protocol.
-- `02_里程碑/milestone.tex` is a working milestone draft with preliminary results. It is not yet the final milestone submission.
+- The 18-context anti-shortcut causal audit met its pre-specified development gate at the minimum boundary: all six full-evidence contexts were correct, matched-noise removal changed 0/6 decisions, and critical-evidence removal triggered intervention in 4/6. Both missed cases were main--sub-agent authority scenarios. This does not yet validate Confirm versus Handoff; the next gate explicitly separates answerable omissions from residual risk before any scale-up.
+- The subsequent 9-scenario / 15-call paired HITL pilot routed all initial and follow-up contexts correctly: three authenticated answers changed Confirm to Execute, while three ordinary-requester replies left operator-only cases at Handoff. An independent post-hoc audit nevertheless found 4 contradicted and 1 unsupported reason code out of 41, so correct routing is not treated as faithful evidence use. Before budget-matched compaction, the output schema will require controlled factors with event citations and report joint grounded route accuracy.
+- `02_里程碑/milestone.tex` is now aligned with the compaction-aware topic and compiles successfully. It is a truthful working milestone draft, not the final November submission; later frozen results and template confirmation remain pending.
 
 ## Repository Structure
 
@@ -56,8 +56,8 @@ The research runner is plan-only unless both `--run` and `--acknowledge-experime
 
 1. Clone the repository and open its root folder in Codex. The root `AGENTS.md` is the machine-readable project brief that Codex loads automatically.
 2. Ask Codex: `Summarize the locked research question, completed evidence, claim limits, and the safest task I can take next.`
-3. Read the three sources of truth it should cite: this README, `项目复盘.md`, and `05_代码与实验/README.md`.
-4. Enter `05_代码与实验/` and run the unit tests. The tests and deterministic audits use only Python 3.12+ standard-library code.
+3. Read `项目复盘.md` only if the task concerns research decisions, writing, or presentation; read `05_代码与实验/README.md` only if the task concerns code or experiments.
+4. For code work, enter `05_代码与实验/` and run the unit tests. The tests and deterministic audits use only Python 3.12+ standard-library code.
 5. Create a branch before editing. Do not rerun or overwrite completed experiment prefixes.
 
 Codex access alone is enough for reading, coding, tests, dataset review, and writing. Reproducing model-backed results additionally requires local [Ollama](https://ollama.com/) and the exact `qwen3.5:9b` model. `Pillow` is optional and needed only to regenerate PNG figures. No OpenAI, Qwen, or other paid API key is required for the existing workflow.

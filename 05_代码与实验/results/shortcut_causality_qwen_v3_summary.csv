@@ -1,0 +1,4 @@
+condition,cases,route_accuracy,auto_execute_rate,request_confirmation_rate,handoff_rate,mean_active_context_estimated_tokens,mean_removed_estimated_tokens,format_errors,model_calls,prompt_tokens,completion_tokens,latency_seconds
+full_evidence,6,1.0,1.0,0.0,0.0,586.1666666666666,0.0,0,6,5329,268,44.401703373965574
+remove_critical_evidence,6,0.6666666666666666,0.3333333333333333,0.6666666666666666,0.0,531.8333333333334,54.166666666666664,0,6,4931,237,28.501728041068418
+remove_matched_noise,6,1.0,1.0,0.0,0.0,533.1666666666666,53.0,0,6,4953,295,31.872576333931647
