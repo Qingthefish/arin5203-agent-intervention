@@ -9,20 +9,30 @@
 
 ## Read Before Editing
 
-1. Read `README.md` for the current status and collaboration workflow.
-2. Read `项目复盘.md` for decisions, failed approaches, literature scope, and the presentation narrative.
-3. Read `05_代码与实验/README.md` before changing code or running experiments.
+1. Always read `README.md`; it is the only current-status page and contains the next experimental gate.
+2. Read `项目复盘.md` only for research design, writing, or presentation work; it records decisions and failed approaches rather than daily status.
+3. Read `05_代码与实验/README.md` before changing code or running experiments; it is the technical runbook.
 4. Treat `01_提案/Project_Proposal_Yu_Yeung_Guo.docx` as the current proposal and `Project_Proposal_Qingcheng_Yu_原始草稿.docx` as archive-only.
 
 If these files conflict, preserve reproducible evidence and ask the team before changing the locked research question.
 
-## Current Evidence Boundary
+## Sources of Truth
 
-- The five-scenario compaction pilot is completed local feasibility evidence, not a final benchmark.
-- The six-scenario proposal-alignment pilot is also completed. It validates one shared framework across platform, financial-evidence, and multi-agent handoff patterns, but it does not demonstrate safety superiority or incremental value from human answers.
-- Earlier intervention experiments are development history; do not combine them with the compaction pilot as if they were one frozen evaluation.
-- No final held-out compaction result exists yet.
-- The next gate is a 20-task development set and a separately frozen test set. Repair the keyword-pinning baseline and isolate answerable HITL cases before running it.
+- `README.md`: current title, evidence boundary, next gate, and teammate onboarding.
+- `项目复盘.md`: research rationale, dated decisions, failed approaches, and presentation narrative.
+- `05_代码与实验/README.md`: commands, interfaces, artifact rules, and reproduction workflow.
+- `05_代码与实验/results/*_{manifest,summary,audit}.*`: exact run counts, timings, token usage, and metrics. Do not copy these numbers into multiple Markdown files.
+- The proposal DOCX and milestone TeX are the content sources for those deliverables. The CVPR template README is upstream vendor documentation and must not be edited.
+
+## Markdown Maintenance Triggers
+
+- A normal code, test, dataset, or experiment-artifact change does **not** require editing every Markdown file.
+- For every new model experiment, always save versioned raw/summary/audit/manifest artifacts. Update `README.md` only when the current status or next gate changes. Update `项目复盘.md` only when the evidence changes a research decision, claim, failure analysis, or presentation story.
+- When the topic, scope, contribution, or evidence boundary changes, update both `README.md` and `项目复盘.md`.
+- When a command, interface, directory layout, dependency, or reproduction procedure changes, update only `05_代码与实验/README.md` unless it also changes project status.
+- Put stable collaboration and safety guardrails only in `AGENTS.md`; do not duplicate dynamic results here.
+- Never edit the CVPR template's vendor README. Do not create another planning/progress Markdown file unless none of the four sources above can own the information.
+- Record failed experiments only when they teach a reusable lesson or alter the next decision. Preserve their immutable manifests, label them non-citable when appropriate, and summarize the lesson in `项目复盘.md`; do not maintain a command-by-command diary.
 
 ## Engineering Rules
 
@@ -53,14 +63,6 @@ If these files conflict, preserve reproducible evidence and ask the team before 
 
 ## Collaboration
 
-- Pull `main`, create a focused branch, make small commits, and open a pull request for review.
+- Pull `main`, create a focused branch, and make small commits. Use a pull request when a teammate is reviewing or contributing; owner-only maintenance may merge after tests and artifact checks.
 - Avoid concurrent edits to DOCX, PDFs, and generated binary figures.
 - Before merging, report changed files, tests run, new experiment artifacts, and any claim that must be updated.
-
-## Good First Tasks
-
-- Review synthetic scenarios for realism, ambiguity, and shortcut leakage.
-- Add structured fact-oracle checks without exposing gold information to prompts.
-- Review retained-context budget matching and compaction baselines.
-- Reproduce figures and audit manifests without changing frozen artifacts.
-- Translate technical results into a three-branch demo: compact/pin/ask feeding execute/confirm/handoff.

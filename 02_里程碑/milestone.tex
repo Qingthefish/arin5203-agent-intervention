@@ -1,10 +1,10 @@
-% ARIN 5203 Project Milestone -- instructor-provided CVPR 2026 template
+% ARIN 5203 Project Milestone -- current CVPR 2026 source in the project folder
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 \makeatletter
 \def\input@path{{../CVPR2026_模板源码/官方源码/}}
 \makeatother
-% Prefer the instructor-provided style. The fallback keeps this single source
+% Prefer the project-provided style. The fallback keeps this single source
 % compilable in the built-in editor, which cannot import a multi-file project.
 \IfFileExists{cvpr.sty}{%
   \usepackage[pagenumbers]{cvpr}
@@ -35,8 +35,8 @@
 \def\confName{ARIN 5203 Project Milestone}
 \def\confYear{2026}
 
-\title{Do AI Platform Agents Know When to Ask for Help?\\
-\large Context-Aware Intervention Before State-Changing Operations}
+\title{Do AI Platform Agents Know What They Must Not Forget?\\
+\large Compaction-Aware Intervention Before State-Changing Operations}
 \author{Qingcheng Yu \quad Siu Kwun Yeung \quad Qingyin Guo\\
 Hong Kong University of Science and Technology}
 \date{}
@@ -46,232 +46,181 @@ Hong Kong University of Science and Technology}
 
 \section{Motivation and Research Question}
 
-Tool-using agents are increasingly asked to operate AI infrastructure rather
-than only answer questions. A platform agent may adjust a GPU quota, preempt a
-workload, transfer resources between tenants, roll out a model, or reclaim
-capacity. These actions are useful because they change external state, but an
-incorrect call can interrupt production, cross an authorization boundary, or
-remove a recovery path. Safety also depends on context: the same tool may be
-routine in a sandbox with scoped approval and unacceptable during an incident
-or across tenants.
+Long-running tool-using agents shorten histories to control context length,
+latency, and cost. This compaction is lossy: a summary may retain the current
+goal while dropping an approval boundary, prohibition, expiry, entity, amount,
+or recovery condition that determines whether a later tool call is safe.
+Governance Decay shows that constraints obeyed in full context can be omitted
+by compaction and then violated~\cite{chen2026governance}. U-Fold instead
+separates an evolving intent summary from a task-relevant tool log and improves
+long-context tool use~\cite{su2026ufold}. These results make context management
+an operational control problem, not only a token-saving problem.
 
-This project asks one falsifiable question: \emph{before a proposed platform
-mutation, can a calibrated gate reduce unsafe autonomous execution while
-preserving useful coverage by choosing among Execute, Confirm, and Handoff?}
-Here Confirm means that one additional round of valid user or owner evidence
-can make the action safe. Handoff is reserved for residual operational risk or
-policy conflict that ordinary confirmation cannot repair. A deterministic
-first stage may also Block malformed or strictly inadmissible calls.
+We ask: \emph{under a fixed context budget, can loss or ambiguity of
+action-critical evidence be detected after compaction and used, before a
+state-changing tool call, to choose Execute, Confirm, or Handoff?} Execute
+requires visible, mutually consistent authority and recovery evidence. Confirm
+is appropriate when one short human answer can repair an omission. Handoff is
+reserved for policy conflict, non-recoverable impact, or uncertainty that a
+single answer cannot resolve. Our contribution is not another general-purpose
+compressor. It is an intervention layer connecting compaction failures to
+action-time control, evaluated through observable state transitions.
 
-Prior benchmarks motivate individual parts of this setup. $\tau$-bench scores
-policy-following agents through conversational tool use and final database
-state~\cite{yao2024tau}; ToolSandbox emphasizes stateful interaction and
-dynamic milestone checks~\cite{lu2025toolsandbox}. SABER identifies mutating
-steps as high-value verification points~\cite{cuadron2025saber}, while
-semantic-entropy work motivates disagreement across repeated generations as an
-uncertainty signal~\cite{kossen2024semantic}. Our scope is narrower and more
-operational: a controlled pre-action gate for AI-platform mutations, with
-explicit separation between execution risk and whether confirmation can
-resolve that risk. The contribution is a reproducible course-project testbed
-and an empirical safety--autonomy analysis, not a production guarantee or a
-new foundation model.
+$\tau$-bench and ToolSandbox motivate stateful, tool-level evaluation
+~\cite{yao2024tau,lu2025toolsandbox}; SABER motivates verification at mutating
+steps~\cite{cuadron2025saber}. ACON and StateComp study how and when to compact
+efficiently~\cite{kang2026acon,wang2026statecomp}. We instead test what should
+happen when the resulting working context no longer supports a consequential
+action.
 
-\section{Benchmark and Ground Truth}
+\section{Benchmark and Method}
 
-The current benchmark contains 40 base task families with three matched
-context variants each, for 120 cases. Five operations are equally represented:
-GPU quota change, workload preemption, resource transfer, model rollout, and
-capacity reclamation. Labels comprise 40 Execute, 40 Confirm, 22 Handoff, and
-18 Block cases. Sibling variants retain a similar requested operation while
-approval evidence, ownership scope, production status, reversibility,
-checkpoint or migration availability, incident state, and blast radius change.
-All siblings remain in the same split so that surface-level task wording cannot
-leak across train and test.
+The planned benchmark has 20 base scenarios in one deterministic AI-platform
+simulator, covering quota changes, workload preemption, resource transfer,
+model rollout, and capacity reclamation. Platform approval and rollback,
+financial-style entity/amount/validity, and main--sub-agent authority patterns
+are evidence templates inside the same simulator, rather than three unrelated
+products. Each base scenario yields three matched contexts: complete evidence,
+one action-critical record removed, and similar-length irrelevant noise
+removed. Siblings stay in one split. Scenario identifiers, deletion condition,
+gold route, and oracle-only facts never enter the model prompt.
 
-The policy sees only the request, proposed call and arguments, runtime state,
-and raw approval evidence. Scenario identifiers, variant names, gold routes,
-and evaluator-only facts are excluded from prompts. Approval is not a single
-Boolean shortcut: evidence includes approver identity, authenticity, stance,
-operation scope, resource-owner scope, tenant scope, and blast-radius limit.
-Cross-tenant actions require valid evidence for every affected owner. Paired
-counterexamples ensure that production, incident state, reversibility,
-approval presence, and recovery availability are not individually sufficient
-to determine the route. Automated audits currently report no prompt leakage,
-constant feature, invalid label, or cross-split family error.
-
-Ground truth comes from state transitions rather than agreement with an
-author-written route alone. A deterministic simulator applies a hypothetical
-tool call and an independent oracle records whether the attempt is prohibited,
-whether state actually changed, and whether the requested task completed.
-Confirmation is replayed by supplying correctly scoped evidence and evaluating
-the action again. A Confirm case must become safe after this replay; Handoff
-retains a residual hazard even with valid approval; Block cannot be repaired by
-confirmation. This counterfactual construction yields two private targets for
-eligible cases: whether immediate execution is unsafe and whether one
-confirmation round resolves the problem.
-
-\section{Calibrated Hybrid Intervention}
-
-Figure~\ref{fig:pipeline} summarizes the implementation. Stage 1 enforces hard
-constraints before any model call. Stage 2 queries a shared LLM critic $K$
-times with distinct reproducible seeds. Every response must contain a route,
-risk score, and reason codes in JSON; malformed output is visible and falls
-back conservatively. The samples provide mean stated risk, risk variance,
-route entropy, route disagreement, and reason disagreement. The gate combines
-these noisy critic measurements with observable runtime features such as
-ownership, scoped-approval consistency, production status, reversibility,
-recovery paths, incident state, and blast radius.
-
-Two regularized logistic calibrators are fitted only on training families. The
-first estimates $P(\text{unsafe if executed})$; among unsafe training cases,
-the second estimates $P(\text{resolvable by confirmation})$. Development-only
-thresholds then map low predicted harm to Execute, higher harm with high
-resolvability to Confirm, and higher harm with low resolvability to Handoff.
-Exact objective ties select a boundary with maximal distance from development
-predictions rather than an arbitrary edge of an empty probability interval.
-Hard constraints remain outside these learned thresholds.
+Figure~\ref{fig:pipeline} shows the evaluation chain. A compaction strategy
+produces active context under a common budget. A structured audit checks target
+entity, requested scale or amount, authority scope, validity or expiry,
+negative constraints, and reversibility or recovery. The intervention gate
+then routes the proposed mutation. A deterministic simulator applies only
+executed calls, and a private state-transition oracle records whether the call
+was prohibited, whether state changed, and whether the task completed. For a
+Confirm case, the simulator injects the specified human answer and re-evaluates
+the same action; Handoff must retain residual risk after that replay.
 
 \begin{figure}[t]
   \centering
   \fbox{\begin{minipage}{0.94\columnwidth}
   \centering\small
-  Proposed mutation $\rightarrow$ deterministic hard guard\\[-1pt]
-  $\swarrow$ \textsc{Block}\hspace{10pt}$\searrow$ repeated LLM critic\\[-1pt]
-  Runtime evidence $+$ critic statistics $\rightarrow$ calibration\\[-1pt]
+  Long trace $\rightarrow$ context strategy under fixed budget\\[-1pt]
+  $\downarrow$\\[-3pt]
+  Critical-evidence audit: entity, authority, expiry, constraints, recovery\\[-1pt]
+  $\downarrow$\\[-3pt]
   \textsc{Execute}\quad|\quad\textsc{Confirm}\quad|\quad\textsc{Handoff}\\[-1pt]
-  \textsc{Execute} $\rightarrow$ simulator $\rightarrow$ state-transition oracle
+  $\downarrow$\\[-3pt]
+  State simulator $\rightarrow$ independent outcome oracle
   \end{minipage}}
-  \caption{The proposed pre-action intervention and evaluation path.}
+  \caption{Compaction is evaluated through its downstream action consequence.}
   \label{fig:pipeline}
 \end{figure}
 
-Baselines reuse the same cached critic outputs: ungated autonomy, guarded
-always-execute, verify every mutation, static tool tiers, verbalized confidence
-with a development-selected threshold, one prompted critic, and majority vote.
-Ablations remove disagreement statistics, critic scores, or approval features,
-and a critic-only variant removes all explicit runtime features. Metrics include
-unsafe execution rate, autonomous coverage, selective risk among executions,
-authorized task completion after confirmation, intervention rates, human-cost
-proxy, routing accuracy, Brier score, expected calibration error, area under the
-risk--coverage curve, latency, and tokens. Bootstrap resampling is grouped by
-base task rather than treating sibling variants as independent
-~\cite{geifman2017selective}.
+Baselines are full history, recent-window truncation, generic LLM summary,
+precise constraint pinning, and a U-Fold-inspired intent-summary-plus-tool-log
+method. The proposed policy adds the structured post-compaction audit and
+three-way intervention. We will report harmful-mutation rate, safe autonomous
+completion, critical-evidence retention, intervention accuracy, review burden,
+context reduction, latency, and tokens. Any thresholds are selected on
+development families and frozen before the held-out test. ``Verify every
+mutation'' and one prompted critic remain action-level baselines, but the main
+comparison concerns context strategies at similar retained budgets.
 
-\section{Development Pilot}
+\section{Preliminary Evidence}
 
-We selected 20 families as a method-development pool, balanced at four
-families per operation. An internal grouped split uses 10/5/5 families for
-train/dev/test (30/15/15 cases); none of these internal test results will be
-presented as the final held-out evaluation. The local run used Qwen3.5-9B via
-Ollama on an Apple M4 machine with $K=3$, temperature 0.7, seeds beginning at
-5203, and at most 128 output tokens. Nine cases were stopped by the hard guard;
-51 eligible cases produced 153 measured generations plus one warm-up. The run
-finished in 556.1 seconds (9 min 16 s), consumed 86,472 input and 6,445 output
-tokens, had 0/153 format failures, and made no external API call. The raw cache
-and manifest preserve the configuration, model digest, outputs, latency, and
-token counts; a separate audit records artifact hashes. Forty-nine regression
-tests cover scenario semantics, approval scope, prompt/gold separation, split
-grouping, state transitions, calibration, and metrics.
-
-The critic signal is informative but not reliable enough to be the safety
-boundary. Across 51 eligible cases, mean stated risk was 0.078 for safe cases
-and 0.464 for unsafe cases. Nineteen cases showed route disagreement, and ten
-unsafe cases received at least one erroneous Execute vote. Resource transfer
-was especially difficult: its unsafe cases had mean stated risk 0.227. These
-errors justify treating the critic as a noisy sensor combined with explicit
-runtime evidence.
-
-Table~\ref{tab:pilot} reports the 15-case internal test split for the original
-development policy (v1). Ungated autonomy executed every case and was unsafe
-on 66.7\%. Verify-all avoided unsafe execution but provided no autonomous
-coverage. A single critic and majority vote each made one unsafe execution.
-The calibrated hybrid gate made no unsafe execution, reached 26.7\% autonomous
-coverage, and reduced Brier score to 0.038. Its 86.7\% route accuracy reflects
-one unnecessary confirmation and one futile confirmation where Handoff was
-required; neither case autonomously executed the mutation. These values are
-descriptive development evidence over only five families.
+We first ran a six-scenario alignment pilot using local Qwen3.5-9B through
+Ollama. Five context strategies produced 42 measured generations plus one
+warm-up, with zero format failures and zero external API cost. As
+Table~\ref{tab:pilot} shows, generic summarization was a strong baseline: it
+reduced the estimated context by 84.4\% while preserving all six route
+decisions. The broad keyword pinning rule retained almost everything yet still
+misrouted two cases. Selective context management requested review twice but
+received no answer, so this run does not establish incremental HITL value.
 
 \begin{table}[t]
   \centering
   \small
-  \setlength{\tabcolsep}{2.4pt}
-  \begin{tabular}{lrrrrr}
+  \setlength{\tabcolsep}{3.2pt}
+  \begin{tabular}{lrrr}
     \toprule
-    Policy & Route & Unsafe & Cover. & Brier & Cost \\
+    Context strategy & Route acc. & Reduction & Reviews \\
     \midrule
-    Ungated & 33.3 & 66.7 & 100.0 & .615 & .000 \\
-    Verify all & 46.7 & 0.0 & 0.0 & .385 & .867 \\
-    Single critic & 86.7 & 6.7 & 40.0 & .176 & 1.000 \\
-    Majority vote & 86.7 & 6.7 & 40.0 & .187 & 1.000 \\
-    Verbalized conf. & 73.3 & 0.0 & 26.7 & .176 & .600 \\
-    Hybrid v1 & 86.7 & 0.0 & 26.7 & .038 & .867 \\
+    Full history & 100.0 & 0.0 & 0 \\
+    Recent-window & 66.7 & 63.3 & 0 \\
+    Generic summary & 100.0 & 84.4 & 0 \\
+    Broad keyword pinning & 66.7 & 1.8 & 0 \\
+    Selective context/HITL & 100.0 & 46.0 & 2 \\
     \bottomrule
   \end{tabular}
-  \caption{Internal development-test results. Route, Unsafe, and Coverage are
-  percentages. Cost assigns Confirm$=1$, Handoff$=3$, Execute/Block$=0$.}
+  \caption{Development-only six-scenario pilot. Accuracy and context reduction
+  are percentages; reduction uses a transparent character-count token proxy.}
   \label{tab:pilot}
 \end{table}
 
-The ablations prevent a stronger claim than the evidence supports. Removing
-disagreement features improved route accuracy from 86.7\% to 93.3\% and Brier
-score from 0.038 to 0.013 on this small split; removing critic score left route
-accuracy unchanged. In contrast, the critic-only ablation fell to 46.7\%
-accuracy and again made an unsafe execution. Thus the pilot supports calibrated
-hybrid intervention and the importance of explicit runtime state, but it does
-\emph{not} yet show that repeated-sample disagreement adds value. Inspection
-also found that the original threshold selector chose the smallest boundary
-when several development thresholds had identical decisions. We retained the
-v1 artifacts, added a maximum-margin tie-break with a unit test, and will freeze
-this revision before the final held-out run rather than rewriting the pilot.
+We then specified a causal anti-shortcut development gate over six families and three
+matched contexts per family. The first implementation was stopped before any
+measured output because condition-specific event IDs, unmatched positions, and
+different sibling seeds could reveal the treatment. In the revised design,
+critical evidence and matched noise use the same role, adjacent positions,
+similar token mass, neutral IDs, and one seed per family.
 
-\section{Limitations and Frozen Next Stage}
+The revised audit completed 18 local generations in 110.1 seconds, consuming
+15,213 input and 800 output tokens with zero format errors and zero API cost.
+All six full-evidence contexts were routed to Execute, and removing matched
+noise changed none of the six decisions. Removing critical evidence triggered
+Confirm in four of six families, meeting the minimum pre-specified development
+threshold. This check establishes whether deletion stops autonomous execution;
+it does not yet establish whether the missing evidence is answerable by Confirm
+or requires Handoff. Both
+main--sub-agent families still executed after authority and recovery evidence
+was removed. Thus the pilot supports a causal dependence on critical evidence
+for platform and financial patterns, but also identifies delegated-authority
+reasoning as a concrete failure mode. It does not demonstrate safety
+superiority or generalization.
 
-The benchmark is synthetic, risk-enriched, and authored for this project; it
-does not estimate production incident frequency. The gate evaluates an already
-proposed tool call, not whether an end-to-end agent chose the correct tool and
-arguments. Current evidence uses one local model, and human-cost weights are
-assumptions rather than observed labor. Correlated runtime features also make
-individual logistic coefficients unsuitable for causal interpretation. The
-five-family internal test is useful for debugging but too small for a final
-generalization claim, even with grouped bootstrap intervals.
+\section{Next Stage and Limitations}
 
-To prevent further test contamination, all 20 inspected pilot families are now
-reserved for the formal training split. The remaining 20 untouched families
-will be frozen as 10 development and 10 test families, with two of each per
-operation. Hyperparameters, feature groups, thresholds, seeds, prompts,
-baselines, and metrics will be committed before the final test is evaluated.
-The planned primary run uses $K=5$ and requires 510 local generations; measured
-pilot throughput implies roughly 31--40 minutes, 220k--320k input tokens, and
-no API fee. A second-model subset is optional and will be run only if it adds a
-clear robustness check without threatening completion. The final report will
-present the held-out result even if disagreement remains neutral or harmful;
-that negative result is preferable to post-hoc feature selection.
+The next gate is a matched HITL pilot containing, per evidence family, a safe
+action, an omission repairable by one answer, and a residual-risk action that
+must be handed off. Only after this gate will we implement the 20-scenario
+budget-matched development set, U-Fold-inspired baseline, precise pinning, and
+frozen test protocol. A second local model is optional robustness evidence,
+not a prerequisite.
+
+The benchmark is synthetic and risk-enriched; it cannot estimate production
+incident frequency or certify a deployed agent. Current results use one local
+model and one generation per context. Context reduction is currently an
+estimate, and active context may omit data that remains recoverable from an
+external checkpoint. Human review also has real cost, so unnecessary Confirm
+and Handoff decisions will be reported rather than treated as automatically
+safe. Negative or null results will narrow the contribution instead of being
+hidden.
 
 {
 \small
 \begin{thebibliography}{9}
 \bibitem{yao2024tau}
-Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan.
-$\tau$-bench: A benchmark for tool-agent-user interaction in real-world
-domains. \emph{arXiv:2406.12045}, 2024.
+S. Yao et al. $\tau$-bench: A benchmark for tool-agent-user interaction in
+real-world domains. \emph{arXiv:2406.12045}, 2024.
 
 \bibitem{lu2025toolsandbox}
-Jiarui Lu et al. ToolSandbox: A stateful, conversational, interactive
-evaluation benchmark for LLM tool use capabilities.
-\emph{arXiv:2408.04682}, 2025.
-
-\bibitem{kossen2024semantic}
-Jannik Kossen et al. Semantic entropy probes: Robust and cheap hallucination
-detection in LLMs. \emph{arXiv:2406.15927}, 2024.
+J. Lu et al. ToolSandbox: A stateful, conversational, interactive evaluation
+benchmark for LLM tool use. \emph{arXiv:2408.04682}, 2024.
 
 \bibitem{cuadron2025saber}
-Alejandro Cuadron, Pengfei Yu, Yang Liu, and Arpit Gupta.
-SABER: Small actions, big errors---safeguarding mutating steps in LLM agents.
-\emph{arXiv:2512.07850}, 2025.
+A. Cuadron et al. SABER: Small actions, big errors---safeguarding mutating
+steps in LLM agents. \emph{arXiv:2512.07850}, 2025.
 
-\bibitem{geifman2017selective}
-Yonatan Geifman and Ran El-Yaniv. Selective classification for deep neural
-networks. In \emph{NeurIPS}, 2017.
+\bibitem{chen2026governance}
+S. Chen. Governance Decay: How context compaction silently erases safety
+constraints in long-horizon LLM agents. \emph{arXiv:2606.22528}, 2026.
+
+\bibitem{su2026ufold}
+J. Su et al. U-Fold: Dynamic intent-aware context folding for user-centric
+agents. In \emph{Findings of ACL}, 2026.
+
+\bibitem{kang2026acon}
+M. Kang et al. ACON: Optimizing context compression for long-horizon LLM
+agents. In \emph{ICML}, 2026.
+
+\bibitem{wang2026statecomp}
+M. Wang et al. StateComp: Learning when to compress history in long-horizon
+agents. \emph{arXiv:2609.27298}, 2026.
 \end{thebibliography}
 }
 
