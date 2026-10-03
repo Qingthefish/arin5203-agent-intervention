@@ -9,7 +9,10 @@ from platform_agent_eval.compaction import (
     rule_pinning,
     tail_truncation,
 )
-from platform_agent_eval.compaction_scenarios import build_compaction_pilot_scenarios
+from platform_agent_eval.compaction_scenarios import (
+    build_compaction_pilot_scenarios,
+    build_proposal_alignment_scenarios,
+)
 from platform_agent_eval.domain import Decision
 
 
@@ -71,6 +74,21 @@ class CompactionScenarioTests(unittest.TestCase):
             effective_oracle(rollout, reviewed),
             (Decision.AUTO_EXECUTE, False),
         )
+
+    def test_proposal_alignment_set_covers_team_evidence_patterns(self) -> None:
+        scenarios = build_proposal_alignment_scenarios()
+        self.assertEqual(len(scenarios), 6)
+        prefixes = {item.scenario_id.split("-")[1] for item in scenarios}
+        self.assertEqual(prefixes, {"platform", "financial", "mas"})
+        self.assertEqual(
+            {item.expected_decision for item in scenarios},
+            {
+                Decision.AUTO_EXECUTE,
+                Decision.REQUEST_CONFIRMATION,
+                Decision.HANDOFF,
+            },
+        )
+        self.assertTrue(all(item.critical_markers for item in scenarios))
 
 
 if __name__ == "__main__":

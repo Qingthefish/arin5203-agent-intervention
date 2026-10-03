@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "analysis_scope": "deterministic audit of the six-scenario proposal-alignment traces",
+  "decision_rule": {
+    "topic_feasibility_supported": true,
+    "safety_superiority_supported": false,
+    "selective_hitl_incremental_value_supported": false,
+    "keyword_pinning_ready_as_strong_baseline": false
+  },
+  "observations": {
+    "route_changes_from_full_context": {
+      "generic_summary": 0,
+      "rule_pinning": 2,
+      "selective_hitl": 0,
+      "tail_truncation": 2
+    },
+    "generic_summary_route_accuracy": 1.0,
+    "generic_summary_context_reduction": 0.8442135077059425,
+    "rule_pinning_route_accuracy": 0.6666666666666666,
+    "rule_pinning_context_reduction": 0.01763351005620704,
+    "selective_hitl_route_accuracy": 1.0,
+    "selective_hitl_context_reduction": 0.4599120529203362,
+    "selective_hitl_review_requests": 2,
+    "selective_hitl_human_answers": 0
+  },
+  "recommendation": "KEEP_TOPIC_REFINE_EXPERIMENT",
+  "explanation": "The unified framework ran across platform, financial-evidence, and multi-agent handoff patterns, and lossy context handling changed downstream routing. Generic summarization remained strong, while the keyword pinning baseline retained too much noise and over-intervened. Selective context management preserved routes at moderate compression, but no simulated human answer was actually applied. Keep the topic, replace exact-marker-only scoring, repair the pinning baseline, and add cases that isolate the incremental value of human clarification.",
+  "limitations": [
+    "Only six authored synthetic scenarios and one local model were evaluated.",
+    "No strategy produced a harmful execution, so safety superiority is unsupported.",
+    "The model requested review twice but neither request matched an answerable event.",
+    "Exact-string critical-marker retention undercounts semantic preservation.",
+    "The keyword pinning regex also matched boilerplate noise and is not yet a strong baseline.",
+    "This pilot adjusts development design and is not a frozen benchmark result."
+  ]
+}
