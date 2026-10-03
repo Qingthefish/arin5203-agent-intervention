@@ -1,5 +1,5 @@
 {
-  "experiment": "grounded_hitl_gate_v1",
+  "experiment": "grounded_hitl_gate_v2",
   "scenario_set": "hitl-causal-grounded-v2",
   "grounded_prompt_version": "grounded-intervention-v2",
   "provider": "ollama",
@@ -9,7 +9,7 @@
   "seed": 5203,
   "router_max_tokens": 320,
   "timeout_seconds": 180.0,
-  "output_prefix": "grounded_hitl_qwen_v1",
+  "output_prefix": "grounded_hitl_qwen_v2",
   "planning_estimates": {
     "scenarios": 9,
     "initial_generation_calls": 9,

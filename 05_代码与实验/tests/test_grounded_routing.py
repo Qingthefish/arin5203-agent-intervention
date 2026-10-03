@@ -376,6 +376,13 @@ class GroundedRunnerTests(unittest.TestCase):
         self.assertEqual(1.0, observations["decisive_factor_recall"])
         self.assertEqual(1.0, observations["joint_grounded_route_accuracy"])
 
+    def test_in_memory_dataclass_tuples_are_accepted_by_audit(self) -> None:
+        records = self._perfect_records()
+        first_finding = records[0]["decisive_findings"][0]
+        first_finding["evidence_ids"] = tuple(first_finding["evidence_ids"])
+        audit = grounded_audit(records, self.thresholds)
+        self.assertEqual("PASS", audit["status"])
+
     def test_correct_route_with_contradiction_fails_grounded_gate(self) -> None:
         records = self._perfect_records()
         safe = next(

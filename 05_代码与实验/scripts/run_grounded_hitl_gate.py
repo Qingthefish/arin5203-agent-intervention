@@ -215,10 +215,10 @@ def _claims_from_record(record: dict[str, object]) -> tuple[GroundedFactorClaim,
         if factor not in FACTOR_ONTOLOGY:
             raise ValueError(f"record contains unknown factor: {factor!r}")
         raw_ids = raw.get("evidence_ids")
-        if not isinstance(raw_ids, list) or not all(
+        if not isinstance(raw_ids, (list, tuple)) or not all(
             isinstance(item, str) for item in raw_ids
         ):
-            raise ValueError("record evidence_ids must be a string list")
+            raise ValueError("record evidence_ids must be a string sequence")
         claims.append(
             GroundedFactorClaim(
                 factor=factor,  # type: ignore[arg-type]
