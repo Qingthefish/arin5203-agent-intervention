@@ -25,6 +25,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/grounded_routing.py` — closed factor ontology, evidence citations, and joint grounded-route scoring.
 - `src/platform_agent_eval/structured_evidence.py` — atomic evidence slots, deterministic cross-event linking, and route-proof scoring.
 - `src/platform_agent_eval/token_budget.py` — exact raw-context token counts from the target local Ollama model.
+- `src/platform_agent_eval/budgeted_compaction.py` — exact-budget recent, summary, pinning, U-Fold-lite, and selective-audit contexts.
 - `src/platform_agent_eval/research_*.py` — grouped datasets, calibrated policies, uncertainty features, and formal metrics.
 - `configs/` — immutable experiment plans and model settings.
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
@@ -43,6 +44,7 @@ python3 scripts/run_compaction_pilot.py --config configs/proposal_alignment_pilo
 python3 scripts/run_grounded_hitl_gate.py --config configs/grounded_hitl_gate.json
 python3 scripts/run_structured_evidence_smoke.py --config configs/structured_evidence_smoke.json
 python3 scripts/audit_exact_token_budgets.py --config configs/token_budget_audit.json
+python3 scripts/run_fixed_budget_dev_pilot.py --config configs/fixed_budget_dev_pilot.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
@@ -61,6 +63,7 @@ Exact experiment facts live in immutable artifacts rather than in this runbook:
 - `results/grounded_hitl_qwen_v1_{manifest,raw}.*` for the preserved post-run audit failure, and `grounded_hitl_qwen_v2` through `v4` for controlled-factor development gates;
 - `results/structured_evidence_qwen_v1_{manifest,summary,audit,raw}.*` for the frozen nine-context comparison between the v4 router and atomic slot extraction plus deterministic linking;
 - `results/token_budget_audit_qwen_v1_{manifest,summary,audit,raw}.*` for exact target-model token counts over all 55 contexts in the two early compaction pilots;
+- `results/fixed_budget_dev_qwen_v1_{manifest,summary,audit,raw}.*` for the six-scenario exact-256-token pipeline validation. It passes the budget gate but reuses development scenarios, so its method ranking is diagnostic only;
 - the versioned `pipeline_*` and `medium_*` artifacts for earlier intervention development runs.
 
 Use the manifest for model identity, calls, timing, token use, prompt hashes, and claim scope; use the summary for aggregate metrics; use the audit for deterministic validity checks. `shortcut_causality_qwen_v1` was stopped by design review before any measured output and is non-citable; `v2` contains only a local sandbox-connection failure. Earlier intervention artifacts and compaction pilots are different development stages and must not be pooled as one frozen evaluation. The `research_v3` dataset is a source of state-changing operations and counterfactuals, not yet a final compaction benchmark.
@@ -68,6 +71,8 @@ Use the manifest for model identity, calls, timing, token use, prompt hashes, an
 The HITL v1 gate scores routes, not explanation faithfulness. A post-hoc independent review found recovery-related contradictions despite correct routes. The grounded v2--v4 gates therefore use a controlled factor ontology with cited evidence event IDs. The final authored-set prompt is frozen after v4: it passes route accuracy and grounding precision but fails decisive-factor recall and joint grounded route accuracy. Do not tune further on these nine scenarios or infer faithful reasoning from route score alone. The next runner must use structured evidence slots or deterministic link completion and new development cases.
 
 The first atomic-slot smoke is also frozen after one run. Its end-to-end baseline was perfect on the nine new route proofs, while the slot extractor failed the pre-specified architecture gate. In particular, the model treated some slot values as booleans, some as opaque hold IDs, and sometimes omitted recovery or responder fields; exact linking therefore failed closed. Do not relax or reinterpret the v1 gold after observing these outputs. Any revised schema must use new cases and a new artifact prefix.
+
+The fixed-budget v1 run is likewise frozen. All budgeted methods satisfy the exact target-model budget, but the six scenarios were used during earlier method development. Do not use the 6/6 versus 4/6 route counts as a final superiority claim, patch its four observed format errors and rescore the same outputs, or treat the unbudgeted full-history ceiling as a matched competitor. The next comparison must use fresh pre-registered matched siblings and a new artifact prefix.
 
 ## Experimental Discipline
 
