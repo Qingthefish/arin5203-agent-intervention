@@ -13,8 +13,8 @@
     "remove_action_critical",
     "remove_matched_noise"
   ],
-  "output_prefix": "scratch_matched_qwen_v1",
-  "iteration_policy": "freeze three fresh bases, all nine matched contexts, opaque event IDs, event order, roles, proposed actions, private route labels, evidence gold, the protocol-falsification-v2 grounded router, seed, and thresholds before one direct-router run; do not tune on these nine contexts or use this pilot as a compaction-method comparison",
+  "output_prefix": "scratch_matched_qwen_v2",
+  "iteration_policy": "launch-only retry after scratch_matched_qwen_v1 was blocked before warm-up by the command sandbox; keep all three bases, nine matched contexts, opaque event IDs, event order, roles, proposed actions, private route labels, evidence gold, the protocol-falsification-v2 grounded router, seed, and thresholds frozen; do not tune on these nine contexts or use this pilot as a compaction-method comparison",
   "claim_scope": "development-only causal validation of three newly authored base families and their action-critical versus matched-noise deletion siblings; no compaction method is compared and no held-out generalization claim is allowed",
   "planning_estimates": {
     "base_families": 3,
