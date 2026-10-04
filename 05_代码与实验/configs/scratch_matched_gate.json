@@ -1,0 +1,37 @@
+{
+  "experiment": "fresh_three_base_matched_scratch_gate_v1",
+  "scenario_set": "matched-scratch-v1",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.0,
+  "seed": 5203,
+  "router_max_tokens": 240,
+  "timeout_seconds": 180.0,
+  "conditions": [
+    "full_evidence",
+    "remove_action_critical",
+    "remove_matched_noise"
+  ],
+  "output_prefix": "scratch_matched_qwen_v1",
+  "iteration_policy": "freeze three fresh bases, all nine matched contexts, opaque event IDs, event order, roles, proposed actions, private route labels, evidence gold, the protocol-falsification-v2 grounded router, seed, and thresholds before one direct-router run; do not tune on these nine contexts or use this pilot as a compaction-method comparison",
+  "claim_scope": "development-only causal validation of three newly authored base families and their action-critical versus matched-noise deletion siblings; no compaction method is compared and no held-out generalization claim is allowed",
+  "planning_estimates": {
+    "base_families": 3,
+    "matched_contexts": 9,
+    "routing_generation_calls": 9,
+    "measured_generation_calls": 9,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "2-6",
+    "estimated_input_tokens": "9000-18000",
+    "estimated_output_tokens": "700-2200",
+    "external_api_cost_usd": 0.0
+  },
+  "scratch_gate": {
+    "maximum_router_format_errors": 1,
+    "minimum_full_and_noise_route_accuracy": 0.8333333333333334,
+    "maximum_matched_noise_route_changes": 0,
+    "minimum_positive_deletion_intervention_rate": 1.0,
+    "minimum_full_and_noise_joint_grounded_accuracy": 0.5
+  }
+}

@@ -573,7 +573,19 @@ def score_protocol_route(
     scenario: CompactionScenario,
     routed: ProtocolRouteDecision,
 ) -> ProtocolGroundingScore:
-    gold = protocol_gold(scenario)
+    return score_route_against_gold(
+        expected_decision=scenario.expected_decision,
+        routed=routed,
+        gold=protocol_gold(scenario),
+    )
+
+
+def score_route_against_gold(
+    *,
+    expected_decision: Decision,
+    routed: ProtocolRouteDecision,
+    gold: ProtocolGold,
+) -> ProtocolGroundingScore:
     grounded_codes: set[str] = set()
     evaluations: list[dict[str, object]] = []
     grounded = 0
@@ -606,7 +618,7 @@ def score_protocol_route(
     precision = grounded / predicted if predicted else 0.0
     gold_codes = set(gold.decisive_factors)
     recall = len(gold_codes & grounded_codes) / len(gold_codes)
-    route_correct = routed.decision is scenario.expected_decision
+    route_correct = routed.decision is expected_decision
     joint = bool(
         routed.format_valid
         and route_correct
