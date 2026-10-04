@@ -1,0 +1,145 @@
+{
+  "status": "BUDGET_MISMATCH_CONFIRMED",
+  "analysis_scope": "exact raw-token re-audit of completed development pilots",
+  "observations": {
+    "records": 55,
+    "sources": 2,
+    "maximum_absolute_heuristic_ratio_error": 0.18296529968454256,
+    "mean_absolute_heuristic_ratio_error": 0.09124462151895049
+  },
+  "fairness_threshold": {
+    "maximum_compacted_strategy_mean_token_ratio": 1.1
+  },
+  "source_checks": [
+    {
+      "source_artifact": "results/compaction_pilot_qwen_v1_raw.jsonl",
+      "compacted_strategy_mean_tokens": {
+        "generic_summary": 112.0,
+        "rule_pinning": 697.4,
+        "selective_hitl": 361.8,
+        "tail_truncation": 244.0
+      },
+      "largest_to_smallest_mean_ratio": 6.226785714285714,
+      "budget_matched_within_threshold": false
+    },
+    {
+      "source_artifact": "results/proposal_alignment_qwen_v1_raw.jsonl",
+      "compacted_strategy_mean_tokens": {
+        "generic_summary": 122.5,
+        "rule_pinning": 722.5,
+        "selective_hitl": 404.6666666666667,
+        "tail_truncation": 259.5
+      },
+      "largest_to_smallest_mean_ratio": 5.8979591836734695,
+      "budget_matched_within_threshold": false
+    }
+  ],
+  "strategy_summaries": [
+    {
+      "source_artifact": "results/compaction_pilot_qwen_v1_raw.jsonl",
+      "strategy": "full_context",
+      "cases": 5,
+      "mean_exact_raw_tokens": 694.6,
+      "min_exact_raw_tokens": 684,
+      "max_exact_raw_tokens": 714,
+      "mean_heuristic_tokens": 769.6,
+      "mean_heuristic_to_exact_ratio": 1.1081965758622287
+    },
+    {
+      "source_artifact": "results/compaction_pilot_qwen_v1_raw.jsonl",
+      "strategy": "generic_summary",
+      "cases": 5,
+      "mean_exact_raw_tokens": 112,
+      "min_exact_raw_tokens": 101,
+      "max_exact_raw_tokens": 134,
+      "mean_heuristic_tokens": 116.8,
+      "mean_heuristic_to_exact_ratio": 1.0453176231859345
+    },
+    {
+      "source_artifact": "results/compaction_pilot_qwen_v1_raw.jsonl",
+      "strategy": "rule_pinning",
+      "cases": 5,
+      "mean_exact_raw_tokens": 697.4,
+      "min_exact_raw_tokens": 684,
+      "max_exact_raw_tokens": 716,
+      "mean_heuristic_tokens": 767.8,
+      "mean_heuristic_to_exact_ratio": 1.1011522244451981
+    },
+    {
+      "source_artifact": "results/compaction_pilot_qwen_v1_raw.jsonl",
+      "strategy": "selective_hitl",
+      "cases": 5,
+      "mean_exact_raw_tokens": 361.8,
+      "min_exact_raw_tokens": 317,
+      "max_exact_raw_tokens": 398,
+      "mean_heuristic_tokens": 407.6,
+      "mean_heuristic_to_exact_ratio": 1.1287341277238527
+    },
+    {
+      "source_artifact": "results/compaction_pilot_qwen_v1_raw.jsonl",
+      "strategy": "tail_truncation",
+      "cases": 5,
+      "mean_exact_raw_tokens": 244,
+      "min_exact_raw_tokens": 238,
+      "max_exact_raw_tokens": 255,
+      "mean_heuristic_tokens": 281.2,
+      "mean_heuristic_to_exact_ratio": 1.153113165322798
+    },
+    {
+      "source_artifact": "results/proposal_alignment_qwen_v1_raw.jsonl",
+      "strategy": "full_context",
+      "cases": 6,
+      "mean_exact_raw_tokens": 738.8333333333334,
+      "min_exact_raw_tokens": 725,
+      "max_exact_raw_tokens": 762,
+      "mean_heuristic_tokens": 782.3333333333334,
+      "mean_heuristic_to_exact_ratio": 1.0590945557465936
+    },
+    {
+      "source_artifact": "results/proposal_alignment_qwen_v1_raw.jsonl",
+      "strategy": "generic_summary",
+      "cases": 6,
+      "mean_exact_raw_tokens": 122.5,
+      "min_exact_raw_tokens": 78,
+      "max_exact_raw_tokens": 158,
+      "mean_heuristic_tokens": 122,
+      "mean_heuristic_to_exact_ratio": 1.0205064433542652
+    },
+    {
+      "source_artifact": "results/proposal_alignment_qwen_v1_raw.jsonl",
+      "strategy": "rule_pinning",
+      "cases": 6,
+      "mean_exact_raw_tokens": 722.5,
+      "min_exact_raw_tokens": 682,
+      "max_exact_raw_tokens": 765,
+      "mean_heuristic_tokens": 768.6666666666666,
+      "mean_heuristic_to_exact_ratio": 1.0639144893871677
+    },
+    {
+      "source_artifact": "results/proposal_alignment_qwen_v1_raw.jsonl",
+      "strategy": "selective_hitl",
+      "cases": 6,
+      "mean_exact_raw_tokens": 404.6666666666667,
+      "min_exact_raw_tokens": 381,
+      "max_exact_raw_tokens": 428,
+      "mean_heuristic_tokens": 422.6666666666667,
+      "mean_heuristic_to_exact_ratio": 1.0449150776178173
+    },
+    {
+      "source_artifact": "results/proposal_alignment_qwen_v1_raw.jsonl",
+      "strategy": "tail_truncation",
+      "cases": 6,
+      "mean_exact_raw_tokens": 259.5,
+      "min_exact_raw_tokens": 252,
+      "max_exact_raw_tokens": 267,
+      "mean_heuristic_tokens": 286.8333333333333,
+      "mean_heuristic_to_exact_ratio": 1.1058747184283522
+    }
+  ],
+  "recommendation": "DO_NOT_USE_OLD_PILOTS_TO_RANK_COMPACTION_METHODS",
+  "limitations": [
+    "Counts cover raw active-context text only, excluding the shared downstream routing prompt and chat template.",
+    "One discarded output token is generated per count because Ollama has no standalone tokenizer endpoint.",
+    "This audit measures context length, not information retention or task quality."
+  ]
+}

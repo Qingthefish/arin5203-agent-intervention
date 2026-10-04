@@ -60,6 +60,7 @@ Exact experiment facts live in immutable artifacts rather than in this runbook:
 - `results/hitl_causal_qwen_v1_{manifest,audit}.*` and its raw/summary files for paired Confirm/Execute and Handoff/Handoff rerouting;
 - `results/grounded_hitl_qwen_v1_{manifest,raw}.*` for the preserved post-run audit failure, and `grounded_hitl_qwen_v2` through `v4` for controlled-factor development gates;
 - `results/structured_evidence_qwen_v1_{manifest,summary,audit,raw}.*` for the frozen nine-context comparison between the v4 router and atomic slot extraction plus deterministic linking;
+- `results/token_budget_audit_qwen_v1_{manifest,summary,audit,raw}.*` for exact target-model token counts over all 55 contexts in the two early compaction pilots;
 - the versioned `pipeline_*` and `medium_*` artifacts for earlier intervention development runs.
 
 Use the manifest for model identity, calls, timing, token use, prompt hashes, and claim scope; use the summary for aggregate metrics; use the audit for deterministic validity checks. `shortcut_causality_qwen_v1` was stopped by design review before any measured output and is non-citable; `v2` contains only a local sandbox-connection failure. Earlier intervention artifacts and compaction pilots are different development stages and must not be pooled as one frozen evaluation. The `research_v3` dataset is a source of state-changing operations and counterfactuals, not yet a final compaction benchmark.

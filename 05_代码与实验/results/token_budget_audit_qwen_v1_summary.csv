@@ -1,0 +1,11 @@
+source_artifact,strategy,cases,mean_exact_raw_tokens,min_exact_raw_tokens,max_exact_raw_tokens,mean_heuristic_tokens,mean_heuristic_to_exact_ratio
+results/compaction_pilot_qwen_v1_raw.jsonl,full_context,5,694.6,684,714,769.6,1.1081965758622287
+results/compaction_pilot_qwen_v1_raw.jsonl,generic_summary,5,112,101,134,116.8,1.0453176231859345
+results/compaction_pilot_qwen_v1_raw.jsonl,rule_pinning,5,697.4,684,716,767.8,1.1011522244451981
+results/compaction_pilot_qwen_v1_raw.jsonl,selective_hitl,5,361.8,317,398,407.6,1.1287341277238527
+results/compaction_pilot_qwen_v1_raw.jsonl,tail_truncation,5,244,238,255,281.2,1.153113165322798
+results/proposal_alignment_qwen_v1_raw.jsonl,full_context,6,738.8333333333334,725,762,782.3333333333334,1.0590945557465936
+results/proposal_alignment_qwen_v1_raw.jsonl,generic_summary,6,122.5,78,158,122,1.0205064433542652
+results/proposal_alignment_qwen_v1_raw.jsonl,rule_pinning,6,722.5,682,765,768.6666666666666,1.0639144893871677
+results/proposal_alignment_qwen_v1_raw.jsonl,selective_hitl,6,404.6666666666667,381,428,422.6666666666667,1.0449150776178173
+results/proposal_alignment_qwen_v1_raw.jsonl,tail_truncation,6,259.5,252,267,286.8333333333333,1.1058747184283522
