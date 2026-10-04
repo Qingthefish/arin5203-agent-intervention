@@ -57,11 +57,14 @@ Exact experiment facts live in immutable artifacts rather than in this runbook:
 - `results/shortcut_causality_qwen_v3_{manifest,audit}.*` and its raw/summary files for the revised anti-shortcut causal gate;
 - `results/hitl_causal_qwen_v1_{manifest,audit}.*` and its raw/summary files for paired Confirm/Execute and Handoff/Handoff rerouting;
 - `results/grounded_hitl_qwen_v1_{manifest,raw}.*` for the preserved post-run audit failure, and `grounded_hitl_qwen_v2` through `v4` for controlled-factor development gates;
+- `results/structured_evidence_qwen_v1_{manifest,summary,audit,raw}.*` for the frozen nine-context comparison between the v4 router and atomic slot extraction plus deterministic linking;
 - the versioned `pipeline_*` and `medium_*` artifacts for earlier intervention development runs.
 
 Use the manifest for model identity, calls, timing, token use, prompt hashes, and claim scope; use the summary for aggregate metrics; use the audit for deterministic validity checks. `shortcut_causality_qwen_v1` was stopped by design review before any measured output and is non-citable; `v2` contains only a local sandbox-connection failure. Earlier intervention artifacts and compaction pilots are different development stages and must not be pooled as one frozen evaluation. The `research_v3` dataset is a source of state-changing operations and counterfactuals, not yet a final compaction benchmark.
 
 The HITL v1 gate scores routes, not explanation faithfulness. A post-hoc independent review found recovery-related contradictions despite correct routes. The grounded v2--v4 gates therefore use a controlled factor ontology with cited evidence event IDs. The final authored-set prompt is frozen after v4: it passes route accuracy and grounding precision but fails decisive-factor recall and joint grounded route accuracy. Do not tune further on these nine scenarios or infer faithful reasoning from route score alone. The next runner must use structured evidence slots or deterministic link completion and new development cases.
+
+The first atomic-slot smoke is also frozen after one run. Its end-to-end baseline was perfect on the nine new route proofs, while the slot extractor failed the pre-specified architecture gate. In particular, the model treated some slot values as booleans, some as opaque hold IDs, and sometimes omitted recovery or responder fields; exact linking therefore failed closed. Do not relax or reinterpret the v1 gold after observing these outputs. Any revised schema must use new cases and a new artifact prefix.
 
 ## Experimental Discipline
 

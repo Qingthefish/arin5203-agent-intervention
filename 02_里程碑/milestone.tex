@@ -203,14 +203,18 @@ signed response. We therefore did not proceed to the larger comparison.
 
 \section{Next Stage and Limitations}
 
-We will not continue tuning prompts on the same nine authored scenarios. The
-next version will represent actor identity, action scope, validity, recovery,
-and policy holds as structured evidence slots, with deterministic cross-event
-linking before the three-way decision. It will first be tested on new cases.
-Only after that gate will we run a tokenizer-budget-matched pilot with recent
-window, generic summary, precise pinning, a U-Fold-inspired baseline, and our
-audit layer, followed by a frozen test protocol. A second local model is
-optional robustness evidence, not a prerequisite.
+We did not continue tuning prompts on the original nine scenarios. Instead, a
+pre-registered smoke test used nine new matched contexts and represented actor,
+scope, validity, recovery, and hold evidence as atomic slots before
+deterministic linking. The frozen v4 router achieved 9/9 correct routes and
+complete route proofs, whereas the atomic-slot method achieved 6/9 routes and
+3/9 complete proofs, with zero harmful false executes. Its exact slot contract
+was too fine-grained and inconsistently normalized, so v1 is frozen as a
+negative result. We will either test one smaller typed-event schema on fresh
+development cases or retain the simpler grounded router. Only then will we run
+a tokenizer-budget-matched pilot with recent window, generic summary, precise
+pinning, a U-Fold-inspired baseline, and the audit layer. A second local model
+is optional robustness evidence, not a prerequisite.
 
 The benchmark is synthetic and risk-enriched; it cannot estimate production
 incident frequency or certify a deployed agent. Current results use one local
