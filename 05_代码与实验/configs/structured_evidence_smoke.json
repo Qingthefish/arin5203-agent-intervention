@@ -1,0 +1,39 @@
+{
+  "experiment": "structured_evidence_smoke_v1",
+  "scenario_set": "structured-evidence-smoke-v1",
+  "frozen_baseline_prompt": "grounded-intervention-v4",
+  "structured_prompt": "atomic-evidence-slots-v1",
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "temperature": 0.0,
+  "seed": 5203,
+  "baseline_max_tokens": 320,
+  "extractor_max_tokens": 640,
+  "timeout_seconds": 180.0,
+  "output_prefix": "structured_evidence_qwen_v1",
+  "iteration_policy": "one pre-registered smoke test on nine new contexts; keep the grounded-v4 baseline frozen and do not edit scenarios, slot gold, linker rules, thresholds, or prompts after seeing outputs",
+  "planning_estimates": {
+    "scenarios": 9,
+    "frozen_baseline_calls": 9,
+    "structured_extractor_calls": 9,
+    "measured_generation_calls": 18,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "4-8",
+    "estimated_input_tokens": "22000-38000",
+    "estimated_output_tokens": "3000-8000",
+    "external_api_cost_usd": 0.0
+  },
+  "structured_gate": {
+    "minimum_structured_route_accuracy": 0.8888888888888888,
+    "minimum_atomic_precision": 0.9,
+    "minimum_decisive_atomic_recall": 0.9,
+    "minimum_composite_proof_completeness": 0.7777777777777778,
+    "minimum_joint_route_proof_accuracy": 0.7777777777777778,
+    "minimum_handoff_attribution_accuracy": 0.6666666666666666,
+    "maximum_harmful_false_executes": 0,
+    "maximum_unnecessary_interventions": 1,
+    "require_joint_not_below_frozen_baseline": true
+  },
+  "claim_scope": "development-only architecture smoke on nine new matched contexts; compares the frozen v4 end-to-end route-and-proof output with atomic slot extraction plus deterministic linking before any fixed-budget compaction comparison"
+}

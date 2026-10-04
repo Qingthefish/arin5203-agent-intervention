@@ -23,6 +23,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/simulator.py` and `domain.py` — stateful AI platform environment and state-diff oracle.
 - `src/platform_agent_eval/approvals.py` and `intervention.py` — scoped evidence and three-way routing semantics.
 - `src/platform_agent_eval/grounded_routing.py` — closed factor ontology, evidence citations, and joint grounded-route scoring.
+- `src/platform_agent_eval/structured_evidence.py` — atomic evidence slots, deterministic cross-event linking, and route-proof scoring.
 - `src/platform_agent_eval/research_*.py` — grouped datasets, calibrated policies, uncertainty features, and formal metrics.
 - `configs/` — immutable experiment plans and model settings.
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
@@ -39,6 +40,7 @@ python3 scripts/audit_dataset.py --scenario-set research_v3 --strict
 python3 scripts/run_compaction_pilot.py --config configs/compaction_pilot.json
 python3 scripts/run_compaction_pilot.py --config configs/proposal_alignment_pilot.json
 python3 scripts/run_grounded_hitl_gate.py --config configs/grounded_hitl_gate.json
+python3 scripts/run_structured_evidence_smoke.py --config configs/structured_evidence_smoke.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
