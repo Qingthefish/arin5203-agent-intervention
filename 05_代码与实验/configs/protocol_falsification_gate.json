@@ -22,7 +22,7 @@
     "matched_neutral_fill",
     "raw_tail_fill"
   ],
-  "output_prefix": "protocol_falsification_qwen_v1",
+  "output_prefix": "protocol_falsification_qwen_v2",
   "iteration_policy": "one protocol-only run on the six reused development scenarios; freeze summary definitions, generic pin cues, fill modes, grounded factors, private evidence keys, cache, and gate before execution; do not use condition rankings as held-out evidence",
   "planning_estimates": {
     "scenarios": 6,
