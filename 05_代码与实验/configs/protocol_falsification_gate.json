@@ -1,7 +1,7 @@
 {
-  "experiment": "protocol_falsification_gate_v1",
+  "experiment": "protocol_falsification_gate_v2",
   "scenario_set": "proposal_alignment_v1_reused_protocol_only",
-  "protocol_version": "protocol-falsification-v1",
+  "protocol_version": "protocol-falsification-v2",
   "provider": "ollama",
   "base_url": "http://127.0.0.1:11434",
   "model": "qwen3.5:9b",
@@ -22,8 +22,8 @@
     "matched_neutral_fill",
     "raw_tail_fill"
   ],
-  "output_prefix": "protocol_falsification_qwen_v3",
-  "iteration_policy": "one protocol-only run on the six reused development scenarios; freeze summary definitions, generic pin cues, fill modes, grounded factors, private evidence keys, cache, and gate before execution; do not use condition rankings as held-out evidence",
+  "output_prefix": "protocol_falsification_qwen_v4",
+  "iteration_policy": "one protocol-only rerun after the frozen v1 gate exposed event-ID interoperability failures; keep summary definitions, pinning, fill modes, factors, private evidence keys, cache, thresholds, seed, and scenarios unchanged; change only the grounded-router event-ID output contract and valid-ID list; do not rescore v1 outputs or use condition rankings as held-out evidence",
   "planning_estimates": {
     "scenarios": 6,
     "conditions": 9,
@@ -45,5 +45,5 @@
     "minimum_token_cache_hit_rate": 0.5,
     "maximum_total_format_errors": 6
   },
-  "claim_scope": "protocol falsification on six reused development scenarios; tests label blinding, neutral versus task-aware summaries, frozen generic pinning, fill contamination, grounded evidence scoring, and exact-token caching; it cannot support held-out method superiority"
+  "claim_scope": "protocol instrumentation rerun on six reused development scenarios after v1 failed on event-ID formatting; tests whether an explicit valid-ID contract repairs grounded-output interoperability while all research conditions remain frozen; it cannot support held-out method superiority"
 }

@@ -177,6 +177,19 @@ class ProtocolGroundingTests(unittest.TestCase):
             set(protocol_gold(self.scenario).decisive_factors),
         )
 
+    def test_router_lists_valid_event_ids_and_disambiguates_business_ids(self) -> None:
+        context = (
+            "[PLAT-SYS] SYSTEM: policy\n"
+            "[PLAT1-U02] USER: approval APR-PLAT-41 applies\n"
+            "[PLAT1-T20] TOOL: rollback verified"
+        )
+        prompt = build_protocol_route_prompt(self.scenario, context)
+        self.assertIn("VALID_EVIDENCE_IDS", prompt)
+        self.assertIn('"PLAT1-U02"', prompt)
+        self.assertIn("not an approval", prompt)
+        self.assertIn("use EVT-07, not [EVT-07]", prompt)
+        self.assertIn("Emit each factor at most once", prompt)
+
     def test_invisible_citation_fails_closed(self) -> None:
         routed = parse_protocol_route_output(
             response(
