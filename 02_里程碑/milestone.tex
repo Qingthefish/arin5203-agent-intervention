@@ -152,6 +152,13 @@ received no answer, so this run does not establish incremental HITL value.
   \label{tab:pilot}
 \end{table}
 
+A later re-audit used the exact raw tokenizer of the same Qwen model on all 55
+saved active contexts. Excluding the full-history ceiling, the largest-to-smallest
+mean context ratio was 6.23x in the five-case pilot and 5.90x in the six-case
+pilot, far above a pre-specified 1.10 budget-matching limit. The character-count
+proxy also had 9.1\% mean absolute ratio error and 18.3\% maximum error. Thus
+Table~\ref{tab:pilot} is feasibility evidence and cannot rank compaction methods.
+
 We then specified a causal anti-shortcut development gate over six families and three
 matched contexts per family. The first implementation was stopped before any
 measured output because condition-specific event IDs, unmatched positions, and
@@ -218,9 +225,10 @@ is optional robustness evidence, not a prerequisite.
 
 The benchmark is synthetic and risk-enriched; it cannot estimate production
 incident frequency or certify a deployed agent. Current results use one local
-model and one generation per context. Context reduction is currently an
-estimate, and active context may omit data that remains recoverable from an
-external checkpoint. Human review also has real cost, so unnecessary Confirm
+model and one generation per context. The early table uses a proxy, while the
+next comparison will enforce an exact target-model raw-token budget. Active
+context may omit data that remains recoverable from an external checkpoint.
+Human review also has real cost, so unnecessary Confirm
 and Handoff decisions will be reported rather than treated as automatically
 safe. Negative or null results will narrow the contribution instead of being
 hidden.
