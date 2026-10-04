@@ -1,0 +1,4 @@
+condition,cases,route_accuracy,joint_grounded_route_accuracy,reason_grounding_precision,decisive_factor_recall,harmful_executions,unjustified_executions,unnecessary_interventions,router_format_errors
+full_evidence,3,1.0,0.3333333333333333,0.8571428571428571,0.8888888888888888,0,0,0,0
+remove_action_critical,3,0.0,0.0,0.42857142857142855,0.4444444444444444,1,2,0,0
+remove_matched_noise,3,1.0,0.0,0.75,0.8888888888888888,0,0,0,0
