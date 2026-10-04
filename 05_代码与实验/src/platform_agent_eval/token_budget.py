@@ -22,6 +22,42 @@ class TokenCounter(Protocol):
         ...
 
 
+class CachedTokenCounter:
+    """Memoize exact counts by content hash for one fixed-model counter.
+
+    Budget packers repeatedly probe identical prefixes while testing candidate
+    events.  The target tokenizer is still authoritative, but an identical text
+    should never require a second model-server request within the same run.
+    """
+
+    def __init__(self, counter: TokenCounter) -> None:
+        self.counter = counter
+        self._cache: dict[str, TokenCount] = {}
+        self.requests = 0
+        self.hits = 0
+        self.misses = 0
+
+    def count(self, text: str) -> TokenCount:
+        if not text:
+            raise ValueError("raw token counting requires non-empty text")
+        self.requests += 1
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        cached = self._cache.get(digest)
+        if cached is not None:
+            self.hits += 1
+            return cached
+        result = self.counter.count(text)
+        if result.text_sha256 != digest:
+            raise RuntimeError("token counter returned a mismatched content hash")
+        self._cache[digest] = result
+        self.misses += 1
+        return result
+
+    @property
+    def hit_rate(self) -> float:
+        return self.hits / self.requests if self.requests else 0.0
+
+
 class OllamaRawTokenCounter:
     """Count raw prompt tokens with the target Ollama model's own tokenizer.
 

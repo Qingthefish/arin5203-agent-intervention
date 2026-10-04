@@ -26,6 +26,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/structured_evidence.py` — atomic evidence slots, deterministic cross-event linking, and route-proof scoring.
 - `src/platform_agent_eval/token_budget.py` — exact raw-context token counts from the target local Ollama model.
 - `src/platform_agent_eval/budgeted_compaction.py` — exact-budget recent, summary, pinning, U-Fold-lite, and selective-audit contexts.
+- `src/platform_agent_eval/protocol_falsification.py` — blinded neutral/task-aware summaries, identifier-agnostic pinning, orthogonal fill modes, and grounded route scoring for the protocol gate.
 - `src/platform_agent_eval/research_*.py` — grouped datasets, calibrated policies, uncertainty features, and formal metrics.
 - `configs/` — immutable experiment plans and model settings.
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
@@ -45,6 +46,7 @@ python3 scripts/run_grounded_hitl_gate.py --config configs/grounded_hitl_gate.js
 python3 scripts/run_structured_evidence_smoke.py --config configs/structured_evidence_smoke.json
 python3 scripts/audit_exact_token_budgets.py --config configs/token_budget_audit.json
 python3 scripts/run_fixed_budget_dev_pilot.py --config configs/fixed_budget_dev_pilot.json
+python3 scripts/run_protocol_falsification_gate.py --config configs/protocol_falsification_gate.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
@@ -72,7 +74,7 @@ The HITL v1 gate scores routes, not explanation faithfulness. A post-hoc indepen
 
 The first atomic-slot smoke is also frozen after one run. Its end-to-end baseline was perfect on the nine new route proofs, while the slot extractor failed the pre-specified architecture gate. In particular, the model treated some slot values as booleans, some as opaque hold IDs, and sometimes omitted recovery or responder fields; exact linking therefore failed closed. Do not relax or reinterpret the v1 gold after observing these outputs. Any revised schema must use new cases and a new artifact prefix.
 
-The fixed-budget v1 run is likewise frozen. All budgeted methods satisfy the exact target-model budget, but the six scenarios were used during earlier method development. Do not use the 6/6 versus 4/6 route counts as a final superiority claim, patch its four observed format errors and rescore the same outputs, or treat the unbudgeted full-history ceiling as a matched competitor. The next comparison must use fresh pre-registered matched siblings and a new artifact prefix.
+The fixed-budget v1 run is likewise frozen. All budgeted methods satisfy the exact target-model budget, but the six scenarios were used during earlier method development. Do not use the 6/6 versus 4/6 route counts as a final superiority claim, patch its four observed format errors and rescore the same outputs, or treat the unbudgeted full-history ceiling as a matched competitor. A stricter trace audit also found that the generic prompt was task-aware, summaries were mixed with raw-tail fill, method labels were visible, identifier patterns leaked into pinning, and one correct selective route hallucinated absent approval. The next runnable gate is therefore `protocol_falsification_gate.json`; it reuses these six cases only to test the protocol and cannot produce a held-out method ranking. Fresh matched siblings come after that gate passes.
 
 ## Experimental Discipline
 
