@@ -25,6 +25,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/grounded_routing.py` — closed factor ontology, evidence citations, and joint grounded-route scoring.
 - `src/platform_agent_eval/structured_evidence.py` — atomic evidence slots, deterministic cross-event linking, and route-proof scoring.
 - `src/platform_agent_eval/token_budget.py` — exact raw-context token counts from the target local Ollama model.
+- `src/platform_agent_eval/budgeted_compaction.py` — exact-budget recent, summary, pinning, U-Fold-lite, and selective-audit contexts.
 - `src/platform_agent_eval/research_*.py` — grouped datasets, calibrated policies, uncertainty features, and formal metrics.
 - `configs/` — immutable experiment plans and model settings.
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
@@ -43,6 +44,7 @@ python3 scripts/run_compaction_pilot.py --config configs/proposal_alignment_pilo
 python3 scripts/run_grounded_hitl_gate.py --config configs/grounded_hitl_gate.json
 python3 scripts/run_structured_evidence_smoke.py --config configs/structured_evidence_smoke.json
 python3 scripts/audit_exact_token_budgets.py --config configs/token_budget_audit.json
+python3 scripts/run_fixed_budget_dev_pilot.py --config configs/fixed_budget_dev_pilot.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
