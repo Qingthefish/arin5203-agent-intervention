@@ -208,6 +208,16 @@ pre-specified 90\% recall and 13/15 joint thresholds. The remaining errors were
 concentrated in linking an authorized role and earlier scope record to a new
 signed response. We therefore did not proceed to the larger comparison.
 
+We then validated the fixed-budget pipeline on the six reused development
+scenarios. Five compacted methods were limited to 256 exact raw Qwen tokens;
+all 30 contexts stayed within budget and above 90\% utilization, and method
+means ranged from 246.0 to 250.5 tokens (1.018x). Full history, generic
+summary, precise pinning, and selective audit routed 6/6 correctly, while
+recent window and U-Fold-lite routed 4/6; no method made a harmful execution.
+These are diagnostic, not held-out, rankings. Four compactor-format fallbacks
+and 493 tokenizer probes also identify parser interoperability and token-count
+caching as prerequisites for scale-up.
+
 \section{Next Stage and Limitations}
 
 We did not continue tuning prompts on the original nine scenarios. Instead, a
@@ -217,16 +227,17 @@ deterministic linking. The frozen v4 router achieved 9/9 correct routes and
 complete route proofs, whereas the atomic-slot method achieved 6/9 routes and
 3/9 complete proofs, with zero harmful false executes. Its exact slot contract
 was too fine-grained and inconsistently normalized, so v1 is frozen as a
-negative result. We will either test one smaller typed-event schema on fresh
-development cases or retain the simpler grounded router. Only then will we run
-a tokenizer-budget-matched pilot with recent window, generic summary, precise
-pinning, a U-Fold-inspired baseline, and the audit layer. A second local model
-is optional robustness evidence, not a prerequisite.
+negative result. We therefore retain the simpler grounded router and use
+structured fields only for deterministic scoring. After caching exact token
+counts and fixing the event-ID contract, the next experiment will use fresh
+pre-registered matched siblings to compare recent window, generic summary,
+precise pinning, a U-Fold-inspired baseline, and the audit layer. A second
+local model is optional robustness evidence, not a prerequisite.
 
 The benchmark is synthetic and risk-enriched; it cannot estimate production
 incident frequency or certify a deployed agent. Current results use one local
 model and one generation per context. The early table uses a proxy, while the
-next comparison will enforce an exact target-model raw-token budget. Active
+new pipeline enforces an exact target-model raw-token budget. Active
 context may omit data that remains recoverable from an external checkpoint.
 Human review also has real cost, so unnecessary Confirm
 and Handoff decisions will be reported rather than treated as automatically
