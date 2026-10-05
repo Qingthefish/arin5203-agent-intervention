@@ -29,6 +29,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/protocol_falsification.py` — blinded neutral/task-aware summaries, identifier-agnostic pinning, orthogonal fill modes, and grounded route scoring for the protocol gate.
 - `src/platform_agent_eval/matched_scratch.py` — three fresh domain bases with action-critical and role/position/length-matched noise deletion siblings.
 - `src/platform_agent_eval/audit_increment.py` — fresh matched contexts plus same-context Direct / Always Confirm / Prompt Critic / Evidence Audit prompts and scoring.
+- `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
 - `src/platform_agent_eval/research_*.py` — grouped datasets, calibrated policies, uncertainty features, and formal metrics.
 - `configs/` — immutable experiment plans and model settings.
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
@@ -52,6 +53,7 @@ python3 scripts/run_protocol_falsification_gate.py --config configs/protocol_fal
 python3 scripts/run_scratch_matched_gate.py --config configs/scratch_matched_gate.json
 python3 scripts/run_audit_increment_gate.py --config configs/audit_increment_gate.json
 python3 scripts/audit_increment_traces.py --raw results/audit_increment_qwen_v2_raw.jsonl --output /tmp/audit_increment_trace_review.json
+python3 scripts/run_blind_proof_gate.py --config configs/blind_proof_gate.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
