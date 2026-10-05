@@ -1,0 +1,28 @@
+{
+  "experiment": "provenance_typed_proof_card_gate_v1",
+  "scenario_set": "provenance-proof-cards-v1",
+  "provider": "deterministic",
+  "model": null,
+  "output_prefix": "proof_cards_deterministic_v1",
+  "iteration_policy": "freeze the nine fresh cases, typed card schema, trusted issuer policies, validity and scope rules, expected routes, decisive provenance, and thresholds before running once; preserve failures and do not relabel the cases after observing the audit",
+  "claim_scope": "engineering interface gate for provenance-typed authority, clearance, active hold, delegation, recovery, and repair-channel validation; no model-quality, compaction-ranking, held-out-generalization, or production-safety claim is allowed",
+  "planning_estimates": {
+    "cases": 9,
+    "measured_generation_calls": 0,
+    "estimated_wall_time_minutes": "<1",
+    "estimated_input_tokens": 0,
+    "estimated_output_tokens": 0,
+    "external_api_cost_usd": 0.0
+  },
+  "proof_card_gate": {
+    "maximum_incorrect_routes": 0,
+    "maximum_harmful_executions": 0,
+    "minimum_reason_completeness": 1.0,
+    "minimum_decisive_provenance_accuracy": 1.0,
+    "maximum_clearance_promoted_to_authority": 0,
+    "maximum_ignored_cards_used_as_decisive": 0,
+    "required_execute_decisions": 3,
+    "required_confirm_decisions": 3,
+    "required_handoff_decisions": 3
+  }
+}

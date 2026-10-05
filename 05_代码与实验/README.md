@@ -30,6 +30,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/matched_scratch.py` — three fresh domain bases with action-critical and role/position/length-matched noise deletion siblings.
 - `src/platform_agent_eval/audit_increment.py` — fresh matched contexts plus same-context Direct / Always Confirm / Prompt Critic / Evidence Audit prompts and scoring.
 - `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
+- `src/platform_agent_eval/proof_cards.py` — provenance-typed authority, clearance, active-hold, delegation, recovery, and repair-channel cards with scoped deterministic validation.
 - `src/platform_agent_eval/research_*.py` — grouped datasets, calibrated policies, uncertainty features, and formal metrics.
 - `configs/` — immutable experiment plans and model settings.
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
@@ -55,6 +56,7 @@ python3 scripts/run_audit_increment_gate.py --config configs/audit_increment_gat
 python3 scripts/audit_increment_traces.py --raw results/audit_increment_qwen_v2_raw.jsonl --output /tmp/audit_increment_trace_review.json
 python3 scripts/run_blind_proof_gate.py --config configs/blind_proof_gate.json
 python3 scripts/audit_blind_proof_traces.py --raw results/blind_proof_qwen_v1_raw.jsonl --output /tmp/blind_proof_trace_review.json
+python3 scripts/run_proof_card_gate.py --config configs/proof_card_gate.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
@@ -95,6 +97,8 @@ The fresh matched-scratch v1 design uses one opaque-ID base per domain and three
 The subsequent audit-increment set is separate fresh development data and is frozen after its completed `v2` launch. It compares Direct Router, deterministic Always Confirm, generic Prompt Critic, and candidate-conditioned Evidence Audit on exactly the same nine active contexts. Evidence Audit corrected one of five direct errors but spoiled two of four direct successes, retained two parser-valid harmful executions, and changed all three matched-noise sibling routes; it therefore failed the pre-specified gate. The post-hoc trace review additionally separates model intent from parser behavior: Direct and Evidence Audit each emitted three unsafe raw `AUTO_EXECUTE` decisions, while strict schema validation blocked one per method. Do not treat fail-closed parsing as faithful evidence reasoning, tune either reviewer on this set, or use these records to rank compaction strategies. A future verifier must hide the candidate conclusion and use new contexts.
 
 The candidate-blind proof gate follows that requirement on another fresh nine-context set. It asks the model only for typed authority and recovery status, then maps those statuses to a route deterministically. The parsed pipeline reached 8/9 routes and corrected four of five Direct errors without spoiling a Direct success, but failed the frozen gate because it had four interface-format errors, only 4/9 joint decisive proofs, and one harmful execution. The interface-only post-hoc reparse allows empty citations for `UNKNOWN`, repairs all four format errors, and raises decisive proof to 6/9 without another model call; it still leaves the harmful execution in which a no-freeze clearance was misclassified as authority. Do not rerun or tune this set. Future work should replace free-text evidence typing with provenance-backed proof cards before returning to the exact-budget compaction comparison.
+
+The proof-card interface is the deterministic successor to that failed free-text distinction. It keeps gold routes outside the runtime input, requires every usable card to pass issuer, authentication, operation, target, scope, and validity checks, and never infers authority from a clearance. Its nine-case gate is deliberately model-free: passing it validates only the interface and route-mapping invariants. Whether a model can extract complete cards from compacted context remains a separate empirical question.
 
 ## Experimental Discipline
 
