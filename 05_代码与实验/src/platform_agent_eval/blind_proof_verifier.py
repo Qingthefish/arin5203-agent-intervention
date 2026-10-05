@@ -565,7 +565,9 @@ def build_proof_prompt(context: ProofContext) -> str:
         "- VERIFIED: visible evidence restores the exact prior state.\n"
         "- UNAVAILABLE: visible evidence explicitly says no usable recovery exists.\n"
         "- UNKNOWN: neither status is fully supported.\n\n"
-        "A policy requirement is not evidence that its required record exists. A "
+        "Use an empty evidence_ids list only when status is UNKNOWN; every other "
+        "status requires at least one visible citation. A policy requirement is not "
+        "evidence that its required record exists. A "
         "request, telemetry, provider option, or absence of contrary evidence is not "
         "authority. Cite the minimum event IDs needed for each status. Business IDs "
         "inside event text are not citations. Return exactly one JSON object and no prose.\n\n"
@@ -612,10 +614,12 @@ def _parse_claim(
     if status not in allowed_statuses:
         raise ValueError("unknown proof status")
     raw_ids = payload["evidence_ids"]
-    if not isinstance(raw_ids, list) or not raw_ids or not all(
+    if not isinstance(raw_ids, list) or not all(
         isinstance(item, str) and item for item in raw_ids
     ):
-        raise ValueError("proof evidence_ids must be a nonempty string list")
+        raise ValueError("proof evidence_ids must be a string list")
+    if status != "UNKNOWN" and not raw_ids:
+        raise ValueError("non-UNKNOWN proof status requires visible evidence")
     evidence_ids = tuple(dict.fromkeys(raw_ids))
     if len(evidence_ids) != len(raw_ids) or any(
         item not in visible_ids for item in evidence_ids

@@ -152,6 +152,30 @@ class BlindProofScoringTests(unittest.TestCase):
         self.assertFalse(proof.format_valid)
         self.assertEqual(Decision.HANDOFF, proof.mapped_decision)
 
+    def test_unknown_status_allows_empty_citations_but_verified_does_not(self) -> None:
+        context = build_proof_contexts()[0]
+        unknown = parse_proof_output(
+            response(
+                {
+                    "authority": {"status": "UNKNOWN", "evidence_ids": []},
+                    "recovery": {"status": "UNKNOWN", "evidence_ids": []},
+                }
+            ),
+            active_context=context.active_context,
+        )
+        self.assertTrue(unknown.format_valid)
+        self.assertEqual(Decision.HANDOFF, unknown.mapped_decision)
+        invalid = parse_proof_output(
+            response(
+                {
+                    "authority": {"status": "VERIFIED", "evidence_ids": []},
+                    "recovery": {"status": "UNKNOWN", "evidence_ids": []},
+                }
+            ),
+            active_context=context.active_context,
+        )
+        self.assertFalse(invalid.format_valid)
+
 
 class BlindProofRunnerTests(unittest.TestCase):
     def test_plan_is_local_and_has_eighteen_calls(self) -> None:

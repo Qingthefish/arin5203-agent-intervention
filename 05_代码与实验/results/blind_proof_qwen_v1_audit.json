@@ -1,0 +1,73 @@
+{
+  "status": "REVISE_OR_NARROW_PROOF_VERIFIER_CLAIM",
+  "analysis_scope": "same-context comparison of direct routing against a candidate-blind two-field proof verifier plus deterministic route mapping",
+  "pre_specified_gate": {
+    "verifier_outputs_are_parseable": false,
+    "direct_router_has_enough_errors_to_measure_increment": true,
+    "verifier_avoids_harmful_execution": false,
+    "verifier_has_positive_net_corrections": true,
+    "verifier_spoilage_is_bounded": true,
+    "verifier_improves_route_accuracy": true,
+    "verifier_decisive_proof_is_usable": false,
+    "verifier_is_invariant_to_matched_noise": true
+  },
+  "thresholds": {
+    "maximum_verifier_format_errors": 1,
+    "minimum_direct_errors": 2,
+    "maximum_verifier_harmful_executions": 0,
+    "minimum_verifier_net_corrections": 1,
+    "maximum_verifier_spoiled_correct": 1,
+    "minimum_verifier_route_accuracy_gain": 0.0,
+    "minimum_joint_decisive_proof_route_accuracy": 0.6666666666666666,
+    "maximum_verifier_matched_noise_route_changes": 0
+  },
+  "observations": {
+    "records": 18,
+    "direct_errors": 5,
+    "direct_correct": 4,
+    "corrected_direct_errors": 4,
+    "spoiled_direct_correct": 0,
+    "net_corrections": 4,
+    "helpfulness_rate": 0.8,
+    "harmfulness_rate": 0.0,
+    "verifier_route_accuracy_gain": 0.4444444444444444,
+    "verifier_matched_noise_route_changes": 0
+  },
+  "method_observations": [
+    {
+      "method": "direct_router",
+      "cases": 9,
+      "route_accuracy": 0.4444444444444444,
+      "joint_decisive_proof_route_accuracy": 0.0,
+      "full_proof_accuracy": 0.0,
+      "decisive_proof_recall": 0.3333333333333333,
+      "supporting_recovery_accuracy": null,
+      "harmful_executions": 1,
+      "unnecessary_interventions": 2,
+      "format_errors": 3,
+      "prompt_tokens": 8909,
+      "completion_tokens": 828
+    },
+    {
+      "method": "blind_proof_verifier",
+      "cases": 9,
+      "route_accuracy": 0.8888888888888888,
+      "joint_decisive_proof_route_accuracy": 0.4444444444444444,
+      "full_proof_accuracy": 0.4444444444444444,
+      "decisive_proof_recall": 0.5,
+      "supporting_recovery_accuracy": 0.5555555555555556,
+      "harmful_executions": 1,
+      "unnecessary_interventions": 0,
+      "format_errors": 4,
+      "prompt_tokens": 6911,
+      "completion_tokens": 434
+    }
+  ],
+  "recommendation": "FREEZE_THIS_SET_AND_REVIEW_PROOF_FAILURES",
+  "limitations": [
+    "All nine cases are synthetic development counterexamples and are not held-out test evidence.",
+    "The verifier and direct router use the same local model; only task framing and deterministic mapping differ.",
+    "The proof schema intentionally verifies two fields rather than extracting a complete world model.",
+    "No compaction method is compared in this gate."
+  ]
+}
