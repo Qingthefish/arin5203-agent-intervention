@@ -1,5 +1,5 @@
 {
-  "experiment": "same_context_audit_increment_gate_v1",
+  "experiment": "same_context_audit_increment_gate_v2_launch_retry",
   "scenario_set": "audit-increment-v1",
   "provider": "ollama",
   "base_url": "http://127.0.0.1:11434",
@@ -19,8 +19,8 @@
     "prompt_critic",
     "evidence_audit"
   ],
-  "output_prefix": "audit_increment_qwen_v1",
-  "iteration_policy": "freeze three new bases, nine matched active contexts, opaque event IDs, event order, roles, actions, private gold, direct-router prompt, generic critic prompt, evidence-audit prompt, seed, and thresholds before the first model call; run once; preserve failures; do not tune on these contexts or reinterpret decisive factors after observing outputs",
+  "output_prefix": "audit_increment_qwen_v2",
+  "iteration_policy": "launch-only retry after audit_increment_qwen_v1 stopped at warm-up because the local Ollama service was not running; keep all three bases, nine matched active contexts, opaque event IDs, event order, roles, actions, private gold, direct-router prompt, generic critic prompt, evidence-audit prompt, seed, and thresholds frozen; preserve both launches and do not tune on these contexts or reinterpret decisive factors after observing outputs",
   "claim_scope": "development-only same-context incremental comparison of direct routing, deterministic always-confirm, generic prompt criticism, and evidence-specific audit; no compaction method ranking, held-out generalization, or production-safety claim is allowed",
   "planning_estimates": {
     "base_families": 3,
