@@ -17,7 +17,7 @@ All team members will review the scenario policy, implementation, experiments, a
 
 ## Current Status — 2026-10-05
 
-- The proposal body is 351 whitespace-delimited English words, remains one paragraph, names all three team members, and fixes the formal scope at 20 base scenarios / 60 matched cases with a U-Fold-inspired baseline. A visually verified one-page submission PDF is preserved beside the editable DOCX.
+- The proposal body is 339 whitespace-delimited English words, remains one paragraph, names all three team members, explains the team's complementary experience, and fixes the formal scope at 20 base scenarios / 60 matched cases with a U-Fold-inspired baseline. It also states the planned report/demo output, and the visually verified one-page PDF is preserved beside the editable DOCX without a deadline footer.
 - The deterministic simulator, intervention policies, baselines, metrics, and unit tests are implemented.
 - A 5-family pipeline pilot (15 cases, 39 measured generations) and a balanced 20-family development pilot (60 cases, 153 measured generations) have run locally with Ollama and Qwen3.5-9B at no API cost.
 - Two small compaction feasibility pilots compared full context, tail truncation, generic summarization, rule pinning, and selective human review across platform, financial-style evidence, and main/sub-agent authority patterns. They ran locally with zero API cost and show that the pipeline is feasible and compaction can change routing. They do **not** establish safety superiority or incremental value from a human answer.
