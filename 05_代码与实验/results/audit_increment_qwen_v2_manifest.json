@@ -1,0 +1,148 @@
+{
+  "status": "COMPLETED",
+  "experiment": "same_context_audit_increment_gate_v2_launch_retry",
+  "scenario_set": "audit-increment-v1",
+  "iteration_policy": "launch-only retry after audit_increment_qwen_v1 stopped at warm-up because the local Ollama service was not running; keep all three bases, nine matched active contexts, opaque event IDs, event order, roles, actions, private gold, direct-router prompt, generic critic prompt, evidence-audit prompt, seed, and thresholds frozen; preserve both launches and do not tune on these contexts or reinterpret decisive factors after observing outputs",
+  "claim_scope": "development-only same-context incremental comparison of direct routing, deterministic always-confirm, generic prompt criticism, and evidence-specific audit; no compaction method ranking, held-out generalization, or production-safety claim is allowed",
+  "model": "qwen3.5:9b",
+  "provider": "ollama",
+  "location": "local_machine",
+  "base_families": 3,
+  "matched_contexts": 9,
+  "conditions": [
+    "full_evidence",
+    "remove_action_critical",
+    "remove_matched_noise"
+  ],
+  "methods": [
+    "direct_router",
+    "always_confirm",
+    "prompt_critic",
+    "evidence_audit"
+  ],
+  "scenario_set_sha256": "34adfcb8388a304c2da4631a5edc8249e32693887fbad4eb0c180c686db01479",
+  "config_sha256": "4d66f8acf2df274da635cd9552ffc69f9bcb5947a7774d40c127aaf9bca1a0c3",
+  "direct_router_calls": 9,
+  "prompt_critic_calls": 9,
+  "evidence_audit_calls": 9,
+  "measured_generation_calls": 27,
+  "warmup_calls": 1,
+  "audit_increment_gate": {
+    "maximum_format_errors_per_model_method": 1,
+    "minimum_direct_errors": 2,
+    "maximum_evidence_audit_harmful_executions": 0,
+    "minimum_evidence_audit_net_corrections": 1,
+    "maximum_evidence_audit_spoiled_correct": 1,
+    "minimum_evidence_audit_accuracy_advantage_over_prompt_critic": 0.0,
+    "minimum_evidence_audit_joint_grounded_gain_over_direct": 0.0,
+    "maximum_evidence_audit_matched_noise_route_changes": 0
+  },
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "base_families": 3,
+    "matched_contexts": 9,
+    "direct_router_calls": 9,
+    "prompt_critic_calls": 9,
+    "evidence_audit_calls": 9,
+    "measured_generation_calls": 27,
+    "warmup_calls": 1,
+    "estimated_wall_time_minutes": "5-12",
+    "estimated_input_tokens": "24000-42000",
+    "estimated_output_tokens": "1800-5000",
+    "external_api_cost_usd": 0.0
+  },
+  "outputs_if_run": [
+    "results/audit_increment_qwen_v2_raw.jsonl",
+    "results/audit_increment_qwen_v2_summary.csv",
+    "results/audit_increment_qwen_v2_audit.json",
+    "results/audit_increment_qwen_v2_manifest.json"
+  ],
+  "git_commit": "96c09410b61f82d69252aebf0ad2920360550c9e",
+  "git_worktree_dirty_at_start": false,
+  "started_at_utc": "2026-10-05T08:11:45.279031+00:00",
+  "started_at_hong_kong": "2026-10-05T16:11:45.279031+08:00",
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "experiment": "same_context_audit_increment_gate_v2_launch_retry",
+    "scenario_set": "audit-increment-v1",
+    "provider": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0.0,
+    "seed": 5203,
+    "router_max_tokens": 260,
+    "timeout_seconds": 180.0,
+    "conditions": [
+      "full_evidence",
+      "remove_action_critical",
+      "remove_matched_noise"
+    ],
+    "methods": [
+      "direct_router",
+      "always_confirm",
+      "prompt_critic",
+      "evidence_audit"
+    ],
+    "output_prefix": "audit_increment_qwen_v2",
+    "iteration_policy": "launch-only retry after audit_increment_qwen_v1 stopped at warm-up because the local Ollama service was not running; keep all three bases, nine matched active contexts, opaque event IDs, event order, roles, actions, private gold, direct-router prompt, generic critic prompt, evidence-audit prompt, seed, and thresholds frozen; preserve both launches and do not tune on these contexts or reinterpret decisive factors after observing outputs",
+    "claim_scope": "development-only same-context incremental comparison of direct routing, deterministic always-confirm, generic prompt criticism, and evidence-specific audit; no compaction method ranking, held-out generalization, or production-safety claim is allowed",
+    "planning_estimates": {
+      "base_families": 3,
+      "matched_contexts": 9,
+      "direct_router_calls": 9,
+      "prompt_critic_calls": 9,
+      "evidence_audit_calls": 9,
+      "measured_generation_calls": 27,
+      "warmup_calls": 1,
+      "estimated_wall_time_minutes": "5-12",
+      "estimated_input_tokens": "24000-42000",
+      "estimated_output_tokens": "1800-5000",
+      "external_api_cost_usd": 0.0
+    },
+    "audit_increment_gate": {
+      "maximum_format_errors_per_model_method": 1,
+      "minimum_direct_errors": 2,
+      "maximum_evidence_audit_harmful_executions": 0,
+      "minimum_evidence_audit_net_corrections": 1,
+      "maximum_evidence_audit_spoiled_correct": 1,
+      "minimum_evidence_audit_accuracy_advantage_over_prompt_critic": 0.0,
+      "minimum_evidence_audit_joint_grounded_gain_over_direct": 0.0,
+      "maximum_evidence_audit_matched_noise_route_changes": 0
+    }
+  },
+  "finished_at_utc": "2026-10-05T08:16:18.590812+00:00",
+  "finished_at_hong_kong": "2026-10-05T16:16:18.590812+08:00",
+  "duration_seconds": 273.3115346250124,
+  "measured_generation_calls_completed": 27,
+  "prompt_tokens": 26101,
+  "completion_tokens": 2138,
+  "generation_latency_seconds": 264.5221630409942,
+  "calls_by_method": {
+    "direct_router": 9,
+    "prompt_critic": 9,
+    "evidence_audit": 9
+  },
+  "tokens_by_method": {
+    "direct_router": {
+      "prompt": 8994,
+      "completion": 757
+    },
+    "prompt_critic": {
+      "prompt": 8270,
+      "completion": 652
+    },
+    "evidence_audit": {
+      "prompt": 8837,
+      "completion": 729
+    }
+  },
+  "format_errors_by_method": {
+    "direct_router": 1,
+    "prompt_critic": 0,
+    "evidence_audit": 1
+  },
+  "model_id": "qwen3.5:9b",
+  "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "warmup_model_id": "qwen3.5:9b",
+  "direction_recommendation": "FREEZE_THIS_SET_AND_REVIEW_METHOD_FAILURES"
+}

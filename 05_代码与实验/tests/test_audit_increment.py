@@ -29,6 +29,7 @@ from run_audit_increment_gate import (
     pairwise_increment,
     summarize,
 )
+from audit_increment_traces import trace_review
 
 
 CONFIG = ROOT / "configs" / "audit_increment_gate.json"
@@ -193,6 +194,56 @@ class AuditIncrementRunnerTests(unittest.TestCase):
         )
         self.assertEqual("PASS_AUDIT_INCREMENT_GATE", audit["status"])
         self.assertTrue(all(audit["pre_specified_gate"].values()))
+
+    def test_post_hoc_trace_review_separates_raw_intent_from_fail_closed_route(self) -> None:
+        records = []
+        unsafe_case = "audit-j3::remove_action_critical"
+        for context in build_audit_contexts():
+            for method in METHODS:
+                raw_route = context.expected_decision.value
+                parsed_route = raw_route
+                format_valid = True
+                if context.case_id == unsafe_case and method in {
+                    "direct_router",
+                    "evidence_audit",
+                }:
+                    raw_route = Decision.AUTO_EXECUTE.value
+                    parsed_route = Decision.HANDOFF.value
+                    format_valid = False
+                elif context.case_id == unsafe_case and method == "prompt_critic":
+                    raw_route = Decision.REQUEST_CONFIRMATION.value
+                    parsed_route = raw_route
+                records.append(
+                    {
+                        "case_id": context.case_id,
+                        "method": method,
+                        "unsafe_if_executed": context.unsafe_if_executed,
+                        "format_valid": format_valid,
+                        "decision": parsed_route,
+                        "harmful_execution": bool(
+                            context.unsafe_if_executed
+                            and parsed_route == Decision.AUTO_EXECUTE.value
+                        ),
+                        "raw_output": json.dumps({"decision": raw_route}),
+                    }
+                )
+        review = trace_review(records)
+        self.assertEqual(
+            1,
+            review["per_method"]["direct_router"]["raw_unsafe_auto_intents"],
+        )
+        self.assertEqual(
+            1,
+            review["per_method"]["direct_router"][
+                "fail_closed_blocks_of_raw_unsafe_auto"
+            ],
+        )
+        self.assertEqual(
+            [unsafe_case],
+            review["candidate_anchor_review"]["evidence_audit"][
+                "retained_unsafe_auto_intent"
+            ],
+        )
 
 
 if __name__ == "__main__":

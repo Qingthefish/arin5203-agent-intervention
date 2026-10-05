@@ -51,6 +51,7 @@ python3 scripts/run_fixed_budget_dev_pilot.py --config configs/fixed_budget_dev_
 python3 scripts/run_protocol_falsification_gate.py --config configs/protocol_falsification_gate.json
 python3 scripts/run_scratch_matched_gate.py --config configs/scratch_matched_gate.json
 python3 scripts/run_audit_increment_gate.py --config configs/audit_increment_gate.json
+python3 scripts/audit_increment_traces.py --raw results/audit_increment_qwen_v2_raw.jsonl --output /tmp/audit_increment_trace_review.json
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
@@ -72,6 +73,7 @@ Exact experiment facts live in immutable artifacts rather than in this runbook:
 - `results/fixed_budget_dev_qwen_v1_{manifest,summary,audit,raw}.*` for the six-scenario exact-256-token pipeline validation. It passes the budget gate but reuses development scenarios, so its method ranking is diagnostic only;
 - `results/protocol_falsification_qwen_v1_*` and `v2_*` for two preserved zero-call launch failures, `v3_*` for the frozen event-ID interoperability failure, and `v4_*` for the completed protocol-falsification rerun;
 - `results/scratch_matched_qwen_v1_*` for the preserved zero-call sandbox failure and `scratch_matched_qwen_v2_*` for the completed three-base / nine-context direct-router causal gate;
+- `results/audit_increment_qwen_v1_{manifest,raw}.*` for the preserved zero-call local-service launch failure, `audit_increment_qwen_v2_{manifest,summary,audit,raw}.*` for the completed same-context reviewer comparison, and `audit_increment_qwen_v2_trace_review.json` for the explicitly post-hoc raw-intent versus fail-closed diagnostic;
 - the versioned `pipeline_*` and `medium_*` artifacts for earlier intervention development runs.
 
 Use the manifest for model identity, calls, timing, token use, prompt hashes, and claim scope; use the summary for aggregate metrics; use the audit for deterministic validity checks. `shortcut_causality_qwen_v1` was stopped by design review before any measured output and is non-citable; `v2` contains only a local sandbox-connection failure. Earlier intervention artifacts and compaction pilots are different development stages and must not be pooled as one frozen evaluation. The `research_v3` dataset is a source of state-changing operations and counterfactuals, not yet a final compaction benchmark.
@@ -85,6 +87,8 @@ The fixed-budget v1 run is likewise frozen. All budgeted methods satisfy the exa
 The subsequent protocol-falsification gate orthogonally separates summary intent and fill source, blinds condition labels, uses identifier-agnostic pinning, caches exact token counts, and requires visible event citations. Its first complete run (`v3`) failed only the pre-specified format-error limit because the router confused business identifiers with event IDs. A single interface-only retry (`v4`) exposed the exact valid-ID contract while leaving research conditions frozen and passed all instrumentation criteria. On the reused six-scenario set it achieved 53/54 correct routes but only 6/54 joint grounded routes, with 47 correct routes lacking complete grounding. The protocol is now ready for fresh matched siblings; the condition-level `v4` ordering is not held-out evidence and must not be used to claim method superiority.
 
 The fresh matched-scratch v1 design uses one opaque-ID base per domain and three siblings per base: full evidence, one action-critical deletion, and one same-role/adjacent-position/length-matched noise deletion. Its completed `v2` launch passed the full/noise route and noise-invariance checks but failed the positive-deletion intervention and grounded-proof gates. Do not tune the router on these nine contexts or reinterpret the private gold after observing outputs. In particular, keep the financial hidden-hold execution as the intended negative-constraint-loss counterexample and the MAS Confirm/Handoff confusion as evidence for a separate audit-layer comparison.
+
+The subsequent audit-increment set is separate fresh development data and is frozen after its completed `v2` launch. It compares Direct Router, deterministic Always Confirm, generic Prompt Critic, and candidate-conditioned Evidence Audit on exactly the same nine active contexts. Evidence Audit corrected one of five direct errors but spoiled two of four direct successes, retained two parser-valid harmful executions, and changed all three matched-noise sibling routes; it therefore failed the pre-specified gate. The post-hoc trace review additionally separates model intent from parser behavior: Direct and Evidence Audit each emitted three unsafe raw `AUTO_EXECUTE` decisions, while strict schema validation blocked one per method. Do not treat fail-closed parsing as faithful evidence reasoning, tune either reviewer on this set, or use these records to rank compaction strategies. A future verifier must hide the candidate conclusion and use new contexts.
 
 ## Experimental Discipline
 
