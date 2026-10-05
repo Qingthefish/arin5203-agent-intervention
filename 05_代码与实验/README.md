@@ -36,6 +36,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
 - `tests/` — deterministic schema, leakage, state-transition, calibration, and compaction tests.
 - `results/` — raw traces, summaries, manifests, audits, and figures from completed runs.
+- `demo/` and `scripts/serve_memory_crash_test.py` — Story / Debug replay UI backed directly by the frozen proof-card trace.
 
 ## Reproduction
 
@@ -57,12 +58,15 @@ python3 scripts/audit_increment_traces.py --raw results/audit_increment_qwen_v2_
 python3 scripts/run_blind_proof_gate.py --config configs/blind_proof_gate.json
 python3 scripts/audit_blind_proof_traces.py --raw results/blind_proof_qwen_v1_raw.jsonl --output /tmp/blind_proof_trace_review.json
 python3 scripts/run_proof_card_gate.py --config configs/proof_card_gate.json
+python3 scripts/serve_memory_crash_test.py --port 8765
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
 The model runners are plan-only by default. They print the model, cases, expected calls, estimated resources, and output paths without contacting a model server. A real run requires both `--run` and `--acknowledge-experiment-plan`. Existing formal output prefixes cannot be overwritten.
 
 Completed model experiments use local Ollama with `qwen3.5:9b`. No model weights, API keys, or company data are stored in the repository.
+
+The local demo is available at `http://127.0.0.1:8765` after starting the server. It does not call a model: the server validates and replays the immutable `proof_cards_deterministic_v1` raw trace and manifest. Story Mode presents the user request, retained proof, route, and projected tool-state transition; Debug Mode exposes card type, issuer, subject, scope, source event, and validator status.
 
 ## Evidence and Artifact Sources
 

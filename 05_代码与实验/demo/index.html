@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Memory Crash Test</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="kicker">ARIN 5203 · deterministic trace replay</p>
+          <h1>Building an agent is easy.<br /><span>Teaching it what not to forget</span> is not.</h1>
+          <p class="lede">
+            A state-changing agent should act only when its compacted memory still
+            contains the evidence required by the next tool call.
+          </p>
+        </div>
+        <div class="trace-stamp" id="trace-stamp" aria-live="polite">
+          Loading immutable trace…
+        </div>
+      </header>
+
+      <section class="control-bar" aria-label="Demo controls">
+        <div class="domain-tabs" id="domain-tabs"></div>
+        <div class="mode-toggle" role="group" aria-label="View mode">
+          <button class="active" data-mode="story">Story mode</button>
+          <button data-mode="debug">Debug mode</button>
+        </div>
+      </section>
+
+      <section class="condition-strip" id="condition-strip" aria-label="Memory condition"></section>
+
+      <section id="story-view" class="view"></section>
+      <section id="debug-view" class="view hidden"></section>
+
+      <footer>
+        <p><strong>The API knows what is old. Your application knows what is critical.</strong></p>
+        <p>Proof cards are replayed from a frozen local experiment artifact; no live model is used.</p>
+      </footer>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
