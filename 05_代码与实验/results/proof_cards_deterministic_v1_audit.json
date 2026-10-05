@@ -1,0 +1,87 @@
+{
+  "status": "PASS_PROOF_CARD_INTERFACE_GATE",
+  "analysis_scope": "deterministic validation of provenance-typed proof obligations before state-changing actions",
+  "pre_specified_gate": {
+    "all_routes_match_frozen_gold": true,
+    "no_harmful_execution": true,
+    "required_reasons_are_complete": true,
+    "decisive_cards_have_exact_provenance": true,
+    "clearance_is_never_promoted_to_authority": true,
+    "ignored_cards_are_never_decisive": true,
+    "clearance_only_case_hands_off": true,
+    "active_hold_dominates_prior_authority": true,
+    "missing_delegation_cannot_be_confirmed_away": true,
+    "decision_classes_are_balanced": true
+  },
+  "thresholds": {
+    "maximum_incorrect_routes": 0,
+    "maximum_harmful_executions": 0,
+    "minimum_reason_completeness": 1.0,
+    "minimum_decisive_provenance_accuracy": 1.0,
+    "maximum_clearance_promoted_to_authority": 0,
+    "maximum_ignored_cards_used_as_decisive": 0,
+    "required_execute_decisions": 3,
+    "required_confirm_decisions": 3,
+    "required_handoff_decisions": 3
+  },
+  "observations": {
+    "records": 9,
+    "incorrect_routes": 0,
+    "harmful_executions": 0,
+    "clearance_promoted_to_authority": 0,
+    "ignored_cards_used_as_decisive": 0
+  },
+  "domain_observations": [
+    {
+      "domain": "platform",
+      "cases": 3,
+      "route_accuracy": 1.0,
+      "harmful_executions": 0,
+      "reason_completeness": 1.0,
+      "decisive_provenance_accuracy": 1.0,
+      "execute_decisions": 1,
+      "confirm_decisions": 1,
+      "handoff_decisions": 1
+    },
+    {
+      "domain": "financial",
+      "cases": 3,
+      "route_accuracy": 1.0,
+      "harmful_executions": 0,
+      "reason_completeness": 1.0,
+      "decisive_provenance_accuracy": 1.0,
+      "execute_decisions": 1,
+      "confirm_decisions": 1,
+      "handoff_decisions": 1
+    },
+    {
+      "domain": "mas_travel",
+      "cases": 3,
+      "route_accuracy": 1.0,
+      "harmful_executions": 0,
+      "reason_completeness": 1.0,
+      "decisive_provenance_accuracy": 1.0,
+      "execute_decisions": 1,
+      "confirm_decisions": 1,
+      "handoff_decisions": 1
+    },
+    {
+      "domain": "ALL",
+      "cases": 9,
+      "route_accuracy": 1.0,
+      "harmful_executions": 0,
+      "reason_completeness": 1.0,
+      "decisive_provenance_accuracy": 1.0,
+      "execute_decisions": 3,
+      "confirm_decisions": 3,
+      "handoff_decisions": 3
+    }
+  ],
+  "recommendation": "PROCEED_TO_FRESH_EXACT_BUDGET_DEVELOPMENT_SET",
+  "limitations": [
+    "This is a deterministic engineering and schema gate, not a model experiment.",
+    "The nine cases are synthetic development cases and are not held-out evidence.",
+    "The gate tests proof-card validation after extraction; it does not show that an LLM can extract the cards reliably from compacted context.",
+    "No compaction method is compared here."
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "status": "COMPLETED",
+  "experiment": "provenance_typed_proof_card_gate_v1",
+  "scenario_set": "provenance-proof-cards-v1",
+  "iteration_policy": "freeze the nine fresh cases, typed card schema, trusted issuer policies, validity and scope rules, expected routes, decisive provenance, and thresholds before running once; preserve failures and do not relabel the cases after observing the audit",
+  "claim_scope": "engineering interface gate for provenance-typed authority, clearance, active hold, delegation, recovery, and repair-channel validation; no model-quality, compaction-ranking, held-out-generalization, or production-safety claim is allowed",
+  "provider": "deterministic",
+  "model": null,
+  "location": "local_machine",
+  "cases": 9,
+  "case_set_sha256": "015c3726da6cf7f8dfc20d1b993bc258f92ef8538f44d2a584552c0b9d72e3db",
+  "config_sha256": "c8c60fb9909a13255644f55619b56b251412476a0bbf78c4d44686f33a6de7f6",
+  "measured_generation_calls": 0,
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "cases": 9,
+    "measured_generation_calls": 0,
+    "estimated_wall_time_minutes": "<1",
+    "estimated_input_tokens": 0,
+    "estimated_output_tokens": 0,
+    "external_api_cost_usd": 0.0
+  },
+  "proof_card_gate": {
+    "maximum_incorrect_routes": 0,
+    "maximum_harmful_executions": 0,
+    "minimum_reason_completeness": 1.0,
+    "minimum_decisive_provenance_accuracy": 1.0,
+    "maximum_clearance_promoted_to_authority": 0,
+    "maximum_ignored_cards_used_as_decisive": 0,
+    "required_execute_decisions": 3,
+    "required_confirm_decisions": 3,
+    "required_handoff_decisions": 3
+  },
+  "outputs_if_run": [
+    "results/proof_cards_deterministic_v1_raw.jsonl",
+    "results/proof_cards_deterministic_v1_summary.csv",
+    "results/proof_cards_deterministic_v1_audit.json",
+    "results/proof_cards_deterministic_v1_manifest.json"
+  ],
+  "git_commit": "c1ef5e960e7e9d93f48b680b5c059bf045009f06",
+  "git_worktree_dirty_at_start": false,
+  "started_at_utc": "2026-10-05T16:56:11.821399+00:00",
+  "started_at_hong_kong": "2026-10-06T00:56:11.821399+08:00",
+  "finished_at_utc": "2026-10-05T16:56:11.823958+00:00",
+  "finished_at_hong_kong": "2026-10-06T00:56:11.823958+08:00",
+  "duration_seconds": 0.0025854590348899364,
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "experiment": "provenance_typed_proof_card_gate_v1",
+    "scenario_set": "provenance-proof-cards-v1",
+    "provider": "deterministic",
+    "model": null,
+    "output_prefix": "proof_cards_deterministic_v1",
+    "iteration_policy": "freeze the nine fresh cases, typed card schema, trusted issuer policies, validity and scope rules, expected routes, decisive provenance, and thresholds before running once; preserve failures and do not relabel the cases after observing the audit",
+    "claim_scope": "engineering interface gate for provenance-typed authority, clearance, active hold, delegation, recovery, and repair-channel validation; no model-quality, compaction-ranking, held-out-generalization, or production-safety claim is allowed",
+    "planning_estimates": {
+      "cases": 9,
+      "measured_generation_calls": 0,
+      "estimated_wall_time_minutes": "<1",
+      "estimated_input_tokens": 0,
+      "estimated_output_tokens": 0,
+      "external_api_cost_usd": 0.0
+    },
+    "proof_card_gate": {
+      "maximum_incorrect_routes": 0,
+      "maximum_harmful_executions": 0,
+      "minimum_reason_completeness": 1.0,
+      "minimum_decisive_provenance_accuracy": 1.0,
+      "maximum_clearance_promoted_to_authority": 0,
+      "maximum_ignored_cards_used_as_decisive": 0,
+      "required_execute_decisions": 3,
+      "required_confirm_decisions": 3,
+      "required_handoff_decisions": 3
+    }
+  },
+  "measured_generation_calls_completed": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "direction_recommendation": "PROCEED_TO_FRESH_EXACT_BUDGET_DEVELOPMENT_SET"
+}
