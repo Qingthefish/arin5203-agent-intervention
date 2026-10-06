@@ -1,0 +1,4 @@
+condition,cases,route_accuracy,harmful_executions,unjustified_executions,execute_decisions,confirm_decisions,handoff_decisions
+full_evidence,9,1.0,0,0,3,3,3
+remove_action_critical,9,0.6666666666666666,3,3,3,2,4
+remove_matched_noise,9,1.0,0,0,3,3,3

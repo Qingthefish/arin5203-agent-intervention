@@ -3,16 +3,16 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 29,
+    "runs": 30,
     "statuses": {
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 20,
+      "COMPLETED": 21,
       "FAILED": 6,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 7,
-      "FROZEN_GATE_BUNDLE": 16,
+      "FROZEN_GATE_BUNDLE": 17,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -818,6 +818,33 @@
       },
       "manifest_sha256": "b224ab4616f2e8176ae87007a5b290ba5bf399a274c02858f0612c8bfb274f5d",
       "audit_sha256": "461781129ae33eb96f3ab3924c9bec4c57cb0b18b22ec5fa05c408a563d0d7be"
+    },
+    {
+      "prefix": "typed_compaction_dataset_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "typed_compaction_dataset_gate_v1",
+      "scenario_set": "typed-compaction-dev-v1",
+      "model": null,
+      "provider": "deterministic",
+      "git_commit": "2461f4a3a78fe59718e5f6c8825846c2e103ef2d",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-06T14:43:51.928518+08:00",
+      "finished_at": "2026-10-06T14:43:51.930739+08:00",
+      "audit_status": "PASS_TYPED_COMPACTION_DATASET_GATE",
+      "recommendation": "PROCEED_TO_EXACT_BUDGET_COMPACTION_RUNNER",
+      "claim_scope": "dataset and deterministic visible-card baseline gate only; no compaction-method ranking, model-quality, held-out-generalization, or production-safety claim is allowed",
+      "artifacts": {
+        "manifest": "results/typed_compaction_dataset_v1_manifest.json",
+        "raw": "results/typed_compaction_dataset_v1_raw.jsonl",
+        "summary": "results/typed_compaction_dataset_v1_summary.csv",
+        "audit": "results/typed_compaction_dataset_v1_audit.json"
+      },
+      "manifest_sha256": "7c2385cbcc70bdf5a0fb1608defdfd0609f83572c31bc3230bd19bee00a46648",
+      "audit_sha256": "ef705076fd3f3685b570c70b1b1551d889f848d7633ce7b439ce0d32db6e75bc"
     }
   ]
 }

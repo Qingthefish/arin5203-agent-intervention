@@ -1,0 +1,92 @@
+{
+  "status": "COMPLETED",
+  "experiment": "typed_compaction_dataset_gate_v1",
+  "scenario_set": "typed-compaction-dev-v1",
+  "iteration_policy": "freeze all nine bases, twenty-seven siblings, event order, card types, opaque identifiers, scope, validity, private route gold, matched deletions, and gate thresholds before one deterministic run; preserve every counterexample and do not relabel after observing the audit",
+  "claim_scope": "dataset and deterministic visible-card baseline gate only; no compaction-method ranking, model-quality, held-out-generalization, or production-safety claim is allowed",
+  "provider": "deterministic",
+  "model": null,
+  "location": "local_machine",
+  "base_families": 9,
+  "matched_contexts": 27,
+  "conditions": [
+    "full_evidence",
+    "remove_action_critical",
+    "remove_matched_noise"
+  ],
+  "dataset_sha256": "549a088c3a612f6323b07942fb1845bb9445f51828c684aff83c3b8dcb08d27a",
+  "config_sha256": "2a839d0bda03024c98c15d52241369b89280e9348c6ac4c4cb6f1dfc62be09c1",
+  "measured_generation_calls": 0,
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "base_families": 9,
+    "matched_contexts": 27,
+    "measured_generation_calls": 0,
+    "estimated_wall_time_minutes": "<1",
+    "estimated_input_tokens": 0,
+    "estimated_output_tokens": 0,
+    "external_api_cost_usd": 0.0
+  },
+  "dataset_gate": {
+    "required_base_families": 9,
+    "required_matched_contexts": 27,
+    "required_full_execute": 3,
+    "required_full_confirm": 3,
+    "required_full_handoff": 3,
+    "maximum_full_or_noise_errors": 0,
+    "maximum_matched_noise_route_changes": 0,
+    "required_nonhold_critical_fail_closed": 6,
+    "required_hidden_hold_harmful_executes": 3,
+    "maximum_length_ratio": 1.05
+  },
+  "outputs_if_run": [
+    "results/typed_compaction_dataset_v1_raw.jsonl",
+    "results/typed_compaction_dataset_v1_summary.csv",
+    "results/typed_compaction_dataset_v1_audit.json",
+    "results/typed_compaction_dataset_v1_manifest.json"
+  ],
+  "git_commit": "2461f4a3a78fe59718e5f6c8825846c2e103ef2d",
+  "git_worktree_dirty_at_start": false,
+  "started_at_utc": "2026-10-06T06:43:51.928518+00:00",
+  "started_at_hong_kong": "2026-10-06T14:43:51.928518+08:00",
+  "finished_at_utc": "2026-10-06T06:43:51.930739+00:00",
+  "finished_at_hong_kong": "2026-10-06T14:43:51.930739+08:00",
+  "duration_seconds": 0.0037543330108746886,
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "experiment": "typed_compaction_dataset_gate_v1",
+    "scenario_set": "typed-compaction-dev-v1",
+    "provider": "deterministic",
+    "model": null,
+    "output_prefix": "typed_compaction_dataset_v1",
+    "iteration_policy": "freeze all nine bases, twenty-seven siblings, event order, card types, opaque identifiers, scope, validity, private route gold, matched deletions, and gate thresholds before one deterministic run; preserve every counterexample and do not relabel after observing the audit",
+    "claim_scope": "dataset and deterministic visible-card baseline gate only; no compaction-method ranking, model-quality, held-out-generalization, or production-safety claim is allowed",
+    "planning_estimates": {
+      "base_families": 9,
+      "matched_contexts": 27,
+      "measured_generation_calls": 0,
+      "estimated_wall_time_minutes": "<1",
+      "estimated_input_tokens": 0,
+      "estimated_output_tokens": 0,
+      "external_api_cost_usd": 0.0
+    },
+    "dataset_gate": {
+      "required_base_families": 9,
+      "required_matched_contexts": 27,
+      "required_full_execute": 3,
+      "required_full_confirm": 3,
+      "required_full_handoff": 3,
+      "maximum_full_or_noise_errors": 0,
+      "maximum_matched_noise_route_changes": 0,
+      "required_nonhold_critical_fail_closed": 6,
+      "required_hidden_hold_harmful_executes": 3,
+      "maximum_length_ratio": 1.05
+    }
+  },
+  "measured_generation_calls_completed": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "direction_recommendation": "PROCEED_TO_EXACT_BUDGET_COMPACTION_RUNNER"
+}
