@@ -44,6 +44,7 @@ Run from this directory with Python 3.12 or newer.
 
 ```bash
 python3 -m unittest discover -s tests -v
+python3 scripts/index_experiment_artifacts.py --check
 python3 scripts/audit_dataset.py --scenario-set research_v3 --strict
 python3 scripts/run_compaction_pilot.py --config configs/compaction_pilot.json
 python3 scripts/run_compaction_pilot.py --config configs/proposal_alignment_pilot.json
@@ -71,6 +72,8 @@ The local demo is available at `http://127.0.0.1:8765` after starting the server
 ## Evidence and Artifact Sources
 
 Exact experiment facts live in immutable artifacts rather than in this runbook:
+
+`results/index.json` is the generated discovery layer across all prefixes. It records normalized run status, bundle completeness, hashes, calls, tokens, cost, audit status, and claim scope without replacing any manifest or audit. Regenerate it with `python3 scripts/index_experiment_artifacts.py --write` whenever artifacts change; never edit it by hand.
 
 - `results/compaction_pilot_qwen_v1_{manifest,audit}.*` and its raw/summary files;
 - `results/proposal_alignment_qwen_v1_{manifest,audit}.*` and its raw/summary files;

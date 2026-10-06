@@ -22,6 +22,7 @@ If these files conflict, preserve reproducible evidence and ask the team before 
 - `项目复盘.md`: research rationale, dated decisions, failed approaches, and presentation narrative.
 - `05_代码与实验/README.md`: commands, interfaces, artifact rules, and reproduction workflow.
 - `05_代码与实验/results/*_{manifest,summary,audit}.*`: exact run counts, timings, token usage, and metrics. Do not copy these numbers into multiple Markdown files.
+- `05_代码与实验/results/index.json`: machine-generated discovery index only. Regenerate it after adding or changing experiment artifacts; manifests and audits remain the evidence sources.
 - The proposal DOCX and milestone TeX are the content sources for those deliverables. The CVPR template README is upstream vendor documentation and must not be edited.
 
 ## Markdown Maintenance Triggers
@@ -42,6 +43,7 @@ If these files conflict, preserve reproducible evidence and ask the team before 
 - Keep counterfactual siblings in the same train/dev/test split.
 - Fix seeds and save configuration, prompt hashes, raw outputs, model identity, latency, token usage, and manifests.
 - Never overwrite an existing experiment prefix. Add a new versioned prefix.
+- After adding experiment artifacts, run `python3 scripts/index_experiment_artifacts.py --write` and then `--check` from `05_代码与实验/`. Do not hand-edit `results/index.json`.
 - Prefer the standard library. `Pillow` is optional and used only for plotting.
 
 ## Experiment Safety and Cost
