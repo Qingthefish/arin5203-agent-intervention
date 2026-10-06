@@ -31,6 +31,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/audit_increment.py` — fresh matched contexts plus same-context Direct / Always Confirm / Prompt Critic / Evidence Audit prompts and scoring.
 - `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
 - `src/platform_agent_eval/proof_cards.py` — provenance-typed authority, clearance, active-hold, delegation, recovery, and repair-channel cards with scoped deterministic validation.
+- `src/platform_agent_eval/typed_compaction_dev.py` — nine fresh typed-proof bases and 27 role/position/length-matched deletion siblings for the exact-budget development stage.
 - `src/platform_agent_eval/research_*.py` — grouped datasets, calibrated policies, uncertainty features, and formal metrics.
 - `configs/` — immutable experiment plans and model settings.
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
@@ -59,6 +60,7 @@ python3 scripts/audit_increment_traces.py --raw results/audit_increment_qwen_v2_
 python3 scripts/run_blind_proof_gate.py --config configs/blind_proof_gate.json
 python3 scripts/audit_blind_proof_traces.py --raw results/blind_proof_qwen_v1_raw.jsonl --output /tmp/blind_proof_trace_review.json
 python3 scripts/run_proof_card_gate.py --config configs/proof_card_gate.json
+python3 scripts/run_typed_compaction_dataset_gate.py --config configs/typed_compaction_dataset_gate.json
 python3 scripts/serve_memory_crash_test.py --port 8765
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
