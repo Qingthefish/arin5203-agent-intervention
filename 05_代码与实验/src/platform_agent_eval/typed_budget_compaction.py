@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 from dataclasses import dataclass
+from datetime import datetime
 
 from .compaction import render_events
 from .compaction_scenarios import ContextEvent
@@ -17,7 +19,7 @@ from .token_budget import TokenCounter
 from .typed_compaction_dev import TypedCompactionContext
 
 
-TYPED_BUDGET_COMPACTION_VERSION = "typed-budget-compaction-v1"
+TYPED_BUDGET_COMPACTION_VERSION = "typed-budget-compaction-v2"
 METHODS = (
     "full_context_ceiling",
     "recent_window",
@@ -141,6 +143,42 @@ def _neutral_events(context: TypedCompactionContext) -> list[ContextEvent]:
     ]
 
 
+def _compact_card_summary(context: TypedCompactionContext) -> str:
+    """Serialize action-specific proof capsules without replaying verbose logs.
+
+    The route prompt already carries the proposed action and runtime policy. The
+    memory therefore retains provenance plus deterministic match/validity bits
+    instead of duplicating operation, target, scope, and timestamps on every
+    card. Canonical card records remain available to the deterministic validator.
+    """
+
+    lines = [
+        "PROOF_FIELDS=source|id|type|issuer|subject|action_scope_match|"
+        "valid_now|authenticated|transferable"
+    ]
+    action_scope = dict(context.action.scope)
+    effective_at = datetime.fromisoformat(context.action.effective_at)
+    for card in context.visible_cards:
+        source = " ".join(f"[{item}]" for item in card.source_event_ids)
+        card_scope = dict(card.scope)
+        action_scope_match = (
+            card.operation == context.action.operation
+            and card.target_id == context.action.target_id
+            and all(card_scope.get(key) == value for key, value in action_scope.items())
+        )
+        valid_now = (
+            datetime.fromisoformat(card.valid_from)
+            <= effective_at
+            <= datetime.fromisoformat(card.valid_until)
+        )
+        lines.append(
+            f"{source}|{card.card_id}|{card.kind.value}|{card.issuer_id}|"
+            f"{card.subject_id}|{int(action_scope_match)}|{int(valid_now)}|"
+            f"{int(card.authenticated)}|{int(card.transferable)}"
+        )
+    return "\n".join(lines)
+
+
 def deterministic_drafts(
     context: TypedCompactionContext,
 ) -> dict[str, TypedCompactionDraft]:
@@ -168,8 +206,8 @@ def deterministic_drafts(
         ),
         "typed_card_retention": TypedCompactionDraft(
             method="typed_card_retention",
-            summary="",
-            priority_event_ids=card_sources,
+            summary=_compact_card_summary(context),
+            priority_event_ids=(),
             source_event_ids=card_sources,
         ),
     }
@@ -276,7 +314,9 @@ def build_budget_context(
     system_ids = {
         event.event_id for event in context.active_events if event.role == "system"
     }
-    selected_ids = set(system_ids)
+    selected_ids = (
+        set() if draft.method == "typed_card_retention" else set(system_ids)
+    )
     text = _render(context, selected_ids, draft.summary)
     truncated = False
     if counter.count(text).token_count > budget_tokens:
@@ -303,7 +343,7 @@ def build_budget_context(
                 selected_ids = candidate_ids
                 fill_ids.append(event.event_id)
                 text = candidate
-    minimum = int(budget_tokens * minimum_utilization)
+    minimum = math.ceil(budget_tokens * minimum_utilization)
     text = _pad_to_floor(
         text,
         minimum=minimum,

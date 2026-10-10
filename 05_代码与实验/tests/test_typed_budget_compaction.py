@@ -85,6 +85,46 @@ class TypedBudgetCompactionTests(unittest.TestCase):
             {card.card_id for card in self.context.visible_cards},
             {card.card_id for card in rehydrate_cards(self.context, compacted)},
         )
+        self.assertIn("PROOF_FIELDS=source|id|type", compacted.text)
+        self.assertNotIn("TOOL: Proof card", compacted.text)
+        for card in self.context.visible_cards:
+            self.assertIn(card.card_id, compacted.text)
+
+    def test_summary_accepts_comma_separated_visible_citations(self) -> None:
+        first, second = (
+            card.source_event_ids[0] for card in self.context.visible_cards[:2]
+        )
+        draft = summary_draft(
+            self.context,
+            "neutral_summary",
+            FakeClient({"summary": f"Two proofs remain relevant [{first}, {second}]."}),
+            GenerationConfig(model="fake"),
+        )
+        self.assertTrue(draft.format_valid)
+        self.assertEqual((first, second), draft.source_event_ids)
+
+    def test_every_typed_capsule_keeps_all_visible_provenance(self) -> None:
+        for context in build_typed_compaction_contexts():
+            draft = deterministic_drafts(context)["typed_card_retention"]
+            expected_sources = {
+                source
+                for card in context.visible_cards
+                for source in card.source_event_ids
+            }
+            self.assertEqual(expected_sources, set(draft.source_event_ids))
+            for source in expected_sources:
+                self.assertIn(f"[{source}]", draft.summary)
+
+    def test_utilization_floor_rounds_up_to_whole_token(self) -> None:
+        draft = deterministic_drafts(self.context)["recent_window"]
+        compacted = build_budget_context(
+            self.context,
+            draft,
+            counter=self.counter,
+            budget_tokens=101,
+            minimum_utilization=0.9,
+        )
+        self.assertGreaterEqual(compacted.exact_raw_tokens, 91)
 
     def test_full_context_is_an_unbudgeted_ceiling(self) -> None:
         compacted = full_context(self.context, self.counter)

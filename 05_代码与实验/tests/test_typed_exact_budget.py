@@ -113,6 +113,11 @@ class TypedExactBudgetRunnerTests(unittest.TestCase):
         self.assertTrue(audit["instrumentation_passed"])
         self.assertTrue(audit["typed_method_passed"])
 
+    def test_probe_limit_replaces_cache_hit_rate_gate(self) -> None:
+        gate = _gate(self.config)
+        self.assertNotIn("minimum_token_cache_hit_rate", gate)
+        self.assertEqual(3000, gate["maximum_token_count_probe_calls"])
+
 
 if __name__ == "__main__":
     unittest.main()

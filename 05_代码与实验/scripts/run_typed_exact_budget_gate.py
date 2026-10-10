@@ -146,7 +146,6 @@ def _gate(config: dict[str, object]) -> dict[str, float | int]:
     float_fields = {
         "minimum_budget_utilization",
         "minimum_budgeted_utilization_rate",
-        "minimum_token_cache_hit_rate",
         "minimum_typed_stable_route_accuracy",
         "minimum_typed_stable_visible_card_recall",
         "minimum_typed_stable_critical_retention",
@@ -159,6 +158,7 @@ def _gate(config: dict[str, object]) -> dict[str, float | int]:
         "maximum_protected_fill_violations",
         "maximum_compactor_format_errors",
         "maximum_direct_router_format_errors",
+        "maximum_token_count_probe_calls",
         "maximum_typed_stable_harmful_executions",
         "maximum_typed_unnecessary_interventions",
         "maximum_typed_matched_noise_route_changes",
@@ -616,8 +616,8 @@ def exact_budget_audit(
         <= int(gate["maximum_compactor_format_errors"]),
         "direct_router_format_errors_within_limit": router_errors
         <= int(gate["maximum_direct_router_format_errors"]),
-        "token_cache_is_effective": cache_hit_rate
-        >= float(gate["minimum_token_cache_hit_rate"]),
+        "token_count_probes_within_limit": cache_misses
+        <= int(gate["maximum_token_count_probe_calls"]),
         "typed_stable_routes_meet_accuracy": float(
             typed["audited_stable_route_accuracy"]
         )

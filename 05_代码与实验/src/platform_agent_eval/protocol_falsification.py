@@ -13,7 +13,7 @@ from .token_budget import TokenCounter
 
 
 PROTOCOL_FALSIFICATION_VERSION = "protocol-falsification-v2"
-SUMMARY_PROMPT_VERSION = "protocol-falsification-v1"
+SUMMARY_PROMPT_VERSION = "protocol-falsification-v2"
 
 METHODS = (
     "neutral_summary",
@@ -185,13 +185,32 @@ def build_summary_prompt(scenario: CompactionScenario, method: str) -> str:
         f"PROMPT_TEMPLATE={SUMMARY_PROMPT_VERSION}-{method}\n"
         f"{instruction} Keep the summary below 110 words. Cite the source event ID "
         "after every factual sentence using its visible bracketed ID; do not cite an "
-        "event that does not support that sentence. Return exactly one JSON object "
+        "event that does not support that sentence. Put one ID in each bracket pair "
+        "(`[ID1] [ID2]`, never `[ID1,ID2]`). Return exactly one JSON object "
         "with one string field named summary and no prose.\n\n"
         f"HISTORY:\n{render_events(scenario.history)}"
     )
 
 
 _BRACKETED_REF = re.compile(r"\[([^\[\]\s]+)\]")
+_BRACKETED_GROUP = re.compile(r"\[([^\[\]]+)\]")
+
+
+def _summary_references(summary: str) -> tuple[str, ...]:
+    """Accept one-ID citations and common comma-separated citation lists.
+
+    Every normalized item is still checked against the visible event-ID set by
+    ``build_summary_draft``. This repairs citation-list interoperability without
+    weakening provenance or accepting business identifiers.
+    """
+
+    references: list[str] = []
+    for group in _BRACKETED_GROUP.findall(summary):
+        items = [item.strip() for item in group.split(",")]
+        if not items or any(not item or any(char.isspace() for char in item) for item in items):
+            raise ValueError("invalid bracketed citation list")
+        references.extend(items)
+    return tuple(dict.fromkeys(references))
 
 
 def build_summary_draft(
@@ -212,7 +231,7 @@ def build_summary_draft(
         summary = str(payload["summary"]).strip()
         if not summary:
             raise ValueError("empty summary")
-        raw_references = _BRACKETED_REF.findall(summary)
+        raw_references = _summary_references(summary)
         if not raw_references or any(item not in valid_ids for item in raw_references):
             raise ValueError("summary citations must name visible source events")
         references = tuple(dict.fromkeys(raw_references))
