@@ -87,6 +87,33 @@ def _truncate_words(text: str, budget: int, counter: TokenCounter) -> str:
     return best
 
 
+def _pad_to_floor(
+    text: str,
+    *,
+    minimum: int,
+    budget: int,
+    counter: TokenCounter,
+) -> str:
+    padding_words = (
+        "Routine telemetry remained available and added no new proof."
+    ).split()
+    while counter.count(text).token_count < minimum:
+        progressed = False
+        for word in padding_words:
+            separator = "\n" if word == padding_words[0] else " "
+            candidate = text + separator + word
+            if counter.count(candidate).token_count > budget:
+                return text
+            if candidate != text:
+                text = candidate
+                progressed = True
+            if counter.count(text).token_count >= minimum:
+                return text
+        if not progressed:
+            return text
+    return text
+
+
 def _render(
     context: TypedCompactionContext,
     selected_ids: set[str],
@@ -277,12 +304,12 @@ def build_budget_context(
                 fill_ids.append(event.event_id)
                 text = candidate
     minimum = int(budget_tokens * minimum_utilization)
-    padding = "\nRoutine telemetry remained available and added no new proof."
-    while (
-        counter.count(text).token_count < minimum
-        and counter.count(text + padding).token_count <= budget_tokens
-    ):
-        text += padding
+    text = _pad_to_floor(
+        text,
+        minimum=minimum,
+        budget=budget_tokens,
+        counter=counter,
+    )
     exact = counter.count(text).token_count
     if exact > budget_tokens:
         raise AssertionError("typed budget context exceeded token budget")
@@ -293,7 +320,7 @@ def build_budget_context(
     )
     sources = tuple(
         dict.fromkeys(
-            [*draft.source_event_ids, *_BRACKETED_REF.findall(text), *retained]
+            [*_BRACKETED_REF.findall(text), *retained]
         )
     )
     return TypedBudgetContext(

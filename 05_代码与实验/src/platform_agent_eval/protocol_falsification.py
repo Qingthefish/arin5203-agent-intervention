@@ -234,7 +234,8 @@ def build_summary_draft(
 # APR-, AUTH-, RB-, FREEZE-, and BOUNDARY-.  They describe reusable evidence
 # relations rather than identifiers authored for this scenario set.
 _GENERIC_PIN_CUES = re.compile(
-    r"\b(authori[sz](?:e[sd]?|ation)|covers only|does not (?:authori[sz]e|cover)|"
+    r"\b(authority|authori[sz](?:e[sd]?|ation)|clearance|active hold|delegation|"
+    r"repair channel|covers only|does not (?:authori[sz]e|cover)|"
     r"forbids?|must not|operator[- ]only|cannot authori[sz]e|"
     r"allows? .{0,80} but not|valid until|before \d{1,2}:\d{2}|"
     r"(?:rollback|recovery) .{0,60}(?:verified|available|ready)|"

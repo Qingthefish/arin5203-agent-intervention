@@ -107,6 +107,41 @@ class TypedBudgetCompactionTests(unittest.TestCase):
             card.card_id for card in rehydrate_cards(self.context, compacted)
         })
 
+    def test_truncated_summary_cannot_rehydrate_a_removed_citation(self) -> None:
+        source = self.context.visible_cards[0].source_event_ids[0]
+        draft = summary_draft(
+            self.context,
+            "neutral_summary",
+            FakeClient(
+                {
+                    "summary": (
+                        "Routine context " * 80
+                        + f"final authority evidence [{source}]."
+                    )
+                }
+            ),
+            GenerationConfig(model="fake"),
+        )
+        compacted = build_budget_context(
+            self.context,
+            draft,
+            counter=self.counter,
+            budget_tokens=40,
+            minimum_utilization=0.7,
+        )
+        self.assertTrue(compacted.base_was_truncated)
+        self.assertNotIn(source, compacted.text)
+        self.assertNotIn(
+            self.context.visible_cards[0].card_id,
+            {card.card_id for card in rehydrate_cards(self.context, compacted)},
+        )
+
+    def test_generic_pinning_recognizes_plain_typed_proof_words(self) -> None:
+        draft = deterministic_drafts(self.context)["generic_pinning"]
+        self.assertTrue(set(draft.priority_event_ids).intersection(
+            {source for card in self.context.visible_cards for source in card.source_event_ids}
+        ))
+
     def test_ufold_rejects_invisible_source_event(self) -> None:
         draft = ufold_draft(
             self.context,
