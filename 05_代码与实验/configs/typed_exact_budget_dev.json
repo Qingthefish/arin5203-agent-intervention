@@ -1,5 +1,5 @@
 {
-  "experiment": "typed_exact_budget_development_gate_v1",
+  "experiment": "typed_exact_budget_development_gate_v2",
   "scenario_set": "typed-compaction-dev-v1",
   "compaction_version": "typed-budget-compaction-v1",
   "router_version": "typed-compaction-direct-router-v1",
@@ -13,8 +13,8 @@
   "minimum_utilization": 0.9,
   "compactor_max_tokens": 256,
   "router_max_tokens": 192,
-  "output_prefix": "typed_exact_budget_dev_qwen_v1",
-  "iteration_policy": "freeze the nine development bases, twenty-seven siblings, seven context methods, 384 raw-token budget, neutral-only fill, direct-router schema, proof-card validator, metrics, thresholds, prompts, and seed before one local run; preserve every raw output and counterexample; do not tune or relabel this dataset after observing results",
+  "output_prefix": "typed_exact_budget_dev_qwen_v2",
+  "iteration_policy": "retry the preserved zero-call v1 sandbox-connection failure with local Ollama access enabled; keep the nine development bases, twenty-seven siblings, seven context methods, 384 raw-token budget, neutral-only fill, direct-router schema, proof-card validator, metrics, thresholds, prompts, seed, and claim boundary unchanged; preserve every raw output and counterexample and do not tune or relabel this dataset after observing results",
   "claim_scope": "fresh exact-budget development comparison only; may select or reject the typed-retention architecture for a separately authored held-out set, but cannot establish generalization, production safety, or a paper-level reproduction",
   "planning_estimates": {
     "base_families": 9,
