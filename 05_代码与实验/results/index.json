@@ -3,15 +3,15 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 31,
+    "runs": 32,
     "statuses": {
       "ABORTED_DESIGN_REVIEW": 1,
       "COMPLETED": 21,
-      "FAILED": 7,
+      "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
-      "FAILED_OR_ABORTED": 8,
+      "FAILED_OR_ABORTED": 9,
       "FROZEN_GATE_BUNDLE": 17,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
@@ -871,6 +871,33 @@
         "audit": null
       },
       "manifest_sha256": "fe1b0c44fbdba333e59dbdd03ce409387bf81dcd67be695eec438c09e00de07c",
+      "audit_sha256": null
+    },
+    {
+      "prefix": "typed_exact_budget_dev_qwen_v2",
+      "status": "FAILED",
+      "evidence_tier": "FAILED_OR_ABORTED",
+      "experiment": "typed_exact_budget_development_gate_v2",
+      "scenario_set": "typed-compaction-dev-v1",
+      "model": "qwen3.5:9b",
+      "provider": "ollama",
+      "git_commit": "66244896c551871ee091d6e758d1f32ebdde268c",
+      "measured_generation_calls": null,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-10T15:54:46.709175+08:00",
+      "finished_at": null,
+      "audit_status": null,
+      "recommendation": null,
+      "claim_scope": "fresh exact-budget development comparison only; may select or reject the typed-retention architecture for a separately authored held-out set, but cannot establish generalization, production safety, or a paper-level reproduction",
+      "artifacts": {
+        "manifest": "results/typed_exact_budget_dev_qwen_v2_manifest.json",
+        "raw": "results/typed_exact_budget_dev_qwen_v2_raw.jsonl",
+        "summary": null,
+        "audit": null
+      },
+      "manifest_sha256": "57724d42bbc9671490c3040ad74f1f76015808325598feb875752de84206948f",
       "audit_sha256": null
     }
   ]
