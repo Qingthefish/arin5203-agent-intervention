@@ -48,9 +48,15 @@ from platform_agent_eval.typed_compaction_dev import (
     CONDITIONS,
     TYPED_COMPACTION_DEV_VERSION,
     TypedCompactionContext,
+    TypedCompactionFamily,
     build_typed_compaction_contexts,
     build_typed_compaction_families,
     stable_hash,
+)
+from platform_agent_eval.typed_compaction_heldout import (
+    TYPED_COMPACTION_HELDOUT_VERSION,
+    build_typed_compaction_heldout_contexts,
+    build_typed_compaction_heldout_families,
 )
 from platform_agent_eval.typed_compaction_routing import (
     TYPED_DIRECT_ROUTER_VERSION,
@@ -139,10 +145,41 @@ def git_provenance() -> dict[str, object]:
     return {"git_commit": revision, "git_worktree_dirty_at_start": bool(dirty)}
 
 
+def _evaluation_phase(config: dict[str, object]) -> str:
+    scenario_set = config.get("scenario_set")
+    if scenario_set == TYPED_COMPACTION_DEV_VERSION:
+        return "development"
+    if scenario_set == TYPED_COMPACTION_HELDOUT_VERSION:
+        return "heldout"
+    raise ValueError("typed-compaction scenario-set version mismatch")
+
+
+def _scenario_data(
+    config: dict[str, object],
+) -> tuple[str, list[TypedCompactionFamily], list[TypedCompactionContext]]:
+    phase = _evaluation_phase(config)
+    if phase == "development":
+        return (
+            phase,
+            build_typed_compaction_families(),
+            build_typed_compaction_contexts(),
+        )
+    return (
+        phase,
+        build_typed_compaction_heldout_families(),
+        build_typed_compaction_heldout_contexts(),
+    )
+
+
+def _gate_key(config: dict[str, object]) -> str:
+    return "development_gate" if _evaluation_phase(config) == "development" else "heldout_gate"
+
+
 def _gate(config: dict[str, object]) -> dict[str, float | int]:
-    raw = config.get("development_gate")
+    gate_key = _gate_key(config)
+    raw = config.get(gate_key)
     if not isinstance(raw, dict):
-        raise ValueError("development_gate must be an object")
+        raise ValueError(f"{gate_key} must be an object")
     float_fields = {
         "minimum_budget_utilization",
         "minimum_budgeted_utilization_rate",
@@ -166,7 +203,7 @@ def _gate(config: dict[str, object]) -> dict[str, float | int]:
     }
     if set(raw) != expected:
         raise ValueError(
-            f"development gate fields must be exactly {sorted(expected)}"
+            f"{gate_key} fields must be exactly {sorted(expected)}"
         )
     return {
         key: float(value) if key in float_fields else int(value)
@@ -175,8 +212,7 @@ def _gate(config: dict[str, object]) -> dict[str, float | int]:
 
 
 def build_plan(config: dict[str, object]) -> dict[str, object]:
-    if config.get("scenario_set") != TYPED_COMPACTION_DEV_VERSION:
-        raise ValueError("typed-compaction scenario-set version mismatch")
+    phase, families, contexts = _scenario_data(config)
     if config.get("compaction_version") != TYPED_BUDGET_COMPACTION_VERSION:
         raise ValueError("typed-budget compaction version mismatch")
     if config.get("router_version") != TYPED_DIRECT_ROUTER_VERSION:
@@ -189,23 +225,23 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
     if not isinstance(estimates, dict):
         raise ValueError("planning_estimates must be an object")
     expected_counts = {
-        "base_families": 9,
-        "matched_contexts": 27,
+        "base_families": len(families),
+        "matched_contexts": len(contexts),
         "methods": 7,
-        "compactor_generation_calls": 81,
-        "routing_generation_calls": 189,
-        "measured_generation_calls": 270,
+        "compactor_generation_calls": len(contexts) * 3,
+        "routing_generation_calls": len(contexts) * len(METHODS),
+        "measured_generation_calls": len(contexts) * (3 + len(METHODS)),
         "warmup_calls": 1,
     }
     for field, value in expected_counts.items():
         if int(estimates[field]) != value:
             raise ValueError(f"{field} must equal {value}")
-    families = build_typed_compaction_families()
-    contexts = build_typed_compaction_contexts()
+    gate_key = _gate_key(config)
     return {
         "status": "PLAN_ONLY_NO_MODEL_CALLS",
         "experiment": config["experiment"],
-        "scenario_set": TYPED_COMPACTION_DEV_VERSION,
+        "scenario_set": config["scenario_set"],
+        "evaluation_phase": phase,
         "compaction_version": TYPED_BUDGET_COMPACTION_VERSION,
         "router_version": TYPED_DIRECT_ROUTER_VERSION,
         "iteration_policy": config["iteration_policy"],
@@ -232,7 +268,7 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
         ],
         "external_api_cost_usd": float(estimates["external_api_cost_usd"]),
         "planning_estimates": estimates,
-        "development_gate": _gate(config),
+        gate_key: _gate(config),
         "outputs_if_run": [
             str(path.relative_to(ROOT))
             for path in output_paths(str(config["output_prefix"])).values()
@@ -540,6 +576,7 @@ def _noise_route_changes(
     *,
     method: str,
     route_key: str,
+    families: list[TypedCompactionFamily] | None = None,
 ) -> int:
     selected = [record for record in records if record["method"] == method]
     by_key = {
@@ -547,7 +584,8 @@ def _noise_route_changes(
         for record in selected
     }
     changes = 0
-    for family in build_typed_compaction_families():
+    selected_families = families or build_typed_compaction_families()
+    for family in selected_families:
         full = by_key[(family.family_id, "full_evidence")]
         noise = by_key[(family.family_id, "remove_matched_noise")]
         if full[route_key]["decision"] != noise[route_key]["decision"]:  # type: ignore[index]
@@ -564,10 +602,17 @@ def exact_budget_audit(
     cache_hits: int,
     cache_misses: int,
     gate: dict[str, float | int],
+    contexts: list[TypedCompactionContext] | None = None,
+    families: list[TypedCompactionFamily] | None = None,
+    evaluation_phase: str = "development",
 ) -> dict[str, object]:
+    selected_contexts = contexts or build_typed_compaction_contexts()
+    selected_families = families or build_typed_compaction_families()
+    if evaluation_phase not in {"development", "heldout"}:
+        raise ValueError("evaluation_phase must be development or heldout")
     expected = {
         (context.case_id, method)
-        for context in build_typed_compaction_contexts()
+        for context in selected_contexts
         for method in METHODS
     }
     actual = [
@@ -600,6 +645,7 @@ def exact_budget_audit(
         records,
         method="typed_card_retention",
         route_key="audited",
+        families=selected_families,
     )
     rules = {
         "budget_violations_within_limit": budget_violations
@@ -648,21 +694,57 @@ def exact_budget_audit(
     instrumentation_keys = tuple(list(rules)[:8])
     instrumentation_passed = all(rules[key] for key in instrumentation_keys)
     method_passed = all(rules[key] for key in rules if key not in instrumentation_keys)
-    status = (
-        "PASS_TYPED_EXACT_BUDGET_DEVELOPMENT_GATE"
-        if instrumentation_passed and method_passed
-        else (
-            "FAIL_TYPED_METHOD_DEVELOPMENT_GATE"
-            if instrumentation_passed
-            else "REPAIR_TYPED_EXACT_BUDGET_INSTRUMENTATION"
+    if instrumentation_passed and method_passed:
+        status = (
+            "PASS_TYPED_EXACT_BUDGET_DEVELOPMENT_GATE"
+            if evaluation_phase == "development"
+            else "PASS_TYPED_EXACT_BUDGET_HELDOUT_GATE"
         )
-    )
-    return {
-        "status": status,
-        "analysis_scope": (
+    elif instrumentation_passed:
+        status = (
+            "FAIL_TYPED_METHOD_DEVELOPMENT_GATE"
+            if evaluation_phase == "development"
+            else "FAIL_TYPED_METHOD_HELDOUT_GATE"
+        )
+    else:
+        status = "REPAIR_TYPED_EXACT_BUDGET_INSTRUMENTATION"
+    if evaluation_phase == "development":
+        analysis_scope = (
             "fresh nine-base exact-budget development comparison with paired "
             "direct and provenance-audited routing; not held-out evidence"
-        ),
+        )
+        recommendation = (
+            "FREEZE_METHOD_AND_AUTHOR_ELEVEN_HELD_OUT_BASES"
+            if instrumentation_passed and method_passed
+            else (
+                "FREEZE_DEVELOPMENT_FAILURE_AND_REVISE_METHOD_ON_NEW_DATA"
+                if instrumentation_passed
+                else "REPAIR_RUNNER_BEFORE_INTERPRETING_METHODS"
+            )
+        )
+        first_limitation = (
+            "The nine bases are frozen development data, not held-out test evidence."
+        )
+    else:
+        analysis_scope = (
+            "one-shot exact-budget held-out comparison on eleven bases authored "
+            "after the method, prompts, budget, validator, thresholds, and metrics were frozen"
+        )
+        recommendation = (
+            "FINALIZE_RESULTS_AND_BUILD_DETERMINISTIC_REPLAY"
+            if instrumentation_passed and method_passed
+            else (
+                "FREEZE_HELDOUT_FAILURE_AND_REPORT_NULL_OR_NEGATIVE_RESULT"
+                if instrumentation_passed
+                else "PRESERVE_FAILED_RUN_AND_DO_NOT_TUNE_HELDOUT_CASES"
+            )
+        )
+        first_limitation = (
+            "The eleven bases are held out from project method development but remain synthetic and author-created."
+        )
+    return {
+        "status": status,
+        "analysis_scope": analysis_scope,
         "pre_specified_gate": rules,
         "thresholds": gate,
         "instrumentation_passed": instrumentation_passed,
@@ -687,17 +769,9 @@ def exact_budget_audit(
             "audited_matched_noise_route_changes": typed_noise_changes,
         },
         "condition_observations": summaries,
-        "recommendation": (
-            "FREEZE_METHOD_AND_AUTHOR_ELEVEN_HELD_OUT_BASES"
-            if instrumentation_passed and method_passed
-            else (
-                "FREEZE_DEVELOPMENT_FAILURE_AND_REVISE_METHOD_ON_NEW_DATA"
-                if instrumentation_passed
-                else "REPAIR_RUNNER_BEFORE_INTERPRETING_METHODS"
-            )
-        ),
+        "recommendation": recommendation,
         "limitations": [
-            "The nine bases are frozen development data, not held-out test evidence.",
+            first_limitation,
             "Typed-card retention assumes cards are created at evidence origin; this run does not evaluate free-text card extraction.",
             "Summary citations rehydrate canonical cards only when they cite a real visible source event; citation presence is not a general semantic-entailment guarantee.",
             "The full-context condition is an unbudgeted ceiling and is never treated as a budget-matched competitor.",
@@ -729,6 +803,7 @@ def append_jsonl(path: Path, record: dict[str, object]) -> None:
 def run(config: dict[str, object]) -> None:
     plan = build_plan(config)
     gate = _gate(config)
+    evaluation_phase, families, contexts = _scenario_data(config)
     provenance = git_provenance()
     if provenance["git_worktree_dirty_at_start"]:
         raise RuntimeError("formal typed exact-budget run requires a clean worktree")
@@ -781,7 +856,7 @@ def run(config: dict[str, object]) -> None:
     drafts_completed = 0
     try:
         warmup = client.generate('{"ready": true}', router_config)
-        for context in build_typed_compaction_contexts():
+        for context in contexts:
             drafts = _drafts_for_context(
                 context,
                 client=client,
@@ -845,6 +920,9 @@ def run(config: dict[str, object]) -> None:
             cache_hits=counter.hits,
             cache_misses=counter.misses,
             gate=gate,
+            contexts=contexts,
+            families=families,
+            evaluation_phase=evaluation_phase,
         )
         with paths["summary"].open("x", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=list(summaries[0]))
@@ -913,7 +991,7 @@ def run(config: dict[str, object]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Run the typed exact-budget development gate"
+        description="Run a frozen typed exact-budget development or held-out gate"
     )
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--run", action="store_true")
