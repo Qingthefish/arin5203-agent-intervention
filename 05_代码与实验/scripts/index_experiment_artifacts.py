@@ -57,7 +57,7 @@ def build_index(results_dir: Path = RESULTS) -> dict[str, Any]:
         }
         present = {name: path.exists() for name, path in paths.items()}
         audit = _load_json(paths["audit"]) if present["audit"] else {}
-        if status in {"FAILED", "ABORTED_DESIGN_REVIEW"}:
+        if status in {"FAILED", "ABORTED", "ABORTED_DESIGN_REVIEW"}:
             evidence_tier = "FAILED_OR_ABORTED"
         elif status == "COMPLETED" and all(present.values()):
             evidence_tier = "FROZEN_GATE_BUNDLE"
