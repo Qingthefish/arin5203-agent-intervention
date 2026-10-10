@@ -196,7 +196,7 @@ _BRACKETED_REF = re.compile(r"\[([^\[\]\s]+)\]")
 _BRACKETED_GROUP = re.compile(r"\[([^\[\]]+)\]")
 
 
-def _summary_references(summary: str) -> tuple[str, ...]:
+def normalize_bracketed_event_ids(text: str) -> tuple[str, ...]:
     """Accept one-ID citations and common comma-separated citation lists.
 
     Every normalized item is still checked against the visible event-ID set by
@@ -205,7 +205,7 @@ def _summary_references(summary: str) -> tuple[str, ...]:
     """
 
     references: list[str] = []
-    for group in _BRACKETED_GROUP.findall(summary):
+    for group in _BRACKETED_GROUP.findall(text):
         items = [item.strip() for item in group.split(",")]
         if not items or any(not item or any(char.isspace() for char in item) for item in items):
             raise ValueError("invalid bracketed citation list")
@@ -231,7 +231,7 @@ def build_summary_draft(
         summary = str(payload["summary"]).strip()
         if not summary:
             raise ValueError("empty summary")
-        raw_references = _summary_references(summary)
+        raw_references = normalize_bracketed_event_ids(summary)
         if not raw_references or any(item not in valid_ids for item in raw_references):
             raise ValueError("summary citations must name visible source events")
         references = tuple(dict.fromkeys(raw_references))

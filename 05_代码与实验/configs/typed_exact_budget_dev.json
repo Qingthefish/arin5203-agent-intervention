@@ -1,7 +1,7 @@
 {
-  "experiment": "typed_exact_budget_development_gate_v5",
+  "experiment": "typed_exact_budget_development_gate_v6",
   "scenario_set": "typed-compaction-dev-v1",
-  "compaction_version": "typed-budget-compaction-v2",
+  "compaction_version": "typed-budget-compaction-v3",
   "router_version": "typed-compaction-direct-router-v1",
   "provider": "ollama",
   "base_url": "http://127.0.0.1:11434",
@@ -13,8 +13,8 @@
   "minimum_utilization": 0.9,
   "compactor_max_tokens": 512,
   "router_max_tokens": 192,
-  "output_prefix": "typed_exact_budget_dev_qwen_v5",
-  "iteration_policy": "repair the completed v4 development gate without changing its nine bases, twenty-seven siblings, seven method identities, 384 raw-token budget, neutral-only fill, direct-router schema, proof-card validator, route metrics, seed, or claim boundary: use a true ceiling for the 90 percent utilization floor; replace the cache-hit gate that rewards redundant requests with a pre-declared maximum of 3000 unique tokenizer probes; raise compactor output capacity from 256 to 512 tokens and normalize comma-separated visible citation lists; serialize origin-typed proof cards compactly instead of replaying verbose source events; preserve v4 and every v5 output and do not relabel the dataset after observing results",
+  "output_prefix": "typed_exact_budget_dev_qwen_v6",
+  "iteration_policy": "perform one interface-only retry after preserving the completed v5 gate: make the downstream budget-context source extractor reuse the same comma-list event-ID normalizer already used by the summary parser; keep the nine bases, twenty-seven siblings, seven methods, 384 raw-token budget, 90 percent floor, neutral-only fill, prompts, 512-token compactor cap, direct-router schema, proof capsules, proof-card validator, route metrics, thresholds, seed, and claim boundary unchanged; preserve every v6 output, and stop development-set iteration after this run regardless of outcome",
   "claim_scope": "fresh exact-budget development comparison only; may select or reject the typed-retention architecture for a separately authored held-out set, but cannot establish generalization, production safety, or a paper-level reproduction",
   "planning_estimates": {
     "base_families": 9,

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import math
-import re
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -13,13 +12,14 @@ from .protocol_falsification import (
     ProtocolCompactionDraft,
     build_generic_pinning_draft,
     build_summary_draft,
+    normalize_bracketed_event_ids,
 )
 from .proof_cards import ProofCard, ProofCardKind
 from .token_budget import TokenCounter
 from .typed_compaction_dev import TypedCompactionContext
 
 
-TYPED_BUDGET_COMPACTION_VERSION = "typed-budget-compaction-v2"
+TYPED_BUDGET_COMPACTION_VERSION = "typed-budget-compaction-v3"
 METHODS = (
     "full_context_ceiling",
     "recent_window",
@@ -56,9 +56,6 @@ class TypedBudgetContext:
     response: ModelResponse | None = None
     raw_output: str | None = None
     base_was_truncated: bool = False
-
-
-_BRACKETED_REF = re.compile(r"\[([^\[\]\s]+)\]")
 
 
 def _json_object(text: str) -> dict[str, object]:
@@ -360,7 +357,7 @@ def build_budget_context(
     )
     sources = tuple(
         dict.fromkeys(
-            [*_BRACKETED_REF.findall(text), *retained]
+            [*normalize_bracketed_event_ids(text), *retained]
         )
     )
     return TypedBudgetContext(

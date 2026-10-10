@@ -102,6 +102,26 @@ class TypedBudgetCompactionTests(unittest.TestCase):
         )
         self.assertTrue(draft.format_valid)
         self.assertEqual((first, second), draft.source_event_ids)
+        compacted = build_budget_context(
+            self.context,
+            draft,
+            counter=self.counter,
+            budget_tokens=180,
+            minimum_utilization=0.7,
+        )
+        self.assertTrue({first, second}.issubset(compacted.source_event_ids))
+        self.assertEqual(
+            {self.context.visible_cards[0].card_id, self.context.visible_cards[1].card_id},
+            {
+                card.card_id
+                for card in rehydrate_cards(self.context, compacted)
+                if card.card_id
+                in {
+                    self.context.visible_cards[0].card_id,
+                    self.context.visible_cards[1].card_id,
+                }
+            },
+        )
 
     def test_every_typed_capsule_keeps_all_visible_provenance(self) -> None:
         for context in build_typed_compaction_contexts():
