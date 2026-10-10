@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 33,
+    "runs": 34,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 21,
+      "COMPLETED": 22,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 17,
+      "FROZEN_GATE_BUNDLE": 18,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -927,6 +927,33 @@
       },
       "manifest_sha256": "5894a316ae35f7354d57479b7b3ba0a070b94f3f9e60bfe31c60a28292484d6d",
       "audit_sha256": null
+    },
+    {
+      "prefix": "typed_exact_budget_dev_qwen_v4",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "typed_exact_budget_development_gate_v4",
+      "scenario_set": "typed-compaction-dev-v1",
+      "model": "qwen3.5:9b",
+      "provider": "ollama",
+      "git_commit": "56d5a15d59d04867485819158be14c9b275e69a7",
+      "measured_generation_calls": 270,
+      "prompt_tokens": 271340,
+      "completion_tokens": 26674,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-10T23:32:53.196273+08:00",
+      "finished_at": "2026-10-11T00:53:34.994164+08:00",
+      "audit_status": "REPAIR_TYPED_EXACT_BUDGET_INSTRUMENTATION",
+      "recommendation": "REPAIR_RUNNER_BEFORE_INTERPRETING_METHODS",
+      "claim_scope": "fresh exact-budget development comparison only; may select or reject the typed-retention architecture for a separately authored held-out set, but cannot establish generalization, production safety, or a paper-level reproduction",
+      "artifacts": {
+        "manifest": "results/typed_exact_budget_dev_qwen_v4_manifest.json",
+        "raw": "results/typed_exact_budget_dev_qwen_v4_raw.jsonl",
+        "summary": "results/typed_exact_budget_dev_qwen_v4_summary.csv",
+        "audit": "results/typed_exact_budget_dev_qwen_v4_audit.json"
+      },
+      "manifest_sha256": "39613e3192b563099135aa8e33b767c1f90b7f959105f07c8e4f03b2db2bc9c4",
+      "audit_sha256": "b3fe0af7da2cbafaa1cf624dbd1a48f5481c7f0c127dcec99f194f3e198d9f62"
     }
   ]
 }
