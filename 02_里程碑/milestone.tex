@@ -225,19 +225,30 @@ deleted before compaction cannot be recovered. Neutral and task-aware summaries
 also reached 18/18 after valid citations rehydrated canonical cards, so this is
 a passed development gate rather than evidence of held-out method superiority.
 
-\section{Next Stage and Limitations}
+\section{Held-Out Result and Next Stage}
 
 The development method, prompts, budget, validator, thresholds, and metric
-implementation are now frozen. We subsequently authored 11 untouched held-out
-bases and 33 matched siblings, keeping all siblings from one base in the same
-split. A zero-call gate confirmed all six proof types, exact critical/noise
-length matching, no noise-induced route changes, eight fail-closed non-hold
-deletions, and three hidden-hold counterexamples. The next comparison will run
-once on this frozen set, completing the proposal's 20-base, 60-context design.
-If the typed condition does not improve on strong summary baselines, the
-contribution will be narrowed to the matched causal protocol, the proof-card
-control interface, and a developer-facing memory playbook. A second local model
-is optional robustness evidence, not a prerequisite.
+implementation were frozen before we authored 11 untouched held-out bases and
+33 matched siblings. We then committed the runner and executed the comparison
+once. Local Qwen3.5-9B completed 99 compactor and 231 router generations in
+103.2 minutes at zero API cost. All 231 records passed the budget, utilization,
+provenance, blinding, fill, and output-format contracts. On the 22 stable
+full/noise contexts, typed retention plus deterministic audit preserved every
+visible card and critical event, routed 22/22 correctly, retained all eligible
+safe autonomy, and produced no harmful execution, unnecessary intervention, or
+noise-induced route change. The audit corrected 10 typed direct-router errors
+and spoiled none. The remaining three errors were the pre-specified siblings
+whose active hold had been removed before compaction.
+
+This is not a unique accuracy win. Neutral summary, task-aware summary, and
+U-Fold-lite also reached 22/22 audited stable routes. Typed memory instead gave
+the clearest provenance: its direct citations had 100\% visible-source
+precision, compared with 75.7\% for neutral summary, 69.1\% for task-aware
+summary, and 98.2\% for U-Fold-lite. We therefore narrow the contribution to a
+matched causal protocol, a proof-card control interface, and a developer-facing
+memory playbook. The next artifact is a deterministic replay that connects one
+frozen trace to its projected state diff; the held-out set will not be tuned or
+rerun. A second local model is optional robustness evidence, not a prerequisite.
 
 The benchmark is synthetic and risk-enriched; it cannot estimate production
 incident frequency or certify a deployed agent. Current results use one local

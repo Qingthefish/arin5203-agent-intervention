@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 37,
+    "runs": 38,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 25,
+      "COMPLETED": 26,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 21,
+      "FROZEN_GATE_BUNDLE": 22,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -1035,6 +1035,33 @@
       },
       "manifest_sha256": "54ff2d953201f9f30a154f85183e795520e144b65aad998497e8dff022aede4e",
       "audit_sha256": "bf61536a6cc815dcaa8ccbdc3368d00b0849d5067511c0402e756167c31eaeef"
+    },
+    {
+      "prefix": "typed_exact_budget_heldout_qwen_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "typed_exact_budget_heldout_gate_v1",
+      "scenario_set": "typed-compaction-heldout-v1",
+      "model": "qwen3.5:9b",
+      "provider": "ollama",
+      "git_commit": "eda597df6455089aaf66746a9df719a6e68b9440",
+      "measured_generation_calls": 330,
+      "prompt_tokens": 337432,
+      "completion_tokens": 33564,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-11T04:46:18.822200+08:00",
+      "finished_at": "2026-10-11T06:29:28.323352+08:00",
+      "audit_status": "PASS_TYPED_EXACT_BUDGET_HELDOUT_GATE",
+      "recommendation": "FINALIZE_RESULTS_AND_BUILD_DETERMINISTIC_REPLAY",
+      "claim_scope": "one-shot synthetic held-out comparison of frozen compaction and audit methods; may support course-project claims about these cases but cannot establish production safety, universal model generalization, or a paper-level reproduction",
+      "artifacts": {
+        "manifest": "results/typed_exact_budget_heldout_qwen_v1_manifest.json",
+        "raw": "results/typed_exact_budget_heldout_qwen_v1_raw.jsonl",
+        "summary": "results/typed_exact_budget_heldout_qwen_v1_summary.csv",
+        "audit": "results/typed_exact_budget_heldout_qwen_v1_audit.json"
+      },
+      "manifest_sha256": "fab78306ddb354ed9890eaf9519c89bf821ac1bfa90c00f68cdb4214edc766d8",
+      "audit_sha256": "19282d61328ceb0405ad8bb2797436dfe8cfe11929f66d5d4ea7418bf3ce7b1f"
     }
   ]
 }
