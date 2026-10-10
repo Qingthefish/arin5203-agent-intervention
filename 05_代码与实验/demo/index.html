@@ -11,11 +11,11 @@
     <main class="shell">
       <header class="hero">
         <div>
-          <p class="kicker">ARIN 5203 · deterministic trace replay</p>
+          <p class="kicker">ARIN 5203 · frozen held-out trace replay</p>
           <h1>Building an agent is easy.<br /><span>Teaching it what not to forget</span> is not.</h1>
           <p class="lede">
-            A state-changing agent should act only when its compacted memory still
-            contains the evidence required by the next tool call.
+            Change one memory fact. Hold the token budget fixed. Watch the next
+            tool call Execute, Confirm, or Handoff—and see the external state diff.
           </p>
         </div>
         <div class="trace-stamp" id="trace-stamp" aria-live="polite">
@@ -24,7 +24,8 @@
       </header>
 
       <section class="control-bar" aria-label="Demo controls">
-        <div class="domain-tabs" id="domain-tabs"></div>
+        <div class="domain-tabs" id="family-tabs"></div>
+        <label class="method-picker" id="method-picker"></label>
         <div class="mode-toggle" role="group" aria-label="View mode">
           <button class="active" data-mode="story">Story mode</button>
           <button data-mode="debug">Debug mode</button>
@@ -38,7 +39,7 @@
 
       <footer>
         <p><strong>The API knows what is old. Your application knows what is critical.</strong></p>
-        <p>Proof cards are replayed from a frozen local experiment artifact; no live model is used.</p>
+        <p>Every decision comes from the frozen one-shot held-out artifact; the demo makes no live model call.</p>
       </footer>
     </main>
     <script src="/app.js" defer></script>

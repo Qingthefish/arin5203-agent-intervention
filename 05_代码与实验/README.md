@@ -39,7 +39,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
 - `tests/` — deterministic schema, leakage, state-transition, calibration, and compaction tests.
 - `results/` — raw traces, summaries, manifests, audits, and figures from completed runs.
-- `demo/` and `scripts/serve_memory_crash_test.py` — Story / Debug replay UI backed directly by the frozen proof-card trace.
+- `demo/` and `scripts/serve_memory_crash_test.py` — Story / Debug replay UI backed directly by the frozen one-shot held-out trace.
 
 ## Reproduction
 
@@ -73,7 +73,7 @@ The model runners are plan-only by default. They print the model, cases, expecte
 
 Completed model experiments use local Ollama with `qwen3.5:9b`. No model weights, API keys, or company data are stored in the repository.
 
-The local demo is available at `http://127.0.0.1:8765` after starting the server. It does not call a model: the server validates and replays the immutable `proof_cards_deterministic_v1` raw trace and manifest. Story Mode presents the user request, retained proof, route, and projected tool-state transition; Debug Mode exposes card type, issuer, subject, scope, source event, and validator status.
+The local demo is available at `http://127.0.0.1:8765` after starting the server. It does not call a model: the server validates and replays `typed_exact_budget_heldout_qwen_v1` without modifying the formal artifact. The curated view contains three travel-agent families, all three matched conditions, and all seven evaluated memory strategies (63 selectable frozen runs). Story Mode presents the request, Direct → deterministic-audit route change, retained proof, and an applied-or-blocked external state diff. Debug Mode exposes the exact memory seen by the router, card type, issuer, subject, scope, source event, obligation status, token count, and citation precision. The hidden-active-hold sibling remains visibly harmful rather than being replaced with a cleaner handpicked success.
 
 ## Evidence and Artifact Sources
 
