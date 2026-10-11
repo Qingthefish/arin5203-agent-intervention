@@ -40,6 +40,8 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `tests/` — deterministic schema, leakage, state-transition, calibration, and compaction tests.
 - `results/` — raw traces, summaries, manifests, audits, and figures from completed runs.
 - `demo/` and `scripts/serve_memory_crash_test.py` — Story / Debug replay UI backed directly by the frozen one-shot held-out trace.
+- `scripts/plot_typed_heldout_presentation.py` — zero-call derivation of the two presentation figures and their trace-hashed metric summary.
+- `../04_项目展示/` — slide-ready evidence pack and Agent Memory Playbook derived from the frozen held-out result.
 
 ## Reproduction
 
@@ -65,6 +67,7 @@ python3 scripts/run_proof_card_gate.py --config configs/proof_card_gate.json
 python3 scripts/run_typed_compaction_dataset_gate.py --config configs/typed_compaction_dataset_gate.json
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_dev.json
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_heldout.json
+python3 scripts/plot_typed_heldout_presentation.py
 python3 scripts/serve_memory_crash_test.py --port 8765
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
@@ -74,6 +77,10 @@ The model runners are plan-only by default. They print the model, cases, expecte
 Completed model experiments use local Ollama with `qwen3.5:9b`. No model weights, API keys, or company data are stored in the repository.
 
 The local demo is available at `http://127.0.0.1:8765` after starting the server. It does not call a model: the server validates and replays `typed_exact_budget_heldout_qwen_v1` without modifying the formal artifact. The curated view contains three travel-agent families, all three matched conditions, and all seven evaluated memory strategies (63 selectable frozen runs). Story Mode presents the request, Direct → deterministic-audit route change, retained proof, and an applied-or-blocked external state diff. Debug Mode exposes the exact memory seen by the router, card type, issuer, subject, scope, source event, obligation status, token count, and citation precision. The hidden-active-hold sibling remains visibly harmful rather than being replaced with a cleaner handpicked success.
+
+The presentation plotter is also model-free. It reads all 231 records from the immutable held-out raw trace and writes `../04_项目展示/figures/heldout-method-comparison.png`, `heldout-causal-boundary.png`, and `presentation-metrics.json`. The JSON records the source trace SHA-256 and the claim boundary. These files are presentation views, not new experiment artifacts or a replacement for the formal manifest, summary, and audit.
+
+Rendering the PNG figures requires Pillow; install the isolated presentation dependency with `python3 -m pip install -r requirements-presentation.txt`. The metric derivation and the rest of the evaluation suite remain standard-library only.
 
 ## Evidence and Artifact Sources
 

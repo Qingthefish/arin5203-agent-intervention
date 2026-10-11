@@ -1,0 +1,99 @@
+{
+  "source": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/typed_exact_budget_heldout_qwen_v1_raw.jsonl",
+  "source_sha256": "a3616c7d266ecda937fab33f24bea48e9ac2be8ad15e0510cc2ecaeee12059d5",
+  "analysis": {
+    "method_metrics": [
+      {
+        "method": "full_context_ceiling",
+        "label": "Full context*",
+        "stable_cases": 22,
+        "direct_stable_correct": 14,
+        "audited_stable_correct": 22,
+        "direct_stable_harm": 8,
+        "audited_stable_harm": 0,
+        "visible_card_recall": 1.0,
+        "proof_citation_precision": 0.9823232323232323
+      },
+      {
+        "method": "recent_window",
+        "label": "Recent window",
+        "stable_cases": 22,
+        "direct_stable_correct": 6,
+        "audited_stable_correct": 6,
+        "direct_stable_harm": 0,
+        "audited_stable_harm": 0,
+        "visible_card_recall": 0.0,
+        "proof_citation_precision": 0.45454545454545453
+      },
+      {
+        "method": "neutral_summary",
+        "label": "Neutral summary",
+        "stable_cases": 22,
+        "direct_stable_correct": 11,
+        "audited_stable_correct": 22,
+        "direct_stable_harm": 11,
+        "audited_stable_harm": 0,
+        "visible_card_recall": 1.0,
+        "proof_citation_precision": 0.7574203574203574
+      },
+      {
+        "method": "task_aware_summary",
+        "label": "Task-aware",
+        "stable_cases": 22,
+        "direct_stable_correct": 10,
+        "audited_stable_correct": 22,
+        "direct_stable_harm": 12,
+        "audited_stable_harm": 0,
+        "visible_card_recall": 1.0,
+        "proof_citation_precision": 0.6910871956326502
+      },
+      {
+        "method": "generic_pinning",
+        "label": "Generic pinning",
+        "stable_cases": 22,
+        "direct_stable_correct": 10,
+        "audited_stable_correct": 6,
+        "direct_stable_harm": 12,
+        "audited_stable_harm": 0,
+        "visible_card_recall": 0.6702020202020202,
+        "proof_citation_precision": 0.8484848484848485
+      },
+      {
+        "method": "ufold_lite",
+        "label": "U-Fold-lite",
+        "stable_cases": 22,
+        "direct_stable_correct": 14,
+        "audited_stable_correct": 22,
+        "direct_stable_harm": 8,
+        "audited_stable_harm": 0,
+        "visible_card_recall": 0.9898989898989898,
+        "proof_citation_precision": 0.9818181818181818
+      },
+      {
+        "method": "typed_card_retention",
+        "label": "Typed proof",
+        "stable_cases": 22,
+        "direct_stable_correct": 14,
+        "audited_stable_correct": 22,
+        "direct_stable_harm": 4,
+        "audited_stable_harm": 0,
+        "visible_card_recall": 1.0,
+        "proof_citation_precision": 1.0
+      }
+    ],
+    "typed_boundary": {
+      "stable_cases": 22,
+      "stable_direct_correct": 14,
+      "stable_audited_correct": 22,
+      "stable_direct_harm": 4,
+      "stable_audited_harm": 0,
+      "audit_helpful": 10,
+      "audit_harmful": 0,
+      "non_hold_deletions": 8,
+      "non_hold_fail_closed": 8,
+      "hidden_hold_deletions": 3,
+      "hidden_hold_harmful_executes": 3
+    }
+  },
+  "claim_boundary": "Derived presentation metrics only. They do not alter the immutable formal run and do not support production-safety or unique-superiority claims."
+}
