@@ -46,54 +46,44 @@ Hong Kong University of Science and Technology}
 
 \section{Motivation and Research Question}
 
-Long-running tool-using agents shorten histories to control context length,
-latency, and cost. This compaction is lossy: a summary may retain the current
-goal while dropping an approval boundary, prohibition, expiry, entity, amount,
-or recovery condition that determines whether a later tool call is safe.
-Governance Decay shows that constraints obeyed in full context can be omitted
-by compaction and then violated~\cite{chen2026governance}. U-Fold instead
-separates an evolving intent summary from a task-relevant tool log and improves
-long-context tool use~\cite{su2026ufold}. These results make context management
-an operational control problem, not only a token-saving problem.
+Imagine a travel Agent asked to change a flight and charge a company card. It
+still remembers the requested itinerary, but an earlier delegation limit or a
+later policy hold has disappeared from its shortened history. The next message
+can remain fluent while the booking state changes incorrectly. This is the
+failure we study: not whether a summary reads well, but whether the Agent can
+still prove that its next tool action is allowed.
 
-We ask: \emph{under a fixed context budget, can loss or ambiguity of
-action-critical evidence be detected after compaction and used, before a
-state-changing tool call, to choose Execute, Confirm, or Handoff?} Execute
-requires visible, mutually consistent authority and recovery evidence. Confirm
-is appropriate when one short human answer can repair an omission. Handoff is
-reserved for policy conflict, non-recoverable impact, or uncertainty that a
-single answer cannot resolve. Our contribution is not another general-purpose
-compressor. It is an intervention layer connecting compaction failures to
-action-time control, evaluated through observable state transitions.
+Long-running tool-using Agents compact histories to control length, latency,
+and cost. Governance Decay shows that obeyed constraints can disappear during
+compaction and later be violated~\cite{chen2026governance}. U-Fold separates
+an intent summary from a task-relevant tool log~\cite{su2026ufold}; ACON and
+StateComp study how and when to compress~\cite{kang2026acon,wang2026statecomp}.
+We instead ask what should happen when the result no longer supports an action.
 
-$\tau$-bench and ToolSandbox motivate stateful, tool-level evaluation
-~\cite{yao2024tau,lu2025toolsandbox}; SABER motivates verification at mutating
-steps~\cite{cuadron2025saber}. ACON and StateComp study how and when to compact
-efficiently~\cite{kang2026acon,wang2026statecomp}. We instead test what should
-happen when the resulting working context no longer supports a consequential
-action.
+We ask: \emph{under a fixed raw-token budget, can a post-compaction evidence
+audit reliably choose Execute, Confirm, or Handoff before a state-changing
+tool call?} Execute requires valid proof; Confirm means one authenticated
+answer can repair the gap; Handoff transfers an authority conflict or residual
+risk. Our contribution is a causal test and proof interface connecting memory
+loss to action control and observable state change, not another compressor.
 
-\section{Benchmark and Method}
+\section{Data, Method, and Evaluation}
 
-The planned benchmark has 20 base scenarios in one deterministic AI-platform
-simulator, covering quota changes, workload preemption, resource transfer,
-model rollout, and capacity reclamation. Platform approval and rollback,
-financial-style entity/amount/validity, and main--sub-agent authority patterns
-are evidence templates inside the same simulator, rather than three unrelated
-products. Each base scenario yields three matched contexts: complete evidence,
-one action-critical record removed, and similar-length irrelevant noise
-removed. Siblings stay in one split. Scenario identifiers, deletion condition,
-gold route, and oracle-only facts never enter the model prompt.
+The benchmark contains 20 bases and 60 matched contexts in one deterministic
+state-transition harness: nine development bases and 11 held-out bases authored
+after the method freeze. Platform, financial, and delegated travel templates
+each yield (i) complete evidence, (ii) one critical event removed, and (iii) an
+equal-length, same-role noise event removed. Siblings stay in one split;
+neutral IDs, matched positions, and one family seed hide the treatment. Gold
+routes and oracle-only facts never enter a prompt.
 
-Figure~\ref{fig:pipeline} shows the evaluation chain. A compaction strategy
-produces active context under a common budget. A structured audit checks target
-entity, requested scale or amount, authority scope, validity or expiry,
-negative constraints, and reversibility or recovery. The intervention gate
-then routes the proposed mutation. A deterministic simulator applies only
-executed calls, and a private state-transition oracle records whether the call
-was prohibited, whether state changed, and whether the task completed. For a
-Confirm case, the simulator injects the specified human answer and re-evaluates
-the same action; Handoff must retain residual risk after that replay.
+Figure~\ref{fig:pipeline} shows the chain. Each strategy produces memory under
+a 384-token raw Qwen budget. Ours retains proof cards with source, kind, actor,
+target, scope, and validity. A deterministic audit checks authority, scope,
+expiry, blockers, and recovery, then routes the mutation. The simulator applies
+only executed calls; a private oracle records the state diff and prohibition.
+One authenticated answer can resume Confirm, while an ordinary requester
+cannot resolve Handoff.
 
 \begin{figure}[t]
   \centering
@@ -101,7 +91,7 @@ the same action; Handoff must retain residual risk after that replay.
   \centering\small
   Long trace $\rightarrow$ context strategy under fixed budget\\[-1pt]
   $\downarrow$\\[-3pt]
-  Critical-evidence audit: entity, authority, expiry, constraints, recovery\\[-1pt]
+  Typed proof audit: authority, scope, expiry, blockers, recovery\\[-1pt]
   $\downarrow$\\[-3pt]
   \textsc{Execute}\quad|\quad\textsc{Confirm}\quad|\quad\textsc{Handoff}\\[-1pt]
   $\downarrow$\\[-3pt]
@@ -111,157 +101,91 @@ the same action; Handoff must retain residual risk after that replay.
   \label{fig:pipeline}
 \end{figure}
 
-Baselines are full history, recent-window truncation, generic LLM summary,
-precise constraint pinning, and a U-Fold-inspired intent-summary-plus-tool-log
-method. The proposed policy adds the structured post-compaction audit and
-three-way intervention. We will report harmful-mutation rate, safe autonomous
-completion, critical-evidence retention, intervention accuracy, review burden,
-context reduction, latency, and tokens. Any thresholds are selected on
-development families and frozen before the held-out test. ``Verify every
-mutation'' and one prompted critic remain action-level baselines, but the main
-comparison concerns context strategies at similar retained budgets.
+Baselines are full history, recent window, neutral and task-aware summaries,
+generic pinning, and U-Fold-lite. Method labels are blinded and budgets matched.
+We score the direct router and the same memory after audit using route, harmful
+Execute, unnecessary intervention, safe autonomy, proof retention, and citation
+precision. Budget, format, source integrity, blinding, and matched-noise
+stability are protocol checks. $\tau$-bench and ToolSandbox motivate stateful
+tool evaluation~\cite{yao2024tau,lu2025toolsandbox}; SABER motivates checks at
+mutating steps~\cite{cuadron2025saber}.
 
-\section{Preliminary Evidence}
+\section{Protocol Lessons and Development}
 
-We first ran a six-scenario alignment pilot using local Qwen3.5-9B through
-Ollama. Five context strategies produced 42 measured generations plus one
-warm-up, with zero format failures and zero external API cost. As
-Table~\ref{tab:pilot} shows, generic summarization was a strong baseline: it
-reduced the estimated context by 84.4\% while preserving all six route
-decisions. The broad keyword pinning rule retained almost everything yet still
-misrouted two cases. Selective context management requested review twice but
-received no answer, so this run does not establish incremental HITL value.
+Early pilots ran successfully, but a re-audit found 5.90--6.23x differences in
+mean compacted size, invalidating their method ranking. A grounded gate later
+selected 15/15 routes correctly, yet only 10/15 paired the route with complete
+decisive evidence; one asserted an absent approval. Route accuracy alone was
+therefore insufficient.
+
+On identical contexts, a generic critic spoiled three of four correct direct
+decisions, a candidate-visible critic retained both harmful Executes, and a
+blind verifier once treated policy clearance as authority. These failures
+motivated typed proof and deterministic obligation checks instead of another
+free-text reviewer.
+
+The repaired exact-budget development run used nine new bases and 27 siblings.
+Its v6 completed 270 generations in 82.9 minutes at zero API cost; all 189
+scored records passed budget and provenance contracts. Typed memory plus audit
+reached 18/18 stable routes versus 14/18 direct, without harmful Executes or
+unnecessary intervention. Strong summaries also reached 18/18 after valid
+citations rehydrated proof cards. We froze data, prompts, budget, validator,
+thresholds, and metrics before creating held-out cases.
+
+\section{Held-Out Result and Boundary}
+
+We authored 11 held-out bases and 33 siblings after the freeze, then ran once.
+Local Qwen3.5-9B completed 330 generations in 103.2 minutes at zero API cost;
+all 231 scored records passed every protocol contract. On 22 stable complete
+and matched-noise contexts, typed memory plus audit preserved every visible
+card and critical event, routed 22/22, retained all eligible autonomy, and
+caused no harmful Execute, unnecessary intervention, or noise-induced change.
+It corrected 10 direct-router errors and spoiled none.
 
 \begin{table}[t]
   \centering
   \small
-  \setlength{\tabcolsep}{3.2pt}
-  \begin{tabular}{lrrr}
+  \setlength{\tabcolsep}{3.0pt}
+  \begin{tabular}{lrr}
     \toprule
-    Context strategy & Route acc. & Reduction & Reviews \\
+    Held-out memory & Audited stable & Citation \\
+    strategy & routes & precision \\
     \midrule
-    Full history & 100.0 & 0.0 & 0 \\
-    Recent-window & 66.7 & 63.3 & 0 \\
-    Generic summary & 100.0 & 84.4 & 0 \\
-    Broad keyword pinning & 66.7 & 1.8 & 0 \\
-    Selective context/HITL & 100.0 & 46.0 & 2 \\
+    Neutral summary & 22/22 & 75.7\% \\
+    Task-aware summary & 22/22 & 69.1\% \\
+    U-Fold-lite & 22/22 & 98.2\% \\
+    Typed proof memory & 22/22 & \textbf{100.0\%} \\
     \bottomrule
   \end{tabular}
-  \caption{Development-only six-scenario pilot. Accuracy and context reduction
-  are percentages; reduction uses a transparent character-count token proxy.}
-  \label{tab:pilot}
+  \caption{One-shot held-out result on 22 complete/matched-noise contexts.
+  Citation precision is measured on the direct router's visible sources.}
+  \label{tab:heldout}
 \end{table}
 
-A later re-audit used the exact raw tokenizer of the same Qwen model on all 55
-saved active contexts. Excluding the full-history ceiling, the largest-to-smallest
-mean context ratio was 6.23x in the five-case pilot and 5.90x in the six-case
-pilot, far above a pre-specified 1.10 budget-matching limit. The character-count
-proxy also had 9.1\% mean absolute ratio error and 18.3\% maximum error. Thus
-Table~\ref{tab:pilot} is feasibility evidence and cannot rank compaction methods.
+Table~\ref{tab:heldout} prevents an overclaim: three strong baselines also tied
+at 22/22 after audit. Typed memory's clearest advantage was inspectability.
+All eight repairable proof deletions failed closed, but all three active holds
+removed \emph{before} compaction still executed harmfully. Audit can validate
+visible proof; it cannot invent an unseen prohibition.
 
-We then specified a causal anti-shortcut development gate over six families and three
-matched contexts per family. The first implementation was stopped before any
-measured output because condition-specific event IDs, unmatched positions, and
-different sibling seeds could reveal the treatment. In the revised design,
-critical evidence and matched noise use the same role, adjacent positions,
-similar token mass, neutral IDs, and one seed per family.
+\section{Outputs, Limitations, and Next Stage}
 
-The revised audit completed 18 local generations in 110.1 seconds, consuming
-15,213 input and 800 output tokens with zero format errors and zero API cost.
-All six full-evidence contexts were routed to Execute, and removing matched
-noise changed none of the six decisions. Removing critical evidence triggered
-Confirm in four of six families, meeting the minimum pre-specified development
-threshold. This check establishes whether deletion stops autonomous execution;
-it does not yet establish whether the missing evidence is answerable by Confirm
-or requires Handoff. Both
-main--sub-agent families still executed after authority and recovery evidence
-was removed. Thus the pilot supports a causal dependence on critical evidence
-for platform and financial patterns, but also identifies delegated-authority
-reasoning as a concrete failure mode. It does not demonstrate safety
-superiority or generalization.
+The outputs are a matched causal memory test, a typed proof interface, and an
+Agent Memory Playbook. A deterministic replay exposes memory, cited proof,
+route, and state diff from frozen traces. The takeaway is to define action
+proof first; store it with provenance; compact conversation and proof
+separately; revalidate at the tool boundary; distinguish repairable from
+operator-only gaps; and compare critical with equal-size noise deletion.
 
-To separate Confirm from Handoff, a second development pilot used nine
-scenarios and six paired follow-ups. Confirm meant that one authenticated
-response from a pre-identified authority was sufficient for automatic resume;
-Handoff meant that a policy conflict required independent adjudication. All
-nine initial routes were correct, all three Confirm cases became Execute after
-the authorized response, and all three Handoff cases remained Handoff after an
-ordinary requester replied. The 15 calls took 73.8 seconds, used 8,503 input
-and 572 output tokens, and cost no API fee. However, a post-hoc independent
-review found four contradicted and one unsupported reason code among 41; in two
-cases the model claimed that recovery was unavailable although a verified
-recovery record was visible. Thus correct routing does not establish faithful
-use of evidence. This rationale count is exploratory, not a pre-specified
-metric.
-
-We next replaced free-form reasons with a closed eight-factor ontology and
-mandatory event citations. The first runner completed all calls but failed in
-post-run auditing because an in-memory tuple was not accepted as a JSON-style
-list; its raw trace and failed manifest were preserved. In the repaired v2
-gate, route accuracy remained 15/15 but only 7/15 records achieved joint
-grounded route correctness. Two pre-committed development revisions improved
-the citation interface without changing the route labels. The final, frozen v4
-prompt again routed 15/15 correctly with zero harmful false executes and zero
-directly contradictory factor claims. Grounding precision reached 93.9\%, but
-decisive-factor recall was 86.1\% and joint accuracy remained 10/15, below the
-pre-specified 90\% recall and 13/15 joint thresholds. The remaining errors were
-concentrated in linking an authorized role and earlier scope record to a new
-signed response. We therefore did not proceed to the larger comparison.
-
-The final exact-budget development gate used nine new bases and three matched
-siblings per base: full evidence, one action-critical deletion, and one
-length-matched noise deletion. Seven context conditions were compared over 27
-contexts. Every compacted memory used at least 90\% of a 384-token raw Qwen
-budget, while full history remained an unbudgeted ceiling. The final v6 run
-completed 81 compactor and 189 router generations in 82.9 minutes with zero
-external API cost. All 189 records passed the budget, provenance, label
-blinding, fill, and output-format contracts. On the 18 stable full/noise
-siblings, typed proof retention plus deterministic audit preserved every
-visible critical card and routed 18/18 correctly, with zero harmful executions,
-zero unnecessary interventions, and zero noise-induced route changes. The
-unaudited router reached 14/18 and made four harmful executions. Across all 27
-typed contexts, the audit remained 24/27 because the three active-hold events
-deleted before compaction cannot be recovered. Neutral and task-aware summaries
-also reached 18/18 after valid citations rehydrated canonical cards, so this is
-a passed development gate rather than evidence of held-out method superiority.
-
-\section{Held-Out Result and Next Stage}
-
-The development method, prompts, budget, validator, thresholds, and metric
-implementation were frozen before we authored 11 untouched held-out bases and
-33 matched siblings. We then committed the runner and executed the comparison
-once. Local Qwen3.5-9B completed 99 compactor and 231 router generations in
-103.2 minutes at zero API cost. All 231 records passed the budget, utilization,
-provenance, blinding, fill, and output-format contracts. On the 22 stable
-full/noise contexts, typed retention plus deterministic audit preserved every
-visible card and critical event, routed 22/22 correctly, retained all eligible
-safe autonomy, and produced no harmful execution, unnecessary intervention, or
-noise-induced route change. The audit corrected 10 typed direct-router errors
-and spoiled none. The remaining three errors were the pre-specified siblings
-whose active hold had been removed before compaction.
-
-This is not a unique accuracy win. Neutral summary, task-aware summary, and
-U-Fold-lite also reached 22/22 audited stable routes. Typed memory instead gave
-the clearest provenance: its direct citations had 100\% visible-source
-precision, compared with 75.7\% for neutral summary, 69.1\% for task-aware
-summary, and 98.2\% for U-Fold-lite. We therefore narrow the contribution to a
-matched causal protocol, a proof-card control interface, and a developer-facing
-memory playbook. The next artifact is a deterministic replay that connects one
-frozen trace to its projected state diff; the held-out set will not be tuned or
-rerun. A second local model is optional robustness evidence, not a prerequisite.
-
-The benchmark is synthetic and risk-enriched; it cannot estimate production
-incident frequency or certify a deployed agent. Current results use one local
-model and one generation per context. The early table uses a proxy, while the
-new pipeline enforces an exact target-model raw-token budget. Active
-context may omit data that remains recoverable from an external checkpoint.
-Human review also has real cost, so unnecessary Confirm
-and Handoff decisions will be reported rather than treated as automatically
-safe. Negative or null results will narrow the contribution instead of being
-hidden.
+The synthetic, risk-enriched benchmark uses one local model and one generation
+per context, so it cannot certify production safety. Hidden holds require an
+upstream durable store, checkpoint, or independent monitor. We will not tune or
+rerun held-out data; remaining work is the report, demo, and presentation.
 
 {
-\small
+\footnotesize
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
 \begin{thebibliography}{9}
 \bibitem{yao2024tau}
 S. Yao et al. $\tau$-bench: A benchmark for tool-agent-user interaction in
