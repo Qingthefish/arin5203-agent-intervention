@@ -43,10 +43,10 @@ This framing preserves all of the research work without forcing the audience to 
 | Slide | Purpose | Evidence or visual |
 | --- | --- | --- |
 | 1. Hook | Move from “how to build an Agent” to “how to keep one reliable” | 0→1 versus 1→100 framing |
-| 2. One familiar failure | Show that forgetting is an action problem, not only a conversation problem | Travel Agent loses a payment/delegation/hold fact, then changes a booking |
+| 2. One familiar failure | Show that forgetting is an action problem, not only a conversation problem | `figures/matched-case-held-y6.png` |
 | 3. Research question | Define the exact decision | Under the same raw-token budget, should the Agent Execute, Confirm, or Handoff? |
 | 4. Crash Test | Make the experiment legible | Agent Memory Crash Test: history → compacted memory → route → state diff |
-| 5. Matched design | Explain causality without statistics jargon | Full evidence / remove one critical fact / remove equal-size noise |
+| 5. Matched design | Explain causality without statistics jargon | `figures/benchmark-design.png` |
 | 6. Main result | Separate route quality from evidence quality | `figures/heldout-method-comparison.png` |
 | 7. Honest boundary | Show what the audit fixes and cannot fix | `figures/heldout-causal-boundary.png` plus the hidden-hold replay |
 | 8. Developer takeaway | Convert the result into a reusable design checklist | `Agent_Memory_Playbook.md` |
@@ -66,9 +66,14 @@ The replay is presenter-controlled and deterministic. It does not require audien
 
 ## Core figures
 
+- `figures/matched-case-held-y6.png` is the recommended opening example. It uses one frozen hotel-booking family to show that removing equal-size noise changes nothing, while removing the active hold flips Handoff to a harmful Execute and changes the external state.
+- `figures/benchmark-design.png` explains the full experiment in one frame: 20 bases become 60 matched contexts, seven memory strategies share a 384-token budget, siblings remain in one split, and the state oracle scores Execute / Confirm / Handoff consequences.
 - `figures/heldout-method-comparison.png` shows the main empirical nuance: several strong methods tie after deterministic audit on stable routing, while evidence-chain quality still separates them. Typed proof is the only evaluated method at 100% for both visible-card retention and citation precision in the frozen run.
 - `figures/heldout-causal-boundary.png` shows the causal boundary: visible evidence can be validated, repairable proof gaps fail closed, but a hidden hold removed before compaction cannot be recovered by any downstream audit.
-- `figures/presentation-metrics.json` contains the exact derived values, the source trace path, its SHA-256 hash, and the claim boundary.
+- `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 38 run manifests, 1,745 measured local calls, 1.76 million recorded model tokens, 22 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
+- `figures/presentation-metrics.json` contains every derived value, source artifact path, SHA-256 hash, and claim boundary used by all five figures.
+
+For a short presentation, use the figures in this order: matched hotel case → benchmark design → held-out method comparison → causal boundary. Keep the experiment-scale figure as a methods/effort slide or backup answer; it should not delay the familiar failure example.
 
 Regenerate the figures from `05_代码与实验/` with:
 
@@ -76,7 +81,7 @@ Regenerate the figures from `05_代码与实验/` with:
 python3 scripts/plot_typed_heldout_presentation.py
 ```
 
-The plotting script reads the immutable `typed_exact_budget_heldout_qwen_v1_raw.jsonl`; it does not call a model or alter formal results.
+The plotting script reads the immutable v6 development trace, one-shot held-out trace, and machine-generated experiment index. It does not call a model or alter formal results.
 
 ## Demo route
 
