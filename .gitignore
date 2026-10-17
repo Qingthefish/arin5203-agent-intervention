@@ -18,4 +18,6 @@ venv/
 *.synctex.gz
 *.toc
 rendered_docx/
+02_里程碑/build/
+tmp/
 
