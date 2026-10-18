@@ -1,0 +1,52 @@
+{
+  "status": "PASS_TYPED_BUDGET_SWEEP_PROTOCOL_GATE",
+  "analysis_scope": "paired development-set sensitivity characterization using byte-validated frozen v6 compactor outputs and newly routed 256- and 192-token memories",
+  "pre_specified_gate": {
+    "frozen_source_replays_exactly": true,
+    "budget_violations_within_limit": true,
+    "budgeted_contexts_meet_utilization": true,
+    "strategy_labels_are_blinded": true,
+    "all_sources_have_visible_provenance": true,
+    "neutral_fill_never_reinjects_protected_cards": true,
+    "compactor_replays_are_parse_valid": true,
+    "direct_router_format_errors_within_limit": true,
+    "token_count_probes_within_limit": true
+  },
+  "thresholds": {
+    "maximum_source_replay_mismatches": 0,
+    "maximum_budget_violations": 0,
+    "minimum_budget_utilization": 0.9,
+    "minimum_budgeted_utilization_rate": 1.0,
+    "maximum_blinded_label_leaks": 0,
+    "maximum_source_integrity_errors": 0,
+    "maximum_protected_fill_violations": 0,
+    "maximum_compactor_format_errors": 0,
+    "maximum_direct_router_format_errors": 36,
+    "maximum_token_count_probe_calls": 6000
+  },
+  "protocol_passed": true,
+  "instrumentation_observations": {
+    "records": 324,
+    "source_replay_mismatches": 0,
+    "budget_violations": 0,
+    "budgeted_utilization_rate": 1.0,
+    "blinded_label_leaks": 0,
+    "source_integrity_errors": 0,
+    "protected_fill_violations": 0,
+    "compactor_format_errors": 0,
+    "direct_router_format_errors": 0,
+    "token_cache_requests": 10071,
+    "token_cache_hits": 4850,
+    "token_cache_misses": 5221,
+    "token_cache_hit_rate": 0.4815807764869427
+  },
+  "source_replay_mismatches": [],
+  "recommendation": "RENDER_BUDGET_SENSITIVITY_AND_START_DURABLE_MEMORY_EXTENSION",
+  "limitations": [
+    "The sweep uses the nine frozen development bases and does not modify or rerun the held-out set.",
+    "The 384-token point comes from the frozen v6 source trace; lower budgets reuse its compactor outputs so only active-memory packing and routing change.",
+    "The sweep characterizes failure boundaries and is not a second method-selection gate.",
+    "Typed cards are assumed to exist when authenticated evidence originates; free-text card extraction remains outside this experiment.",
+    "No downstream audit can recover a decisive event removed before compaction receives the history."
+  ]
+}

@@ -70,10 +70,11 @@ The replay is presenter-controlled and deterministic. It does not require audien
 - `figures/benchmark-design.png` explains the full experiment in one frame: 20 bases become 60 matched contexts, seven memory strategies share a 384-token budget, siblings remain in one split, and the state oracle scores Execute / Confirm / Handoff consequences.
 - `figures/heldout-method-comparison.png` shows the main empirical nuance: several strong methods tie after deterministic audit on stable routing, while evidence-chain quality still separates them. Typed proof is the only evaluated method at 100% for both visible-card retention and citation precision in the frozen run.
 - `figures/heldout-causal-boundary.png` shows the causal boundary: visible evidence can be validated, repairable proof gaps fail closed, but a hidden hold removed before compaction cannot be recovered by any downstream audit.
-- `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 38 run manifests, 1,745 measured local calls, 1.76 million recorded model tokens, 22 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
-- `figures/presentation-metrics.json` contains every derived value, source artifact path, SHA-256 hash, and claim boundary used by all five figures.
+- `figures/budget-sensitivity.png` shows the development-only 384 / 256 / 192-token stress test. Strong summaries and typed proof keep 18/18 stable routes at 192 tokens; U-Fold-lite degrades, generic pinning loses most visible proof, and typed proof's only loss is one non-decisive recovery card in two records.
+- `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 39 run manifests, 2,069 measured local calls, 2.00 million recorded model tokens, 23 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
+- `figures/presentation-metrics.json` contains every derived value, source artifact path, SHA-256 hash, and claim boundary used by all six figures.
 
-For a short presentation, use the figures in this order: matched hotel case → benchmark design → held-out method comparison → causal boundary. Keep the experiment-scale figure as a methods/effort slide or backup answer; it should not delay the familiar failure example.
+For a short presentation, use the figures in this order: matched hotel case → benchmark design → held-out method comparison → budget sensitivity → causal boundary. Keep the experiment-scale figure as a methods/effort slide or backup answer; it should not delay the familiar failure example.
 
 Regenerate the figures from `05_代码与实验/` with:
 

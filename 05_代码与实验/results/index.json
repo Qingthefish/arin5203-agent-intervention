@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 38,
+    "runs": 39,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 26,
+      "COMPLETED": 27,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 22,
+      "FROZEN_GATE_BUNDLE": 23,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -819,6 +819,33 @@
       },
       "manifest_sha256": "b224ab4616f2e8176ae87007a5b290ba5bf399a274c02858f0612c8bfb274f5d",
       "audit_sha256": "461781129ae33eb96f3ab3924c9bec4c57cb0b18b22ec5fa05c408a563d0d7be"
+    },
+    {
+      "prefix": "typed_budget_sweep_dev_qwen_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "typed_budget_sensitivity_development_v1",
+      "scenario_set": "typed-compaction-dev-v1",
+      "model": "qwen3.5:9b",
+      "provider": "ollama",
+      "git_commit": "f0c582d7ee0db4ad2ce91dbd10e2362bd9d9ccea",
+      "measured_generation_calls": 324,
+      "prompt_tokens": 221918,
+      "completion_tokens": 15655,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-18T23:44:59.278191+08:00",
+      "finished_at": "2026-10-19T01:48:15.426917+08:00",
+      "audit_status": "PASS_TYPED_BUDGET_SWEEP_PROTOCOL_GATE",
+      "recommendation": "RENDER_BUDGET_SENSITIVITY_AND_START_DURABLE_MEMORY_EXTENSION",
+      "claim_scope": "paired development-set budget sensitivity with frozen compactor outputs; may characterize where the evaluated methods degrade as memory tightens but cannot revise the one-shot held-out result, establish production safety, or claim universal model generalization",
+      "artifacts": {
+        "manifest": "results/typed_budget_sweep_dev_qwen_v1_manifest.json",
+        "raw": "results/typed_budget_sweep_dev_qwen_v1_raw.jsonl",
+        "summary": "results/typed_budget_sweep_dev_qwen_v1_summary.csv",
+        "audit": "results/typed_budget_sweep_dev_qwen_v1_audit.json"
+      },
+      "manifest_sha256": "30358a127444c906651dd2bc69cd229b0dbe62a20fa25a04add65c7d80d0bfcd",
+      "audit_sha256": "e700d4afe4d948d58fbca803d5d07132fd6b1bca1c273285bff643f3a4078014"
     },
     {
       "prefix": "typed_compaction_dataset_v1",

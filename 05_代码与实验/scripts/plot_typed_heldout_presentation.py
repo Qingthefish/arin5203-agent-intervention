@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 from collections import defaultdict
@@ -21,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = ROOT.parent
 DEFAULT_RAW = ROOT / "results" / "typed_exact_budget_heldout_qwen_v1_raw.jsonl"
 DEFAULT_DEV_RAW = ROOT / "results" / "typed_exact_budget_dev_qwen_v6_raw.jsonl"
+DEFAULT_SWEEP_RAW = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_raw.jsonl"
+DEFAULT_SWEEP_SUMMARY = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_summary.csv"
 DEFAULT_INDEX = ROOT / "results" / "index.json"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "04_项目展示" / "figures"
 
@@ -32,6 +35,7 @@ TURNING_POINTS = (
     ("blind_proof_qwen_v1", "Blind verifier"),
     ("typed_exact_budget_dev_qwen_v6", "Development freeze"),
     ("typed_exact_budget_heldout_qwen_v1", "One-shot held-out"),
+    ("typed_budget_sweep_dev_qwen_v1", "Budget sensitivity"),
 )
 
 METHOD_ORDER = (
@@ -177,6 +181,11 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     ]
 
 
+def load_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
 def load_index(path: Path) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if payload.get("schema_version") != "experiment-artifact-index-v1":
@@ -217,6 +226,70 @@ def compute_experiment_scale(index: dict[str, Any]) -> dict[str, Any]:
         "external_api_cost_usd": sum(float(value or 0.0) for value in costs),
         "failed_or_aborted": int(index["totals"]["evidence_tiers"]["FAILED_OR_ABORTED"]),
         "frozen_gate_bundles": int(index["totals"]["evidence_tiers"]["FROZEN_GATE_BUNDLE"]),
+    }
+
+
+def compute_budget_sensitivity(
+    summary_rows: list[dict[str, str]],
+    sweep_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    budgets = (384, 256, 192)
+    methods = METHOD_ORDER[1:]
+    by_key = {
+        (int(row["budget_tokens"]), str(row["method"])): row
+        for row in summary_rows
+    }
+    expected = {(budget, method) for budget in budgets for method in methods}
+    if not expected.issubset(by_key):
+        raise ValueError("budget-sensitivity summary coverage mismatch")
+    method_rows: list[dict[str, Any]] = []
+    for method in methods:
+        points: list[dict[str, Any]] = []
+        for budget in budgets:
+            row = by_key[(budget, method)]
+            points.append(
+                {
+                    "budget_tokens": budget,
+                    "audited_stable_route_accuracy": float(
+                        row["audited_stable_route_accuracy"]
+                    ),
+                    "stable_visible_card_recall": float(
+                        row["stable_visible_card_recall"]
+                    ),
+                    "critical_retention_rate": float(
+                        row["critical_retention_rate"]
+                    ),
+                }
+            )
+        method_rows.append(
+            {
+                "method": method,
+                "label": METHOD_LABELS[method],
+                "points": points,
+            }
+        )
+    typed_missing_stable = [
+        row
+        for row in sweep_records
+        if int(row["sweep_budget_tokens"]) == 192
+        and row["method"] == "typed_card_retention"
+        and row["condition"] != "remove_action_critical"
+        and not bool(row["all_visible_cards_retained"])
+    ]
+    if any(not bool(row["critical_event_retained"]) for row in typed_missing_stable):
+        raise ValueError("typed 192-token card loss unexpectedly removed decisive evidence")
+    return {
+        "budgets": list(budgets),
+        "methods": method_rows,
+        "stable_cases_per_budget_method": 18,
+        "typed_192_missing_nondecisive_card_records": len(typed_missing_stable),
+        "typed_192_critical_retention_rate": next(
+            point["critical_retention_rate"]
+            for row in method_rows
+            if row["method"] == "typed_card_retention"
+            for point in row["points"]
+            if point["budget_tokens"] == 192
+        ),
     }
 
 
@@ -651,13 +724,89 @@ def render_case_story(story: dict[str, Any], output: Path) -> None:
     image.save(output, dpi=(200, 200), optimize=True)
 
 
+def _budget_cell_color(value: float) -> str:
+    if value >= 0.999:
+        return COLORS["lime"]
+    if value >= 0.9:
+        return COLORS["cyan"]
+    if value >= 0.75:
+        return COLORS["amber"]
+    return COLORS["red"]
+
+
+def render_budget_sensitivity(sensitivity: dict[str, Any], output: Path) -> None:
+    image, draw = _canvas(
+        "What breaks when memory gets tighter?",
+        "Same frozen compactor outputs; only the active-memory budget changes",
+    )
+    panels = (
+        (70, 180, 870, 825, "Audited stable route accuracy", "audited_stable_route_accuracy"),
+        (930, 180, 1730, 825, "Visible proof-card recall", "stable_visible_card_recall"),
+    )
+    methods = sensitivity["methods"]
+    budgets = sensitivity["budgets"]
+    for x0, y0, x1, y1, title, metric in panels:
+        draw.rounded_rectangle((x0, y0, x1, y1), radius=22, fill=COLORS["panel"])
+        put_text(draw, (x0 + 30, y0 + 35), title, size=25, bold=True)
+        label_x = x0 + 30
+        cell_xs = (x0 + 340, x0 + 500, x0 + 660)
+        for x, budget in zip(cell_xs, budgets):
+            put_text(
+                draw,
+                (x + 60, y0 + 92),
+                f"{budget} tok",
+                size=18,
+                fill=COLORS["muted"],
+                anchor="mm",
+            )
+        for index, row in enumerate(methods):
+            y = y0 + 135 + index * 78
+            put_text(draw, (label_x, y + 25), row["label"], size=18, anchor="lm")
+            points = {point["budget_tokens"]: point for point in row["points"]}
+            for x, budget in zip(cell_xs, budgets):
+                value = float(points[budget][metric])
+                fill = _budget_cell_color(value)
+                draw.rounded_rectangle((x, y, x + 120, y + 50), radius=12, fill=fill)
+                put_text(
+                    draw,
+                    (x + 60, y + 25),
+                    f"{value * 100:.0f}%",
+                    size=20,
+                    bold=True,
+                    fill=COLORS["background"],
+                    anchor="mm",
+                )
+
+    draw.rounded_rectangle((250, 855, 1550, 918), radius=18, fill=COLORS["panel_alt"])
+    put_text(
+        draw,
+        (900, 886),
+        "At 192 tokens, typed proof loses one non-decisive recovery card in 2 records, but keeps 100% of decisive evidence and 18/18 stable routes.",
+        size=20,
+        bold=True,
+        anchor="mm",
+    )
+    put_text(
+        draw,
+        (76, 957),
+        "Development sensitivity only · 384 uses frozen v6; 256/192 reuse byte-validated compactor outputs · 18 stable contexts per method",
+        size=16,
+        fill=COLORS["muted"],
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    image.save(output, dpi=(200, 200), optimize=True)
+
+
 def write_summary(
     metrics: dict[str, Any],
     experiment_scale: dict[str, Any],
     benchmark_design: dict[str, Any],
     case_story: dict[str, Any],
+    budget_sensitivity: dict[str, Any],
     raw_path: Path,
     dev_raw_path: Path,
+    sweep_raw_path: Path,
+    sweep_summary_path: Path,
     index_path: Path,
     output: Path,
 ) -> None:
@@ -671,6 +820,14 @@ def write_summary(
                 "path": str(dev_raw_path.relative_to(PROJECT_ROOT)),
                 "sha256": hashlib.sha256(dev_raw_path.read_bytes()).hexdigest(),
             },
+            "budget_sweep_raw": {
+                "path": str(sweep_raw_path.relative_to(PROJECT_ROOT)),
+                "sha256": hashlib.sha256(sweep_raw_path.read_bytes()).hexdigest(),
+            },
+            "budget_sweep_summary": {
+                "path": str(sweep_summary_path.relative_to(PROJECT_ROOT)),
+                "sha256": hashlib.sha256(sweep_summary_path.read_bytes()).hexdigest(),
+            },
             "experiment_index": {
                 "path": str(index_path.relative_to(PROJECT_ROOT)),
                 "sha256": hashlib.sha256(index_path.read_bytes()).hexdigest(),
@@ -680,6 +837,7 @@ def write_summary(
         "experiment_scale": experiment_scale,
         "benchmark_design": benchmark_design,
         "case_story": case_story,
+        "budget_sensitivity": budget_sensitivity,
         "claim_boundary": (
             "Derived presentation metrics only. They do not alter the immutable formal "
             "run and do not support production-safety or unique-superiority claims."
@@ -692,30 +850,42 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--raw", type=Path, default=DEFAULT_RAW)
     parser.add_argument("--dev-raw", type=Path, default=DEFAULT_DEV_RAW)
+    parser.add_argument("--sweep-raw", type=Path, default=DEFAULT_SWEEP_RAW)
+    parser.add_argument("--sweep-summary", type=Path, default=DEFAULT_SWEEP_SUMMARY)
     parser.add_argument("--index", type=Path, default=DEFAULT_INDEX)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args()
     require_pillow()
     records = load_records(args.raw)
     dev_records = load_jsonl(args.dev_raw)
+    sweep_records = load_jsonl(args.sweep_raw)
+    sweep_summary = load_csv(args.sweep_summary)
     index = load_index(args.index)
     metrics = compute_metrics(records)
     experiment_scale = compute_experiment_scale(index)
     benchmark_design = compute_benchmark_design(dev_records, records)
     case_story = compute_case_story(records)
+    budget_sensitivity = compute_budget_sensitivity(sweep_summary, sweep_records)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     render_method_comparison(metrics, args.output_dir / "heldout-method-comparison.png")
     render_causal_boundary(metrics, args.output_dir / "heldout-causal-boundary.png")
     render_experiment_scale(experiment_scale, args.output_dir / "experiment-scale.png")
     render_benchmark_design(benchmark_design, args.output_dir / "benchmark-design.png")
     render_case_story(case_story, args.output_dir / "matched-case-held-y6.png")
+    render_budget_sensitivity(
+        budget_sensitivity,
+        args.output_dir / "budget-sensitivity.png",
+    )
     write_summary(
         metrics,
         experiment_scale,
         benchmark_design,
         case_story,
+        budget_sensitivity,
         args.raw,
         args.dev_raw,
+        args.sweep_raw,
+        args.sweep_summary,
         args.index,
         args.output_dir / "presentation-metrics.json",
     )

@@ -9,10 +9,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from plot_typed_heldout_presentation import (
     compute_benchmark_design,
+    compute_budget_sensitivity,
     compute_case_story,
     compute_experiment_scale,
     compute_metrics,
     load_index,
+    load_csv,
     load_jsonl,
     load_records,
 )
@@ -21,6 +23,8 @@ from plot_typed_heldout_presentation import (
 RAW = ROOT / "results" / "typed_exact_budget_heldout_qwen_v1_raw.jsonl"
 DEV_RAW = ROOT / "results" / "typed_exact_budget_dev_qwen_v6_raw.jsonl"
 INDEX = ROOT / "results" / "index.json"
+SWEEP_RAW = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_raw.jsonl"
+SWEEP_SUMMARY = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_summary.csv"
 
 
 class TypedHeldoutPresentationFigureTests(unittest.TestCase):
@@ -31,6 +35,9 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
         cls.experiment_scale = compute_experiment_scale(load_index(INDEX))
         cls.benchmark_design = compute_benchmark_design(load_jsonl(DEV_RAW), cls.records)
         cls.case_story = compute_case_story(cls.records)
+        cls.budget_sensitivity = compute_budget_sensitivity(
+            load_csv(SWEEP_SUMMARY), load_jsonl(SWEEP_RAW)
+        )
 
     def test_typed_stable_metrics_match_frozen_audit(self) -> None:
         typed = next(
@@ -65,9 +72,9 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
 
     def test_experiment_scale_comes_from_indexed_manifests(self) -> None:
         scale = self.experiment_scale
-        self.assertEqual(38, scale["recorded_runs"])
-        self.assertEqual(1745, scale["measured_calls"])
-        self.assertEqual(1762343, scale["recorded_tokens"])
+        self.assertEqual(39, scale["recorded_runs"])
+        self.assertEqual(2069, scale["measured_calls"])
+        self.assertEqual(1999916, scale["recorded_tokens"])
         self.assertEqual(0.0, scale["external_api_cost_usd"])
         heldout = next(
             row
@@ -76,6 +83,28 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
         )
         self.assertEqual(330, heldout["calls"])
         self.assertAlmostEqual(103.2, heldout["minutes"], places=1)
+        sweep = next(
+            row
+            for row in scale["turning_points"]
+            if row["prefix"] == "typed_budget_sweep_dev_qwen_v1"
+        )
+        self.assertEqual(324, sweep["calls"])
+        self.assertAlmostEqual(123.3, sweep["minutes"], places=1)
+
+    def test_budget_sensitivity_keeps_typed_decisive_evidence(self) -> None:
+        sensitivity = self.budget_sensitivity
+        typed = next(
+            row
+            for row in sensitivity["methods"]
+            if row["method"] == "typed_card_retention"
+        )
+        at_192 = next(
+            point for point in typed["points"] if point["budget_tokens"] == 192
+        )
+        self.assertEqual(1.0, at_192["audited_stable_route_accuracy"])
+        self.assertEqual(1.0, at_192["critical_retention_rate"])
+        self.assertAlmostEqual(0.9777777777777779, at_192["stable_visible_card_recall"])
+        self.assertEqual(2, sensitivity["typed_192_missing_nondecisive_card_records"])
 
     def test_benchmark_design_preserves_frozen_split(self) -> None:
         design = self.benchmark_design

@@ -8,9 +8,17 @@
       "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/typed_exact_budget_dev_qwen_v6_raw.jsonl",
       "sha256": "2a6c73a403e0142d3b8a2e2ceebb1ca517db7491337eda46f6bade6251924b31"
     },
+    "budget_sweep_raw": {
+      "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/typed_budget_sweep_dev_qwen_v1_raw.jsonl",
+      "sha256": "b8cff09ddfc2748991c2eb26c1ad0ea06dc03cc1ec159eca4eabab0315f28d73"
+    },
+    "budget_sweep_summary": {
+      "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/typed_budget_sweep_dev_qwen_v1_summary.csv",
+      "sha256": "d54832b1125f6d39f2724b282d2873d4f3f585c29adecb23b825da09408f9741"
+    },
     "experiment_index": {
       "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/index.json",
-      "sha256": "d050370d188a50619d02e64cdc287399b29935da4110c325850647b4ae3f84ee"
+      "sha256": "87ed5401c82ffb47dacddb945362c0552e3854de2eae438d6cc821ed9d10e541"
     }
   },
   "analysis": {
@@ -171,15 +179,24 @@
         "prompt_tokens": 337432,
         "completion_tokens": 33564,
         "audit_status": "PASS_TYPED_EXACT_BUDGET_HELDOUT_GATE"
+      },
+      {
+        "prefix": "typed_budget_sweep_dev_qwen_v1",
+        "label": "Budget sensitivity",
+        "calls": 324,
+        "minutes": 123.26914543333334,
+        "prompt_tokens": 221918,
+        "completion_tokens": 15655,
+        "audit_status": "PASS_TYPED_BUDGET_SWEEP_PROTOCOL_GATE"
       }
     ],
-    "recorded_runs": 38,
-    "runs_with_call_counts": 26,
-    "measured_calls": 1745,
-    "recorded_tokens": 1762343,
+    "recorded_runs": 39,
+    "runs_with_call_counts": 27,
+    "measured_calls": 2069,
+    "recorded_tokens": 1999916,
     "external_api_cost_usd": 0.0,
     "failed_or_aborted": 10,
-    "frozen_gate_bundles": 22
+    "frozen_gate_bundles": 23
   },
   "benchmark_design": {
     "development_bases": 9,
@@ -237,6 +254,162 @@
         ]
       }
     ]
+  },
+  "budget_sensitivity": {
+    "budgets": [
+      384,
+      256,
+      192
+    ],
+    "methods": [
+      {
+        "method": "recent_window",
+        "label": "Recent window",
+        "points": [
+          {
+            "budget_tokens": 384,
+            "audited_stable_route_accuracy": 0.3333333333333333,
+            "stable_visible_card_recall": 0.0,
+            "critical_retention_rate": 0.0
+          },
+          {
+            "budget_tokens": 256,
+            "audited_stable_route_accuracy": 0.3333333333333333,
+            "stable_visible_card_recall": 0.0,
+            "critical_retention_rate": 0.0
+          },
+          {
+            "budget_tokens": 192,
+            "audited_stable_route_accuracy": 0.3333333333333333,
+            "stable_visible_card_recall": 0.0,
+            "critical_retention_rate": 0.0
+          }
+        ]
+      },
+      {
+        "method": "neutral_summary",
+        "label": "Neutral summary",
+        "points": [
+          {
+            "budget_tokens": 384,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 256,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 192,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          }
+        ]
+      },
+      {
+        "method": "task_aware_summary",
+        "label": "Task-aware",
+        "points": [
+          {
+            "budget_tokens": 384,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 256,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 192,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          }
+        ]
+      },
+      {
+        "method": "generic_pinning",
+        "label": "Generic pinning",
+        "points": [
+          {
+            "budget_tokens": 384,
+            "audited_stable_route_accuracy": 0.3333333333333333,
+            "stable_visible_card_recall": 0.6592592592592593,
+            "critical_retention_rate": 0.6666666666666666
+          },
+          {
+            "budget_tokens": 256,
+            "audited_stable_route_accuracy": 0.3333333333333333,
+            "stable_visible_card_recall": 0.5259259259259259,
+            "critical_retention_rate": 0.6666666666666666
+          },
+          {
+            "budget_tokens": 192,
+            "audited_stable_route_accuracy": 0.3333333333333333,
+            "stable_visible_card_recall": 0.26296296296296295,
+            "critical_retention_rate": 0.6666666666666666
+          }
+        ]
+      },
+      {
+        "method": "ufold_lite",
+        "label": "U-Fold-lite",
+        "points": [
+          {
+            "budget_tokens": 384,
+            "audited_stable_route_accuracy": 0.9444444444444444,
+            "stable_visible_card_recall": 0.9583333333333334,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 256,
+            "audited_stable_route_accuracy": 0.9444444444444444,
+            "stable_visible_card_recall": 0.9583333333333334,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 192,
+            "audited_stable_route_accuracy": 0.8333333333333334,
+            "stable_visible_card_recall": 0.8833333333333333,
+            "critical_retention_rate": 1.0
+          }
+        ]
+      },
+      {
+        "method": "typed_card_retention",
+        "label": "Typed proof",
+        "points": [
+          {
+            "budget_tokens": 384,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 256,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 1.0,
+            "critical_retention_rate": 1.0
+          },
+          {
+            "budget_tokens": 192,
+            "audited_stable_route_accuracy": 1.0,
+            "stable_visible_card_recall": 0.9777777777777779,
+            "critical_retention_rate": 1.0
+          }
+        ]
+      }
+    ],
+    "stable_cases_per_budget_method": 18,
+    "typed_192_missing_nondecisive_card_records": 2,
+    "typed_192_critical_retention_rate": 1.0
   },
   "claim_boundary": "Derived presentation metrics only. They do not alter the immutable formal run and do not support production-safety or unique-superiority claims."
 }
