@@ -67,12 +67,15 @@ python3 scripts/run_proof_card_gate.py --config configs/proof_card_gate.json
 python3 scripts/run_typed_compaction_dataset_gate.py --config configs/typed_compaction_dataset_gate.json
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_dev.json
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_heldout.json
+python3 scripts/run_typed_budget_sweep.py --config configs/typed_budget_sweep_dev.json
 python3 scripts/plot_typed_heldout_presentation.py
 python3 scripts/serve_memory_crash_test.py --port 8765
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
 ```
 
 The model runners are plan-only by default. They print the model, cases, expected calls, estimated resources, and output paths without contacting a model server. A real run requires both `--run` and `--acknowledge-experiment-plan`. Existing formal output prefixes cannot be overwritten.
+
+The development-only budget sweep reuses and byte-validates the frozen v6 compactor outputs before routing 256- and 192-token memories. It changes the active-memory budget without regenerating summaries, never reads or reruns held-out cases, and has a protocol-validity gate rather than a method-success threshold. Its purpose is to characterize degradation boundaries for the Final presentation, not to reopen model selection.
 
 Completed model experiments use local Ollama with `qwen3.5:9b`. No model weights, API keys, or company data are stored in the repository.
 
