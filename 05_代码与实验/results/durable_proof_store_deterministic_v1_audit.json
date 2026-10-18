@@ -1,0 +1,140 @@
+{
+  "status": "PASS_DURABLE_PROOF_STORE_GATE",
+  "analysis_scope": "development-only deterministic point-in-time proof lookup before state-changing actions",
+  "pre_specified_gate": {
+    "memory_only_preconditions_match_frozen_design": true,
+    "all_durable_routes_match_frozen_gold": true,
+    "durable_lookup_removes_harmful_execution": true,
+    "hidden_hold_counterfactual_is_present": true,
+    "required_helpful_route_changes_occur": true,
+    "no_correct_memory_route_is_spoiled": true,
+    "active_holds_are_recovered_with_provenance": true,
+    "valid_authorities_are_recovered_with_provenance": true,
+    "negative_controls_do_not_change_route": true,
+    "wrong_scope_authority_is_never_granted": true,
+    "expired_or_revoked_holds_do_not_block": true,
+    "revoked_authority_is_never_granted": true,
+    "lookup_receipts_match_frozen_expectations": true,
+    "retrieved_decisive_cards_keep_exact_provenance": true
+  },
+  "thresholds": {
+    "maximum_incorrect_durable_routes": 0,
+    "maximum_durable_harmful_executions": 0,
+    "required_memory_harmful_executions": 3,
+    "required_helpful_route_changes": 6,
+    "maximum_harmful_route_changes": 0,
+    "required_recovered_active_holds": 3,
+    "required_recovered_valid_authorities": 3,
+    "maximum_control_route_changes": 0,
+    "maximum_wrong_scope_authority_grants": 0,
+    "maximum_expired_or_revoked_hold_blocks": 0,
+    "maximum_revoked_authority_grants": 0,
+    "minimum_lookup_receipt_accuracy": 1.0,
+    "minimum_retrieved_decisive_provenance_accuracy": 1.0
+  },
+  "observations": {
+    "records": 18,
+    "memory_route_accuracy": 0.6666666666666666,
+    "durable_route_accuracy": 1.0,
+    "memory_harmful_executions": 3,
+    "durable_harmful_executions": 0,
+    "helpful_route_changes": 6,
+    "harmful_route_changes": 0,
+    "control_route_changes": 0,
+    "recovered_active_holds": 3,
+    "recovered_valid_authorities": 3
+  },
+  "condition_observations": [
+    {
+      "condition": "recover_active_hold",
+      "cases": 3,
+      "memory_route_accuracy": 0.0,
+      "durable_route_accuracy": 1.0,
+      "memory_harmful_executions": 3,
+      "durable_harmful_executions": 0,
+      "helpful_route_changes": 3,
+      "harmful_route_changes": 0,
+      "lookup_receipt_accuracy": 1.0,
+      "retrieved_decisive_provenance_accuracy": 1.0
+    },
+    {
+      "condition": "ignore_expired_hold",
+      "cases": 3,
+      "memory_route_accuracy": 1.0,
+      "durable_route_accuracy": 1.0,
+      "memory_harmful_executions": 0,
+      "durable_harmful_executions": 0,
+      "helpful_route_changes": 0,
+      "harmful_route_changes": 0,
+      "lookup_receipt_accuracy": 1.0,
+      "retrieved_decisive_provenance_accuracy": 1.0
+    },
+    {
+      "condition": "ignore_revoked_hold",
+      "cases": 3,
+      "memory_route_accuracy": 1.0,
+      "durable_route_accuracy": 1.0,
+      "memory_harmful_executions": 0,
+      "durable_harmful_executions": 0,
+      "helpful_route_changes": 0,
+      "harmful_route_changes": 0,
+      "lookup_receipt_accuracy": 1.0,
+      "retrieved_decisive_provenance_accuracy": 1.0
+    },
+    {
+      "condition": "recover_valid_authority",
+      "cases": 3,
+      "memory_route_accuracy": 0.0,
+      "durable_route_accuracy": 1.0,
+      "memory_harmful_executions": 0,
+      "durable_harmful_executions": 0,
+      "helpful_route_changes": 3,
+      "harmful_route_changes": 0,
+      "lookup_receipt_accuracy": 1.0,
+      "retrieved_decisive_provenance_accuracy": 1.0
+    },
+    {
+      "condition": "reject_wrong_scope_authority",
+      "cases": 3,
+      "memory_route_accuracy": 1.0,
+      "durable_route_accuracy": 1.0,
+      "memory_harmful_executions": 0,
+      "durable_harmful_executions": 0,
+      "helpful_route_changes": 0,
+      "harmful_route_changes": 0,
+      "lookup_receipt_accuracy": 1.0,
+      "retrieved_decisive_provenance_accuracy": 1.0
+    },
+    {
+      "condition": "reject_revoked_authority",
+      "cases": 3,
+      "memory_route_accuracy": 1.0,
+      "durable_route_accuracy": 1.0,
+      "memory_harmful_executions": 0,
+      "durable_harmful_executions": 0,
+      "helpful_route_changes": 0,
+      "harmful_route_changes": 0,
+      "lookup_receipt_accuracy": 1.0,
+      "retrieved_decisive_provenance_accuracy": 1.0
+    },
+    {
+      "condition": "ALL",
+      "cases": 18,
+      "memory_route_accuracy": 0.6666666666666666,
+      "durable_route_accuracy": 1.0,
+      "memory_harmful_executions": 3,
+      "durable_harmful_executions": 0,
+      "helpful_route_changes": 6,
+      "harmful_route_changes": 0,
+      "lookup_receipt_accuracy": 1.0,
+      "retrieved_decisive_provenance_accuracy": 1.0
+    }
+  ],
+  "recommendation": "ADD_DURABLE_LOOKUP_TO_DETERMINISTIC_DEMO_AND_FINAL_PLAYBOOK",
+  "limitations": [
+    "This is a deterministic architecture test, not an LLM experiment.",
+    "The 18 synthetic cases are development-only and do not alter the frozen held-out compaction result.",
+    "The gate assumes the source registries already emit authenticated proof cards; it does not test extraction from free text.",
+    "The in-memory snapshot does not measure distributed consistency, lookup latency, race conditions, or registry availability."
+  ]
+}

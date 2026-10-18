@@ -71,10 +71,11 @@ The replay is presenter-controlled and deterministic. It does not require audien
 - `figures/heldout-method-comparison.png` shows the main empirical nuance: several strong methods tie after deterministic audit on stable routing, while evidence-chain quality still separates them. Typed proof is the only evaluated method at 100% for both visible-card retention and citation precision in the frozen run.
 - `figures/heldout-causal-boundary.png` shows the causal boundary: visible evidence can be validated, repairable proof gaps fail closed, but a hidden hold removed before compaction cannot be recovered by any downstream audit.
 - `figures/budget-sensitivity.png` shows the development-only 384 / 256 / 192-token stress test. Strong summaries and typed proof keep 18/18 stable routes at 192 tokens; U-Fold-lite degrades, generic pinning loses most visible proof, and typed proof's only loss is one non-decisive recovery card in two records.
-- `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 39 run manifests, 2,069 measured local calls, 2.00 million recorded model tokens, 23 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
-- `figures/presentation-metrics.json` contains every derived value, source artifact path, SHA-256 hash, and claim boundary used by all six figures.
+- `figures/durable-store-rescue.png` closes the hidden-hold story with a development-only architecture test: memory-only proof validates 12/18 routes with three harmful Executes; point-in-time registry lookup reaches 18/18 while leaving 12 expired, revoked, and wrong-scope controls unchanged.
+- `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 40 run manifests, 2,069 measured local calls, 2.00 million recorded model tokens, 24 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
+- `figures/presentation-metrics.json` contains every derived value, source artifact path, SHA-256 hash, and claim boundary used by all seven figures.
 
-For a short presentation, use the figures in this order: matched hotel case → benchmark design → held-out method comparison → budget sensitivity → causal boundary. Keep the experiment-scale figure as a methods/effort slide or backup answer; it should not delay the familiar failure example.
+For a short presentation, use the figures in this order: matched hotel case → benchmark design → held-out method comparison → budget sensitivity → causal boundary → durable-store rescue. Keep the experiment-scale figure as a methods/effort slide or backup answer; it should not delay the familiar failure example.
 
 Regenerate the figures from `05_代码与实验/` with:
 

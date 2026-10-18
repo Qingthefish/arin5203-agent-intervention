@@ -11,7 +11,7 @@
     <main class="shell">
       <header class="hero">
         <div>
-          <p class="kicker">ARIN 5203 · frozen held-out trace replay</p>
+          <p class="kicker">ARIN 5203 · frozen trace replay + deterministic architecture overlay</p>
           <h1>Building an agent is easy.<br /><span>Teaching it what not to forget</span> is not.</h1>
           <p class="lede">
             Change one memory fact. Hold the token budget fixed. Watch the next
@@ -26,6 +26,7 @@
       <section class="control-bar" aria-label="Demo controls">
         <div class="domain-tabs" id="family-tabs"></div>
         <label class="method-picker" id="method-picker"></label>
+        <div class="registry-toggle" id="registry-toggle" role="group" aria-label="Proof source"></div>
         <div class="mode-toggle" role="group" aria-label="View mode">
           <button class="active" data-mode="story">Story mode</button>
           <button data-mode="debug">Debug mode</button>
@@ -39,7 +40,7 @@
 
       <footer>
         <p><strong>The API knows what is old. Your application knows what is critical.</strong></p>
-        <p>Every decision comes from the frozen one-shot held-out artifact; the demo makes no live model call.</p>
+        <p>The memory-only decision comes from the frozen one-shot held-out artifact. The registry switch is a labeled deterministic what-if; neither path makes a live model call.</p>
       </footer>
     </main>
     <script src="/app.js" defer></script>

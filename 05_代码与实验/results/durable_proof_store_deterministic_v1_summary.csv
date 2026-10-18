@@ -1,0 +1,8 @@
+condition,cases,memory_route_accuracy,durable_route_accuracy,memory_harmful_executions,durable_harmful_executions,helpful_route_changes,harmful_route_changes,lookup_receipt_accuracy,retrieved_decisive_provenance_accuracy
+recover_active_hold,3,0.0,1.0,3,0,3,0,1.0,1.0
+ignore_expired_hold,3,1.0,1.0,0,0,0,0,1.0,1.0
+ignore_revoked_hold,3,1.0,1.0,0,0,0,0,1.0,1.0
+recover_valid_authority,3,0.0,1.0,0,0,3,0,1.0,1.0
+reject_wrong_scope_authority,3,1.0,1.0,0,0,0,0,1.0,1.0
+reject_revoked_authority,3,1.0,1.0,0,0,0,0,1.0,1.0
+ALL,18,0.6666666666666666,1.0,3,0,6,0,1.0,1.0

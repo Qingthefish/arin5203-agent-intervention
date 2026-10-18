@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 39,
+    "runs": 40,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 27,
+      "COMPLETED": 28,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 23,
+      "FROZEN_GATE_BUNDLE": 24,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -144,6 +144,33 @@
       },
       "manifest_sha256": "9145a4be59400c09f7a841e0b19f31dca0a716fc0edf404f5d706b193446c89a",
       "audit_sha256": "757eaa5d2b27d56960b3fa927c034d6cc6e7682f36d624a9fce1991d88225e5e"
+    },
+    {
+      "prefix": "durable_proof_store_deterministic_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "durable_proof_store_gate_v1",
+      "scenario_set": "durable-proof-store-v1",
+      "model": null,
+      "provider": "deterministic",
+      "git_commit": "61b7b9b4ac62930b289624aea1ecb28e9cb9d952",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-19T02:00:26.260112+08:00",
+      "finished_at": "2026-10-19T02:00:26.262512+08:00",
+      "audit_status": "PASS_DURABLE_PROOF_STORE_GATE",
+      "recommendation": "ADD_DURABLE_LOOKUP_TO_DETERMINISTIC_DEMO_AND_FINAL_PLAYBOOK",
+      "claim_scope": "development-only deterministic architecture test of an external hold and authorization registry queried before state-changing actions; no LLM extraction, compaction-ranking, held-out-generalization, latency, concurrency, or production-safety claim is allowed",
+      "artifacts": {
+        "manifest": "results/durable_proof_store_deterministic_v1_manifest.json",
+        "raw": "results/durable_proof_store_deterministic_v1_raw.jsonl",
+        "summary": "results/durable_proof_store_deterministic_v1_summary.csv",
+        "audit": "results/durable_proof_store_deterministic_v1_audit.json"
+      },
+      "manifest_sha256": "9ac5c567d268b997b190c497c7d274b251bdaaf03612684ba400d56ffa830f6e",
+      "audit_sha256": "82861b9338ea53a7ecc74b2de789762867d1bf67253d315fc7d3376b734fc49c"
     },
     {
       "prefix": "expanded_baselines",

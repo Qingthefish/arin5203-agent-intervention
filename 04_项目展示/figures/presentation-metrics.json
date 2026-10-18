@@ -14,11 +14,15 @@
     },
     "budget_sweep_summary": {
       "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/typed_budget_sweep_dev_qwen_v1_summary.csv",
-      "sha256": "d54832b1125f6d39f2724b282d2873d4f3f585c29adecb23b825da09408f9741"
+      "sha256": "2159fb98c0c2fd1f77aec2bb226239462e30c36e8eae16b7cd2e6ff3910cfa29"
+    },
+    "durable_store_audit": {
+      "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/durable_proof_store_deterministic_v1_audit.json",
+      "sha256": "82861b9338ea53a7ecc74b2de789762867d1bf67253d315fc7d3376b734fc49c"
     },
     "experiment_index": {
       "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/index.json",
-      "sha256": "87ed5401c82ffb47dacddb945362c0552e3854de2eae438d6cc821ed9d10e541"
+      "sha256": "c8d3ba946d745e5636e1815e3f0d64f48d42f1bae752631aadc85584a6fc246e"
     }
   },
   "analysis": {
@@ -190,13 +194,13 @@
         "audit_status": "PASS_TYPED_BUDGET_SWEEP_PROTOCOL_GATE"
       }
     ],
-    "recorded_runs": 39,
-    "runs_with_call_counts": 27,
+    "recorded_runs": 40,
+    "runs_with_call_counts": 28,
     "measured_calls": 2069,
     "recorded_tokens": 1999916,
     "external_api_cost_usd": 0.0,
     "failed_or_aborted": 10,
-    "frozen_gate_bundles": 23
+    "frozen_gate_bundles": 24
   },
   "benchmark_design": {
     "development_bases": 9,
@@ -410,6 +414,22 @@
     "stable_cases_per_budget_method": 18,
     "typed_192_missing_nondecisive_card_records": 2,
     "typed_192_critical_retention_rate": 1.0
+  },
+  "durable_store_rescue": {
+    "records": 18,
+    "memory_route_accuracy": 0.6666666666666666,
+    "durable_route_accuracy": 1.0,
+    "memory_harmful_executions": 3,
+    "durable_harmful_executions": 0,
+    "helpful_route_changes": 6,
+    "harmful_route_changes": 0,
+    "control_route_changes": 0,
+    "recovered_active_holds": 3,
+    "recovered_valid_authorities": 3,
+    "memory_correct": 12,
+    "durable_correct": 18,
+    "negative_control_cases": 12,
+    "claim_boundary": "Development-only deterministic architecture test; assumes authenticated registry cards already exist and does not measure distributed systems behavior."
   },
   "claim_boundary": "Derived presentation metrics only. They do not alter the immutable formal run and do not support production-safety or unique-superiority claims."
 }

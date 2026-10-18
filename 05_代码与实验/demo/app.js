@@ -4,6 +4,7 @@ const state = {
   condition: "full_evidence",
   method: "typed_card_retention",
   mode: "story",
+  registry: false,
 };
 
 const statusLabels = {
@@ -75,6 +76,11 @@ function renderControls() {
       ${state.payload.methods.map(item => `<option value="${esc(item.id)}" ${item.id === state.method ? "selected" : ""}>${esc(item.label)}</option>`).join("")}
     </select>`;
 
+  document.querySelector("#registry-toggle").innerHTML = `
+    <span>Proof source</span>
+    <button class="${state.registry ? "" : "active"}" data-registry="off">Memory only</button>
+    <button class="${state.registry ? "active" : ""}" data-registry="on">+ durable registry</button>`;
+
   document.querySelector("#condition-strip").innerHTML = state.payload.conditions.map(item => `
     <button class="${item.id === state.condition ? "active" : ""}" data-condition="${esc(item.id)}">
       <strong>${esc(item.label)}</strong><span>${esc(item.short)}</span>
@@ -92,6 +98,10 @@ function renderControls() {
     state.method = event.target.value;
     render();
   });
+  document.querySelectorAll("[data-registry]").forEach(button => button.addEventListener("click", () => {
+    state.registry = button.dataset.registry === "on";
+    render();
+  }));
 }
 
 function cardRows(run, compact = false) {
@@ -134,9 +144,22 @@ function stateRows(run) {
 
 function renderStory(run, family) {
   const directDecision = run.direct.decision;
+  const overlay = run.durable_overlay;
+  const finalDecision = state.registry ? overlay.decision : run.decision;
+  const finalState = state.registry ? overlay.state : run.state;
+  const finalLabel = state.registry ? overlay.decision_label : run.decision_label;
+  const finalSummary = state.registry ? overlay.decision_summary : run.decision_summary;
+  const routeCorrect = finalDecision === run.expected_decision;
   const changedByAudit = directDecision !== run.decision;
-  const verdictClass = run.route_correct ? "pass" : "fail";
-  const verdictText = run.route_correct ? "Matches frozen oracle" : "Known failure boundary";
+  const changedByRegistry = run.decision !== overlay.decision;
+  const verdictClass = routeCorrect ? "pass" : "fail";
+  const verdictText = routeCorrect ? "Matches frozen oracle" : "Known failure boundary";
+  const registryCards = state.registry
+    ? `<div class="registry-receipt"><strong>Registry receipt</strong><span>${overlay.new_card_ids.length ? esc(overlay.new_card_ids.join(" · ")) : "No new decisive proof"}</span><small>${esc(overlay.label)}</small></div>`
+    : "";
+  const finalChip = state.registry
+    ? `<span class="pipeline-arrow">${changedByRegistry ? "→ rescued →" : "→ checked →"}</span><div class="route-chip ${routeClass(finalDecision)}"><small>Registry</small><strong>${esc(finalLabel)}</strong></div>`
+    : "";
   document.querySelector("#story-view").innerHTML = `
     <div class="story-top">
       <article class="request-panel">
@@ -152,10 +175,11 @@ function renderStory(run, family) {
           </div>
           <span class="pipeline-arrow">${changedByAudit ? "→ corrected →" : "→ verified →"}</span>
           <div class="route-chip ${routeClass(run.decision)}">
-            <small>Final</small><strong>${esc(run.decision_label)}</strong>
+            <small>Memory audit</small><strong>${esc(run.decision_label)}</strong>
           </div>
+          ${finalChip}
         </div>
-        <p>${esc(run.decision_summary)}</p>
+        <p>${esc(finalSummary)}</p>
         <div class="verdict ${verdictClass}">${esc(verdictText)} · expected ${esc(decisionLabels[run.expected_decision])}</div>
       </article>
     </div>
@@ -175,14 +199,15 @@ function renderStory(run, family) {
         <span class="panel-label">02 · retained proof</span>
         <h3>${esc(run.method_label)}</h3>
         <div class="memory-stack">${cardRows(run, true)}</div>
+        ${registryCards}
         <p>${esc(run.retained_card_ids.length)} / ${esc(run.visible_card_ids.length)} visible cards rehydrated · citation precision ${esc(pct(run.direct.proof_citation_precision))}</p>
       </article>
       <div class="arrow">→</div>
-      <article class="stage ${run.state.harmful_mutation ? "danger-stage" : ""}">
+      <article class="stage ${finalState.harmful_mutation ? "danger-stage" : ""}">
         <span class="panel-label">03 · deterministic state replay</span>
-        <h3>${run.state.harmful_mutation ? "Harmful mutation" : run.state.mutation_applied ? "Mutation applied" : "Mutation paused"}</h3>
-        <div class="state-diff">${stateRows(run)}</div>
-        <p>${run.state.harmful_mutation ? "The missing hold was never visible to the compactor." : run.state.mutation_applied ? "The verified route reached the tool." : "Confirm or Handoff stopped the tool call."}</p>
+        <h3>${finalState.harmful_mutation ? "Harmful mutation" : finalState.mutation_applied ? "Mutation applied" : "Mutation paused"}</h3>
+        <div class="state-diff">${stateRows({state: finalState})}</div>
+        <p>${finalState.harmful_mutation ? "The missing hold was never visible to the compactor." : state.registry && changedByRegistry ? "The external registry recovered authoritative proof before the tool call." : finalState.mutation_applied ? "The verified route reached the tool." : "Confirm or Handoff stopped the tool call."}</p>
       </article>
     </div>`;
 }
@@ -197,6 +222,7 @@ function renderDebug(run) {
       <span class="panel-label">Frozen runtime inspection</span>
       <h2>${esc(run.action.operation)} → ${esc(run.action.target_id)}</h2>
       <p>${esc(run.case_id)} · ${esc(run.method_label)} · ${esc(run.exact_raw_tokens)} raw tokens</p>
+      <p class="overlay-note">${state.registry ? esc(run.durable_overlay.label) : "Frozen memory-only trace"}</p>
     </div>
     <div class="debug-grid">
       <aside class="obligations">
@@ -240,6 +266,7 @@ async function boot() {
     MODEL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.model)} · local<br>
     CALLS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.measured_generation_calls)} measured<br>
     TOKENS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc((trace.prompt_tokens + trace.completion_tokens).toLocaleString("en-HK"))}<br>
+    STORE GATE&nbsp; ${esc(trace.durable_gate_status.replace("PASS_DURABLE_PROOF_STORE_GATE", "PASS"))} · ${esc(trace.durable_gate_cases)} cases<br>
     API COST&nbsp;&nbsp;&nbsp; $${esc(trace.external_api_cost_usd.toFixed(2))}`;
   document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => {
     state.mode = button.dataset.mode;

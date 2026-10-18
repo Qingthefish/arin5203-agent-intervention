@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from plot_typed_heldout_presentation import (
     compute_benchmark_design,
     compute_budget_sensitivity,
+    compute_durable_store_rescue,
     compute_case_story,
     compute_experiment_scale,
     compute_metrics,
@@ -25,6 +26,7 @@ DEV_RAW = ROOT / "results" / "typed_exact_budget_dev_qwen_v6_raw.jsonl"
 INDEX = ROOT / "results" / "index.json"
 SWEEP_RAW = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_raw.jsonl"
 SWEEP_SUMMARY = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_summary.csv"
+DURABLE_AUDIT = ROOT / "results" / "durable_proof_store_deterministic_v1_audit.json"
 
 
 class TypedHeldoutPresentationFigureTests(unittest.TestCase):
@@ -37,6 +39,9 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
         cls.case_story = compute_case_story(cls.records)
         cls.budget_sensitivity = compute_budget_sensitivity(
             load_csv(SWEEP_SUMMARY), load_jsonl(SWEEP_RAW)
+        )
+        cls.durable_store_rescue = compute_durable_store_rescue(
+            __import__("json").loads(DURABLE_AUDIT.read_text(encoding="utf-8"))
         )
 
     def test_typed_stable_metrics_match_frozen_audit(self) -> None:
@@ -72,7 +77,7 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
 
     def test_experiment_scale_comes_from_indexed_manifests(self) -> None:
         scale = self.experiment_scale
-        self.assertEqual(39, scale["recorded_runs"])
+        self.assertEqual(40, scale["recorded_runs"])
         self.assertEqual(2069, scale["measured_calls"])
         self.assertEqual(1999916, scale["recorded_tokens"])
         self.assertEqual(0.0, scale["external_api_cost_usd"])
@@ -90,6 +95,17 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
         )
         self.assertEqual(324, sweep["calls"])
         self.assertAlmostEqual(123.3, sweep["minutes"], places=1)
+
+    def test_durable_store_rescue_preserves_benefit_and_controls(self) -> None:
+        rescue = self.durable_store_rescue
+        self.assertEqual(12, rescue["memory_correct"])
+        self.assertEqual(18, rescue["durable_correct"])
+        self.assertEqual(3, rescue["memory_harmful_executions"])
+        self.assertEqual(0, rescue["durable_harmful_executions"])
+        self.assertEqual(6, rescue["helpful_route_changes"])
+        self.assertEqual(0, rescue["harmful_route_changes"])
+        self.assertEqual(12, rescue["negative_control_cases"])
+        self.assertEqual(0, rescue["control_route_changes"])
 
     def test_budget_sensitivity_keeps_typed_decisive_evidence(self) -> None:
         sensitivity = self.budget_sensitivity

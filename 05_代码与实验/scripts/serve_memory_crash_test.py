@@ -18,12 +18,26 @@ from platform_agent_eval.typed_compaction_heldout import (  # noqa: E402
     build_typed_compaction_heldout_contexts,
     build_typed_compaction_heldout_families,
 )
+from platform_agent_eval.durable_proof_store import (  # noqa: E402
+    DurableProofRecord,
+    DurableProofStore,
+    augment_with_durable_cards,
+    lookup_durable_cards,
+)
+from platform_agent_eval.proof_cards import (  # noqa: E402
+    ProofCardInput,
+    ProofCardKind,
+    validate_proof_cards,
+)
 
 
 DEMO_DIR = ROOT / "demo"
 DEFAULT_RAW = ROOT / "results" / "typed_exact_budget_heldout_qwen_v1_raw.jsonl"
 DEFAULT_MANIFEST = (
     ROOT / "results" / "typed_exact_budget_heldout_qwen_v1_manifest.json"
+)
+DEFAULT_DURABLE_AUDIT = (
+    ROOT / "results" / "durable_proof_store_deterministic_v1_audit.json"
 )
 
 DEMO_FAMILY_IDS = ("held-t8", "held-f2", "held-y6")
@@ -134,12 +148,66 @@ def _state_replay(family_id: str, decision: str, unsafe_if_executed: bool) -> di
     }
 
 
+def _durable_overlay(
+    family: Any,
+    retained_cards: tuple[Any, ...],
+    unsafe_if_executed: bool,
+) -> dict[str, Any]:
+    """Build a clearly labeled architecture what-if without changing the trace."""
+
+    registry_cards = tuple(
+        card
+        for card in family.cards
+        if card.kind in {ProofCardKind.AUTHORITY, ProofCardKind.ACTIVE_HOLD}
+    )
+    store = DurableProofStore(
+        store_id="demo-proof-registry",
+        snapshot_id=f"demo-snapshot-{family.family_id}",
+        records=tuple(
+            DurableProofRecord(
+                record_id=f"demo-record-{card.card_id}",
+                card=card,
+                committed_at="2026-10-06T00:00:00+08:00",
+            )
+            for card in registry_cards
+        ),
+    )
+    memory_input = ProofCardInput(family.action, family.policy, retained_cards)
+    lookup = lookup_durable_cards(store, family.action)
+    durable_input = augment_with_durable_cards(memory_input, lookup)
+    result = validate_proof_cards(durable_input)
+    retained_ids = {card.card_id for card in retained_cards}
+    new_card_ids = tuple(
+        card_id
+        for card_id in lookup.receipt.returned_card_ids
+        if card_id not in retained_ids
+    )
+    decision = result.decision.value
+    return {
+        "label": "Architecture what-if; frozen held-out trace is unchanged",
+        "decision": decision,
+        "decision_label": DECISION_COPY[decision]["label"],
+        "decision_summary": DECISION_COPY[decision]["summary"],
+        "lookup_receipt": asdict(lookup.receipt),
+        "new_card_ids": list(new_card_ids),
+        "new_card_kinds": [
+            card.kind.value for card in lookup.cards if card.card_id in new_card_ids
+        ],
+        "result": asdict(result),
+        "state": _state_replay(family.family_id, decision, unsafe_if_executed),
+    }
+
+
 def build_demo_payload(
     raw_path: Path = DEFAULT_RAW,
     manifest_path: Path = DEFAULT_MANIFEST,
+    durable_audit_path: Path = DEFAULT_DURABLE_AUDIT,
 ) -> dict[str, Any]:
     records = _read_jsonl(raw_path)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    durable_audit = json.loads(durable_audit_path.read_text(encoding="utf-8"))
+    if durable_audit.get("status") != "PASS_DURABLE_PROOF_STORE_GATE":
+        raise ValueError("demo requires the passed durable proof-store gate")
     contexts = {
         context.case_id: context
         for context in build_typed_compaction_heldout_contexts()
@@ -166,10 +234,12 @@ def build_demo_payload(
         audited_result = audited["result"]
         decision = str(audited["decision"])
         retained_ids = set(record["rehydrated_card_ids"])
+        retained_cards = tuple(
+            card for card in family.cards if card.card_id in retained_ids
+        )
         cards = [
             asdict(card)
-            for card in family.cards
-            if card.card_id in retained_ids
+            for card in retained_cards
         ]
         replay = _state_replay(
             family_id,
@@ -209,6 +279,11 @@ def build_demo_payload(
                 "cards": cards,
                 "result": audited_result,
                 "state": replay,
+                "durable_overlay": _durable_overlay(
+                    family,
+                    retained_cards,
+                    bool(record["unsafe_if_executed"]),
+                ),
             }
         )
 
@@ -235,6 +310,8 @@ def build_demo_payload(
             "prompt_tokens": manifest["prompt_tokens"],
             "completion_tokens": manifest["completion_tokens"],
             "external_api_cost_usd": manifest["external_api_cost_usd"],
+            "durable_gate_status": durable_audit["status"],
+            "durable_gate_cases": durable_audit["observations"]["records"],
         },
         "families": family_payload,
         "conditions": [
@@ -275,8 +352,13 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--raw", type=Path, default=DEFAULT_RAW)
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--durable-audit", type=Path, default=DEFAULT_DURABLE_AUDIT)
     args = parser.parse_args()
-    DemoHandler.payload = build_demo_payload(args.raw, args.manifest)
+    DemoHandler.payload = build_demo_payload(
+        args.raw,
+        args.manifest,
+        args.durable_audit,
+    )
     server = ThreadingHTTPServer((args.host, args.port), DemoHandler)
     print(f"Agent Memory Crash Test: http://{args.host}:{args.port}")
     try:

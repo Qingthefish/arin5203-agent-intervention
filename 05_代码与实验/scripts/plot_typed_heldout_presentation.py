@@ -24,6 +24,7 @@ DEFAULT_RAW = ROOT / "results" / "typed_exact_budget_heldout_qwen_v1_raw.jsonl"
 DEFAULT_DEV_RAW = ROOT / "results" / "typed_exact_budget_dev_qwen_v6_raw.jsonl"
 DEFAULT_SWEEP_RAW = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_raw.jsonl"
 DEFAULT_SWEEP_SUMMARY = ROOT / "results" / "typed_budget_sweep_dev_qwen_v1_summary.csv"
+DEFAULT_DURABLE_AUDIT = ROOT / "results" / "durable_proof_store_deterministic_v1_audit.json"
 DEFAULT_INDEX = ROOT / "results" / "index.json"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "04_项目展示" / "figures"
 
@@ -289,6 +290,35 @@ def compute_budget_sensitivity(
             if row["method"] == "typed_card_retention"
             for point in row["points"]
             if point["budget_tokens"] == 192
+        ),
+    }
+
+
+def compute_durable_store_rescue(audit: dict[str, Any]) -> dict[str, Any]:
+    if audit.get("status") != "PASS_DURABLE_PROOF_STORE_GATE":
+        raise ValueError("durable proof-store gate did not pass")
+    observations = audit["observations"]
+    expected = {
+        "records": 18,
+        "memory_harmful_executions": 3,
+        "durable_harmful_executions": 0,
+        "helpful_route_changes": 6,
+        "harmful_route_changes": 0,
+        "control_route_changes": 0,
+        "recovered_active_holds": 3,
+        "recovered_valid_authorities": 3,
+    }
+    for field, value in expected.items():
+        if observations.get(field) != value:
+            raise ValueError(f"unexpected durable-store observation for {field}")
+    return {
+        **observations,
+        "memory_correct": round(float(observations["memory_route_accuracy"]) * 18),
+        "durable_correct": round(float(observations["durable_route_accuracy"]) * 18),
+        "negative_control_cases": 12,
+        "claim_boundary": (
+            "Development-only deterministic architecture test; assumes authenticated "
+            "registry cards already exist and does not measure distributed systems behavior."
         ),
     }
 
@@ -797,16 +827,107 @@ def render_budget_sensitivity(sensitivity: dict[str, Any], output: Path) -> None
     image.save(output, dpi=(200, 200), optimize=True)
 
 
+def render_durable_store_rescue(rescue: dict[str, Any], output: Path) -> None:
+    image, draw = _canvas(
+        "When memory never saw the blocker, query the source of truth",
+        "Development-only deterministic gate · 3 domains × 6 paired conditions · zero model calls",
+    )
+    left = (70, 205, 650, 700)
+    center = (715, 205, 1085, 700)
+    right = (1150, 205, 1730, 700)
+    draw.rounded_rectangle(left, radius=24, fill=COLORS["panel"], outline=COLORS["red"], width=3)
+    draw.rounded_rectangle(center, radius=24, fill=COLORS["panel_alt"], outline=COLORS["cyan"], width=3)
+    draw.rounded_rectangle(right, radius=24, fill=COLORS["panel"], outline=COLORS["lime"], width=3)
+
+    put_text(draw, (110, 245), "Conversation memory only", size=27, bold=True)
+    put_text(
+        draw,
+        (360, 355),
+        f"{rescue['memory_correct']}/{rescue['records']}",
+        size=68,
+        bold=True,
+        fill=COLORS["red"],
+        anchor="mm",
+    )
+    put_text(draw, (360, 415), "correct routes", size=22, fill=COLORS["muted"], anchor="mm")
+    put_text(
+        draw,
+        (360, 515),
+        f"{rescue['memory_harmful_executions']} harmful Executes",
+        size=30,
+        bold=True,
+        fill=COLORS["red"],
+        anchor="mm",
+    )
+    put_wrapped_center(
+        draw,
+        360,
+        570,
+        "The active hold was absent before compaction, so no memory strategy could retain it.",
+        size=19,
+        max_width=480,
+        fill=COLORS["muted"],
+    )
+
+    put_text(draw, (900, 250), "Point-in-time registry", size=26, bold=True, anchor="ma")
+    checks = ("trusted issuer", "action scope", "validity window", "revocation state")
+    for index, label in enumerate(checks):
+        y = 330 + index * 67
+        draw.rounded_rectangle((770, y, 1030, y + 43), radius=10, fill=COLORS["background"])
+        put_text(draw, (900, y + 22), f"PASS  ·  {label}", size=17, fill=COLORS["cyan"], anchor="mm")
+    put_text(draw, (900, 635), "authenticated proof cards", size=17, fill=COLORS["muted"], anchor="mm")
+
+    for x in (682, 1118):
+        draw.line((x - 24, 455, x + 24, 455), fill=COLORS["muted"], width=4)
+        draw.polygon(((x + 24, 455), (x + 8, 444), (x + 8, 466)), fill=COLORS["muted"])
+
+    put_text(draw, (1190, 245), "Memory + durable proof", size=27, bold=True)
+    put_text(
+        draw,
+        (1440, 355),
+        f"{rescue['durable_correct']}/{rescue['records']}",
+        size=68,
+        bold=True,
+        fill=COLORS["lime"],
+        anchor="mm",
+    )
+    put_text(draw, (1440, 415), "correct routes", size=22, fill=COLORS["muted"], anchor="mm")
+    put_text(draw, (1440, 505), "3 holds recovered", size=27, bold=True, fill=COLORS["lime"], anchor="mm")
+    put_text(draw, (1440, 550), "3 authorities recovered", size=27, bold=True, fill=COLORS["cyan"], anchor="mm")
+    put_text(draw, (1440, 610), "0 harmful · 0 spoiled", size=22, fill=COLORS["text"], anchor="mm")
+
+    draw.rounded_rectangle((180, 755, 1620, 875), radius=22, fill=COLORS["panel_alt"])
+    put_text(draw, (220, 785), "Negative controls", size=21, bold=True, fill=COLORS["amber"])
+    put_text(
+        draw,
+        (220, 832),
+        f"{rescue['negative_control_cases']} expired / revoked / wrong-scope cases → {rescue['control_route_changes']} route changes",
+        size=29,
+        bold=True,
+    )
+    put_text(
+        draw,
+        (76, 940),
+        "Developer rule: conversation memory is a cache; permissions and active holds need an independently queried source of truth.",
+        size=20,
+        fill=COLORS["muted"],
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    image.save(output, dpi=(200, 200), optimize=True)
+
+
 def write_summary(
     metrics: dict[str, Any],
     experiment_scale: dict[str, Any],
     benchmark_design: dict[str, Any],
     case_story: dict[str, Any],
     budget_sensitivity: dict[str, Any],
+    durable_store_rescue: dict[str, Any],
     raw_path: Path,
     dev_raw_path: Path,
     sweep_raw_path: Path,
     sweep_summary_path: Path,
+    durable_audit_path: Path,
     index_path: Path,
     output: Path,
 ) -> None:
@@ -828,6 +949,10 @@ def write_summary(
                 "path": str(sweep_summary_path.relative_to(PROJECT_ROOT)),
                 "sha256": hashlib.sha256(sweep_summary_path.read_bytes()).hexdigest(),
             },
+            "durable_store_audit": {
+                "path": str(durable_audit_path.relative_to(PROJECT_ROOT)),
+                "sha256": hashlib.sha256(durable_audit_path.read_bytes()).hexdigest(),
+            },
             "experiment_index": {
                 "path": str(index_path.relative_to(PROJECT_ROOT)),
                 "sha256": hashlib.sha256(index_path.read_bytes()).hexdigest(),
@@ -838,6 +963,7 @@ def write_summary(
         "benchmark_design": benchmark_design,
         "case_story": case_story,
         "budget_sensitivity": budget_sensitivity,
+        "durable_store_rescue": durable_store_rescue,
         "claim_boundary": (
             "Derived presentation metrics only. They do not alter the immutable formal "
             "run and do not support production-safety or unique-superiority claims."
@@ -852,6 +978,7 @@ def main() -> None:
     parser.add_argument("--dev-raw", type=Path, default=DEFAULT_DEV_RAW)
     parser.add_argument("--sweep-raw", type=Path, default=DEFAULT_SWEEP_RAW)
     parser.add_argument("--sweep-summary", type=Path, default=DEFAULT_SWEEP_SUMMARY)
+    parser.add_argument("--durable-audit", type=Path, default=DEFAULT_DURABLE_AUDIT)
     parser.add_argument("--index", type=Path, default=DEFAULT_INDEX)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args()
@@ -866,6 +993,9 @@ def main() -> None:
     benchmark_design = compute_benchmark_design(dev_records, records)
     case_story = compute_case_story(records)
     budget_sensitivity = compute_budget_sensitivity(sweep_summary, sweep_records)
+    durable_store_rescue = compute_durable_store_rescue(
+        json.loads(args.durable_audit.read_text(encoding="utf-8"))
+    )
     args.output_dir.mkdir(parents=True, exist_ok=True)
     render_method_comparison(metrics, args.output_dir / "heldout-method-comparison.png")
     render_causal_boundary(metrics, args.output_dir / "heldout-causal-boundary.png")
@@ -876,16 +1006,22 @@ def main() -> None:
         budget_sensitivity,
         args.output_dir / "budget-sensitivity.png",
     )
+    render_durable_store_rescue(
+        durable_store_rescue,
+        args.output_dir / "durable-store-rescue.png",
+    )
     write_summary(
         metrics,
         experiment_scale,
         benchmark_design,
         case_story,
         budget_sensitivity,
+        durable_store_rescue,
         args.raw,
         args.dev_raw,
         args.sweep_raw,
         args.sweep_summary,
+        args.durable_audit,
         args.index,
         args.output_dir / "presentation-metrics.json",
     )

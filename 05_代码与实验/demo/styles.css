@@ -87,19 +87,20 @@ h1 span { color: var(--lime); }
 
 .control-bar, .condition-strip {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 16px;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.domain-tabs, .condition-strip, .mode-toggle {
+.domain-tabs, .condition-strip, .mode-toggle, .registry-toggle {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.domain-tabs button, .condition-strip button, .mode-toggle button {
+.domain-tabs button, .condition-strip button, .mode-toggle button, .registry-toggle button {
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 9px 14px;
@@ -109,7 +110,7 @@ h1 span { color: var(--lime); }
   transition: 160ms ease;
 }
 
-.domain-tabs button:hover, .condition-strip button:hover, .mode-toggle button:hover {
+.domain-tabs button:hover, .condition-strip button:hover, .mode-toggle button:hover, .registry-toggle button:hover {
   color: var(--ink);
   border-color: rgba(255,255,255,.26);
 }
@@ -118,6 +119,23 @@ h1 span { color: var(--lime); }
   color: #07100f;
   background: var(--cyan);
   border-color: var(--cyan);
+}
+
+.registry-toggle {
+  align-items: center;
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+.registry-toggle span {
+  color: var(--muted);
+  font: 650 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.registry-toggle button.active {
+  color: #10130b;
+  background: var(--lime);
+  border-color: var(--lime);
 }
 
 .condition-strip button.active {
@@ -204,10 +222,25 @@ h1 span { color: var(--lime); }
 
 .pipeline {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   margin: 10px 0 18px;
 }
+
+.registry-receipt {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 10px 11px;
+  border: 1px solid rgba(119, 230, 224, .3);
+  border-radius: 10px;
+  background: rgba(119, 230, 224, .06);
+  font: 11px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.registry-receipt strong { color: var(--cyan); }
+.registry-receipt small { color: var(--muted); }
+.overlay-note { color: var(--cyan) !important; font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
 
 .route-chip {
   display: grid;
