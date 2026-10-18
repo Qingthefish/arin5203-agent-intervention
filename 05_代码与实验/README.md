@@ -31,6 +31,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/audit_increment.py` — fresh matched contexts plus same-context Direct / Always Confirm / Prompt Critic / Evidence Audit prompts and scoring.
 - `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
 - `src/platform_agent_eval/proof_cards.py` — provenance-typed authority, clearance, active-hold, delegation, recovery, and repair-channel cards with scoped deterministic validation.
+- `src/platform_agent_eval/durable_proof_store.py` — point-in-time lookup and collision-safe merging for proof cards stored outside conversational memory.
 - `src/platform_agent_eval/typed_compaction_dev.py` — nine fresh typed-proof bases and 27 role/position/length-matched deletion siblings for the exact-budget development stage.
 - `src/platform_agent_eval/typed_budget_compaction.py` — blinded full, recency, neutral/task-aware summary, generic pinning, U-Fold-lite, and typed-card-retention contexts with neutral-only budget fill.
 - `src/platform_agent_eval/typed_compaction_routing.py` — blinded direct three-route decisions with visible source-event citations, strict parsing, and fail-closed handling on the exact-budget contexts.
@@ -64,6 +65,7 @@ python3 scripts/audit_increment_traces.py --raw results/audit_increment_qwen_v2_
 python3 scripts/run_blind_proof_gate.py --config configs/blind_proof_gate.json
 python3 scripts/audit_blind_proof_traces.py --raw results/blind_proof_qwen_v1_raw.jsonl --output /tmp/blind_proof_trace_review.json
 python3 scripts/run_proof_card_gate.py --config configs/proof_card_gate.json
+python3 scripts/run_durable_proof_store_gate.py --config configs/durable_proof_store_gate.json
 python3 scripts/run_typed_compaction_dataset_gate.py --config configs/typed_compaction_dataset_gate.json
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_dev.json
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_heldout.json
@@ -76,6 +78,8 @@ python3 scripts/run_research_experiment.py --config configs/research_plan.json
 The model runners are plan-only by default. They print the model, cases, expected calls, estimated resources, and output paths without contacting a model server. A real run requires both `--run` and `--acknowledge-experiment-plan`. Existing formal output prefixes cannot be overwritten.
 
 The development-only budget sweep reuses and byte-validates the frozen v6 compactor outputs before routing 256- and 192-token memories. It changes the active-memory budget without regenerating summaries, never reads or reruns held-out cases, and has a protocol-validity gate rather than a method-success threshold. Its purpose is to characterize degradation boundaries for the Final presentation, not to reopen model selection.
+
+The planned durable proof-store gate is deterministic and development-only. Across three fresh domains, it pairs recovery of hidden active holds and valid authority with expired, revoked, and wrong-scope controls. It compares the same proof validator with memory alone versus memory augmented by a point-in-time external registry query. The gate has 18 cases, zero model calls, no access to the frozen held-out trace, and no claim about distributed consistency or production readiness.
 
 Completed model experiments use local Ollama with `qwen3.5:9b`. No model weights, API keys, or company data are stored in the repository.
 
