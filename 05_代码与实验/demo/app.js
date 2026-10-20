@@ -1,10 +1,11 @@
+const query = new URLSearchParams(window.location.search);
 const state = {
   payload: null,
-  family: "held-t8",
-  condition: "full_evidence",
-  method: "typed_card_retention",
-  mode: "story",
-  registry: false,
+  family: query.get("family") || "held-t8",
+  condition: query.get("condition") || "full_evidence",
+  method: query.get("method") || "typed_card_retention",
+  mode: query.get("mode") || "story",
+  registry: query.get("proof") === "registry",
 };
 
 const statusLabels = {
@@ -245,21 +246,127 @@ function renderDebug(run) {
     </div>`;
 }
 
+function suiteCell(run) {
+  const correct = run.decision === run.expected_decision;
+  const harmful = run.state.harmful_mutation;
+  const label = decisionLabels[run.decision];
+  const detail = harmful ? "harmful mutation" : correct ? "matches oracle" : `expected ${decisionLabels[run.expected_decision]}`;
+  return `<div class="suite-cell ${correct ? "pass" : "fail"} ${harmful ? "harmful" : ""}">
+    <strong>${esc(label)}</strong><span>${esc(detail)}</span>
+  </div>`;
+}
+
+function renderSuite() {
+  const family = activeFamily();
+  const runs = state.payload.runs.filter(item => item.family_id === state.family);
+  const rows = state.payload.methods.map(method => {
+    const methodRuns = state.payload.conditions.map(condition => runs.find(item =>
+      item.method === method.id && item.condition === condition.id
+    ));
+    const correct = methodRuns.filter(item => item.route_correct).length;
+    const harmful = methodRuns.filter(item => item.state.harmful_mutation).length;
+    const meanPrecision = methodRuns.reduce((sum, item) => sum + (item.direct.proof_citation_precision ?? 0), 0) / methodRuns.length;
+    return `<div class="suite-row">
+      <div class="suite-method">
+        <strong>${esc(method.label)}</strong>
+        <span>${correct}/3 routes · ${harmful} harmful · ${esc(pct(meanPrecision))} citation precision</span>
+      </div>
+      ${methodRuns.map(suiteCell).join("")}
+    </div>`;
+  }).join("");
+  const selected = runs.find(item => item.method === state.method && item.condition === state.condition);
+  const registry = selected.durable_overlay;
+  document.querySelector("#suite-view").innerHTML = `
+    <div class="suite-head">
+      <div>
+        <span class="panel-label">Matched memory regression suite · frozen replay</span>
+        <h2>${esc(family.label)}: change one fact, inspect the next action</h2>
+        <p>${esc(family.risk)}</p>
+      </div>
+      <div class="suite-score ${selected.route_correct ? "pass" : "fail"}">
+        <strong>${runs.filter(item => item.route_correct).length}/${runs.length}</strong>
+        <span>audited routes match oracle</span>
+      </div>
+    </div>
+    <div class="suite-table">
+      <div class="suite-row suite-labels">
+        <div>Memory strategy</div>
+        ${state.payload.conditions.map(item => `<div>${esc(item.label)}</div>`).join("")}
+      </div>
+      ${rows}
+    </div>
+    <div class="suite-boundary">
+      <div>
+        <span class="panel-label">Selected architecture check</span>
+        <strong>${esc(selected.method_label)} · ${esc(selected.condition_label)}</strong>
+        <p>Memory says <b>${esc(selected.decision_label)}</b>. The durable registry says <b>${esc(registry.decision_label)}</b>${registry.new_card_ids.length ? ` after recovering ${esc(registry.new_card_ids.join(", "))}` : " with no new decisive proof"}.</p>
+      </div>
+      <div class="boundary-flow">
+        <span class="route-chip ${routeClass(selected.decision)}"><small>Memory</small><strong>${esc(selected.decision_label)}</strong></span>
+        <span>→</span>
+        <span class="route-chip ${routeClass(registry.decision)}"><small>Registry</small><strong>${esc(registry.decision_label)}</strong></span>
+      </div>
+    </div>`;
+}
+
+function exportCurrentRun() {
+  const run = activeRun();
+  const payload = {
+    exported_at: new Date().toISOString(),
+    evidence_source: "typed_exact_budget_heldout_qwen_v1",
+    architecture_overlay: "durable_proof_store_deterministic_v1",
+    family: activeFamily(),
+    run,
+  };
+  const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `${run.case_id}-${run.method}.json`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function normalizeState() {
+  const familyIds = new Set(state.payload.families.map(item => item.family_id));
+  const conditionIds = new Set(state.payload.conditions.map(item => item.id));
+  const methodIds = new Set(state.payload.methods.map(item => item.id));
+  if (!familyIds.has(state.family)) state.family = state.payload.families[0].family_id;
+  if (!conditionIds.has(state.condition)) state.condition = state.payload.conditions[0].id;
+  if (!methodIds.has(state.method)) state.method = state.payload.methods[0].id;
+  if (!["story", "suite", "debug"].includes(state.mode)) state.mode = "story";
+}
+
+function syncDeepLink() {
+  const params = new URLSearchParams({
+    family: state.family,
+    condition: state.condition,
+    method: state.method,
+    mode: state.mode,
+    proof: state.registry ? "registry" : "memory",
+  });
+  window.history.replaceState(null, "", `?${params.toString()}`);
+}
+
 function render() {
   renderControls();
   const run = activeRun();
   const family = activeFamily();
   renderStory(run, family);
+  renderSuite();
   renderDebug(run);
   document.querySelector("#story-view").classList.toggle("hidden", state.mode !== "story");
+  document.querySelector("#suite-view").classList.toggle("hidden", state.mode !== "suite");
   document.querySelector("#debug-view").classList.toggle("hidden", state.mode !== "debug");
   document.querySelectorAll("[data-mode]").forEach(button => button.classList.toggle("active", button.dataset.mode === state.mode));
+  syncDeepLink();
 }
 
 async function boot() {
   const response = await fetch("/api/traces", { cache: "no-store" });
   if (!response.ok) throw new Error(`Trace API returned ${response.status}`);
   state.payload = await response.json();
+  normalizeState();
   const trace = state.payload.trace;
   document.querySelector("#trace-stamp").innerHTML = `
     TRACE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.status)}<br>
@@ -272,6 +379,7 @@ async function boot() {
     state.mode = button.dataset.mode;
     render();
   }));
+  document.querySelector("#export-run").addEventListener("click", exportCurrentRun);
   render();
 }
 

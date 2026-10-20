@@ -123,9 +123,10 @@ Recommended sequence:
 
 1. Use `held-t8` with action-critical deletion: Direct wants to Execute, evidence audit changes the route to Handoff, and the external state remains unchanged.
 2. Use `held-y6` with action-critical deletion: the active hold disappeared before compaction, so the typed system still Executes and the state diff is marked harmful.
-3. End on the playbook rule: **a compactor can preserve evidence it receives; it cannot recover evidence that never entered its active context.**
+3. Switch to Suite Mode to show that the example is one cell in a 7-strategy × 3-sibling regression matrix, not a handpicked animation.
+4. Turn on the durable registry overlay, then end on the playbook rule: **a compactor can preserve evidence it receives; it cannot recover evidence that never entered its active context.**
 
-The demo is a replay of frozen traces, not a staged live-model generation. That makes the classroom presentation deterministic while keeping every screen traceable to the formal artifact.
+The demo is a replay of frozen traces, not a staged live-model generation. That makes the classroom presentation deterministic while keeping every screen traceable to the formal artifact. The adjacent command-line Crash Test Kit turns the same design into a CI interface: a JSON proof contract produces matched siblings and JSON/JUnit reports, so the product takeaway is “write memory regression tests before shipping a mutating Agent,” not “watch our website.”
 
 ## Claims safe to say
 

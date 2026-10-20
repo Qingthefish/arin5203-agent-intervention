@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Agent Memory Crash Test</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=20261021" />
   </head>
   <body>
     <div class="noise"></div>
@@ -29,13 +29,16 @@
         <div class="registry-toggle" id="registry-toggle" role="group" aria-label="Proof source"></div>
         <div class="mode-toggle" role="group" aria-label="View mode">
           <button class="active" data-mode="story">Story mode</button>
+          <button data-mode="suite">Suite mode</button>
           <button data-mode="debug">Debug mode</button>
         </div>
+        <button class="export-button" id="export-run" type="button">Export current JSON</button>
       </section>
 
       <section class="condition-strip" id="condition-strip" aria-label="Memory condition"></section>
 
       <section id="story-view" class="view"></section>
+      <section id="suite-view" class="view hidden"></section>
       <section id="debug-view" class="view hidden"></section>
 
       <footer>
@@ -43,6 +46,6 @@
         <p>The memory-only decision comes from the frozen one-shot held-out artifact. The registry switch is a labeled deterministic what-if; neither path makes a live model call.</p>
       </footer>
     </main>
-    <script src="/app.js" defer></script>
+    <script src="/app.js?v=20261021" defer></script>
   </body>
 </html>

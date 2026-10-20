@@ -32,6 +32,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
 - `src/platform_agent_eval/proof_cards.py` — provenance-typed authority, clearance, active-hold, delegation, recovery, and repair-channel cards with scoped deterministic validation.
 - `src/platform_agent_eval/durable_proof_store.py` — point-in-time lookup and collision-safe merging for proof cards stored outside conversational memory.
+- `src/platform_agent_eval/memory_crash_test.py` — declarative matched-sibling generation, memory selectors, proof validation, state replay, and CI scoring for a reusable crash-test contract.
 - `src/platform_agent_eval/typed_compaction_dev.py` — nine fresh typed-proof bases and 27 role/position/length-matched deletion siblings for the exact-budget development stage.
 - `src/platform_agent_eval/typed_budget_compaction.py` — blinded full, recency, neutral/task-aware summary, generic pinning, U-Fold-lite, and typed-card-retention contexts with neutral-only budget fill.
 - `src/platform_agent_eval/typed_compaction_routing.py` — blinded direct three-route decisions with visible source-event citations, strict parsing, and fail-closed handling on the exact-budget contexts.
@@ -40,7 +41,8 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `scripts/` — plan-gated runners, audits, and plotting utilities.
 - `tests/` — deterministic schema, leakage, state-transition, calibration, and compaction tests.
 - `results/` — raw traces, summaries, manifests, audits, and figures from completed runs.
-- `demo/` and `scripts/serve_memory_crash_test.py` — Story / Debug replay UI backed directly by the frozen one-shot held-out trace.
+- `examples/memory_crash_test.json` and `scripts/run_memory_crash_test.py` — zero-model reference contract plus JSON/JUnit CI runner.
+- `demo/` and `scripts/serve_memory_crash_test.py` — Story / Suite / Debug replay UI backed directly by the frozen one-shot held-out trace.
 - `scripts/plot_typed_heldout_presentation.py` — zero-call derivation of the presentation evidence figures and their source-hashed metric summary.
 - `../04_项目展示/` — slide-ready evidence pack and Agent Memory Playbook derived from the frozen held-out result.
 
@@ -70,6 +72,8 @@ python3 scripts/run_typed_compaction_dataset_gate.py --config configs/typed_comp
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_dev.json
 python3 scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_heldout.json
 python3 scripts/run_typed_budget_sweep.py --config configs/typed_budget_sweep_dev.json
+python3 scripts/run_memory_crash_test.py --spec examples/memory_crash_test.json --output-dir /tmp/memory-crash-test --proof-source memory --strategy typed-proof-memory --allow-fail
+python3 scripts/run_memory_crash_test.py --spec examples/memory_crash_test.json --output-dir /tmp/memory-crash-test --proof-source registry --strategy typed-proof-memory
 python3 scripts/plot_typed_heldout_presentation.py
 python3 scripts/serve_memory_crash_test.py --port 8765
 python3 scripts/run_research_experiment.py --config configs/research_plan.json
@@ -81,9 +85,11 @@ The development-only budget sweep reuses and byte-validates the frozen v6 compac
 
 The completed durable proof-store gate is deterministic and development-only. Across three fresh domains, it pairs recovery of hidden active holds and valid authority with expired, revoked, and wrong-scope controls. It compares the same proof validator with memory alone versus memory augmented by a point-in-time external registry query. The gate has 18 cases, zero model calls, no access to the frozen held-out trace, and no claim about distributed consistency or production readiness.
 
+The standalone crash-test runner is an engineering interface, not another formal experiment. Its JSON contract generates complete-evidence, critical-deletion, and exactly byte-matched noise-deletion siblings from each base case. Built-in selectors can keep all visible events, proof-source events, a recent event window, or externally supplied snapshots. The process exits nonzero on an incorrect route, harmful execution, or missing decisive provenance and writes a human-readable JSON report plus standard JUnit XML. In the bundled example, `memory` mode intentionally reports the hidden-hold regression; `registry` mode with `typed-proof-memory` passes 6/6 by re-reading the declared authoritative hold. Use `--allow-fail` only for diagnostic comparison, never to make a CI gate green.
+
 Completed model experiments use local Ollama with `qwen3.5:9b`. No model weights, API keys, or company data are stored in the repository.
 
-The local demo is available at `http://127.0.0.1:8765` after starting the server. It does not call a model: the server validates and replays `typed_exact_budget_heldout_qwen_v1` without modifying the formal artifact. The curated view contains three travel-agent families, all three matched conditions, and all seven evaluated memory strategies (63 selectable frozen runs). Story Mode presents the request, Direct → deterministic-audit route change, retained proof, and an applied-or-blocked external state diff. Debug Mode exposes the exact memory seen by the router, card type, issuer, subject, scope, source event, obligation status, token count, and citation precision. The hidden-active-hold sibling remains visibly harmful rather than being replaced with a cleaner handpicked success. A separate `Memory only / + durable registry` control adds a labeled deterministic architecture overlay backed by the passed durable-store gate; it does not rewrite the held-out route or claim another model result.
+The local demo is available at `http://127.0.0.1:8765` after starting the server. It does not call a model: the server validates and replays `typed_exact_budget_heldout_qwen_v1` without modifying the formal artifact. The curated view contains three travel-agent families, all three matched conditions, and all seven evaluated memory strategies (63 selectable frozen runs). Story Mode presents one route and state diff; Suite Mode exposes the full 7×3 memory regression matrix for the selected story; Debug Mode shows exact active memory, card provenance, obligations, token count, and citation precision. Every selection is reflected in the URL query string for deterministic deep links, and the current frozen row can be exported as JSON. The hidden-active-hold sibling remains visibly harmful rather than being replaced with a cleaner handpicked success. A separate `Memory only / + durable registry` control adds a labeled deterministic architecture overlay backed by the passed durable-store gate; it does not rewrite the held-out route or claim another model result.
 
 The presentation plotter is also model-free. It reads the immutable held-out trace, frozen v6 development trace, budget-sweep bundle, and experiment index. In addition to the held-out comparison and causal-boundary figures, it writes `budget-sensitivity.png` and a source-hashed `presentation-metrics.json`. These files are presentation views, not new experiment artifacts or a replacement for the formal manifest, summary, and audit.
 
