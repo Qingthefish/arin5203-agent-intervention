@@ -16,6 +16,8 @@ The presentation should be understandable to a classmate who has built an Agent 
 
 Introduce the mechanism through one familiar travel-agent story before using research vocabulary. In that story, the Agent still remembers the request to change a booking but loses either the delegation that authorizes payment or an active hold that forbids the change. The visible consequence is not a worse chat answer; it is a booking state that changes when it should not.
 
+The audience should leave with an implementation procedure, not the tautology that “memory can fail”: inventory proof requirements for each mutating tool, keep authoritative proof on a separate reliability path from chat summaries, validate that proof at the tool boundary, route repairable and non-repairable gaps differently, and crash-test the design by deleting one fact at a time.
+
 Use these plain-language mappings on first mention:
 
 | Research term | Audience-facing meaning |
@@ -25,6 +27,20 @@ Use these plain-language mappings on first mention:
 | Evidence audit | A last check that permission, scope, time limit, blockers, and recovery proof are present |
 | Matched sibling | The same story with either one critical fact or equal-length noise removed |
 | Provenance | The Agent can point to the exact source event behind a claimed fact |
+
+## What the experiments actually compare
+
+The project is a controlled comparison along five independent axes. Keeping these axes separate is the main reason the result is useful to developers rather than only a warning about forgetting.
+
+| Axis held or changed | Comparison | Developer question answered |
+| --- | --- | --- |
+| Memory strategy | recent window, neutral summary, task-aware summary, generic pinning, U-Fold-lite, typed proof; full history is an unbudgeted ceiling | Which representations retain action proof under the same raw-token budget? |
+| Evidence perturbation | complete history, one critical fact removed, equal-size nearby noise removed | Did the missing fact cause the route change, or is the Agent merely reacting to shorter text? |
+| Decision layer | direct router versus the same memory plus deterministic proof audit | Does the audit repair mistakes without spoiling already-correct autonomy? |
+| Token pressure | 384, 256, and 192 raw tokens on the frozen development set | Which methods fail first as memory becomes tighter, and what proof disappears? |
+| Source architecture | memory only versus point-in-time durable proof lookup | Can downstream memory solve the failure, or must the system re-read authoritative state? |
+
+Every comparison ends at the same outcomes: Execute / Confirm / Handoff, cited decisive evidence, harmful or unnecessary intervention, and the actual external state diff. Summary fluency is never the final score.
 
 ## Three-claim spine
 
@@ -75,7 +91,17 @@ The replay is presenter-controlled and deterministic. It does not require audien
 - `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 40 run manifests, 2,069 measured local calls, 2.00 million recorded model tokens, 24 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
 - `figures/presentation-metrics.json` contains every derived value, source artifact path, SHA-256 hash, and claim boundary used by all seven figures.
 
-For a short presentation, use the figures in this order: matched hotel case → benchmark design → held-out method comparison → budget sensitivity → causal boundary → durable-store rescue. Keep the experiment-scale figure as a methods/effort slide or backup answer; it should not delay the familiar failure example.
+For a short presentation, do not try to show all seven figures:
+
+- **Core:** matched hotel case → benchmark design → held-out method comparison → causal boundary and durable-store rescue side by side.
+- **Optional depth:** budget sensitivity, if at least one extra minute is available.
+- **Backup only:** experiment scale. Use it to answer “how much did you run?”, not as evidence that the idea is correct.
+
+This yields one example, one causal design, one aggregate comparison, and one architecture lesson. The Playbook then becomes the conclusion rather than an eighth results chart.
+
+## Experiment stopping rule
+
+Do not add experiments merely to increase the call count. The frozen evidence already answers the main causal, budget, audit-increment, and upstream-boundary questions. A new run is justified only if slide rehearsal exposes a decision-relevant question that no existing immutable artifact can answer. The most plausible optional extension is a second already-installed local model as a transfer check; downloading a new large model solely for another bar chart is out of scope.
 
 Regenerate the figures from `05_代码与实验/` with:
 

@@ -189,21 +189,23 @@ targets, or identifiers. Its full method comparison and trace-level error
 analysis are reserved for the final report rather than used to tune this
 milestone result.
 
-Two extensions will create genuine progress beyond this checkpoint. First, a
-development-only budget sweep will test whether the conclusion holds when
-memory is materially tighter than 384 tokens. Second, we will add an upstream
-durable hold/authorization store and test the boundary case in which a blocker
-disappears \emph{before} the compactor receives the event. If time permits, a
-second local model will be used as a transfer check rather than as another
-tuning target.
+Two post-checkpoint extensions have been completed for the final report without
+altering the frozen method or held-out artifact. A development-only budget
+sweep stress-tests memory below 384 tokens, while a deterministic durable
+hold/authorization store tests the case in which a blocker disappears
+\emph{before} the compactor receives it. Their outcomes are reserved for the
+final comparison rather than used to revise Table~\ref{tab:dev}. If time
+permits, a second local model will be used as a transfer check rather than as
+another tuning target.
 
 The final deliverables will combine the frozen comparison with a deterministic
 Memory Crash Test replay showing compacted memory, cited proof, the three-way
 route, and the actual state diff. The benchmark is synthetic, risk-enriched,
 and currently uses one local model and one generation per context; it cannot
-certify production safety. Its purpose is to expose a concrete engineering
-rule: downstream audit can validate visible proof, but it cannot recreate an
-event that never reached active memory.
+certify production safety. Its engineering rule is concrete: treat conversation
+memory as a cache, validate visible proof at the tool boundary, and re-read
+permissions and holds from an independent source of truth because no audit can
+recreate an event it never received.
 
 {
 \footnotesize

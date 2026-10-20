@@ -6,6 +6,12 @@
 
 The practical problem is not “make the summary more complete.” It is to keep conversational memory and action proof on different reliability paths. A fluent summary may be useful for dialogue continuity while still being an unsafe basis for changing a booking, sending money, granting access, or deploying a system.
 
+## Who owns this problem?
+
+A model or Agent framework may determine the context window, tokenizer, truncation behavior, or when an automatic summary is triggered. The application team still owns the part that depends on business meaning: which tool calls mutate state, what authority each call requires, where current holds and permissions live, who may repair a missing fact, and what must happen when proof cannot be read.
+
+Choosing a larger model or a different API may delay compaction or improve summarization, but it cannot define these product-specific proof obligations. Treat provider-managed memory as a useful cache; keep permission, policy, and hold state in an application-controlled source of truth.
+
 ## Six design rules
 
 ### 1. Define proof obligations before writing the compactor
@@ -106,3 +112,12 @@ Memory design is one control layer, not the whole safety system.
 3. Can compaction remove it or replace it with unsupported prose?
 4. Can the Agent distinguish a question the user can answer from authority only an operator holds?
 5. What happens if a blocking event never reaches active context at all?
+
+## Minimal build order
+
+1. List every tool that can book, pay, send, deploy, grant, delete, or otherwise change external state.
+2. Define that tool's proof contract before tuning its memory prompt.
+3. Store authenticated approvals, delegations, holds, and recovery plans as source-linked records when they originate.
+4. Let conversational memory summarize freely, but re-read durable authority and hold state immediately before mutation.
+5. Validate the proposed action against both sources and route to Execute, Confirm, or Handoff.
+6. Add matched memory crash tests to regression evaluation before shipping the next Agent iteration.
