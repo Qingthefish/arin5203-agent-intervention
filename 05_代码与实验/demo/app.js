@@ -1,8 +1,8 @@
 const query = new URLSearchParams(window.location.search);
 const state = {
   payload: null,
-  family: query.get("family") || "held-t8",
-  condition: query.get("condition") || "full_evidence",
+  family: query.get("family") || "held-y6",
+  condition: query.get("condition") || "remove_action_critical",
   method: query.get("method") || "typed_card_retention",
   mode: query.get("mode") || "story",
   registry: query.get("proof") === "registry",
@@ -153,64 +153,101 @@ function renderStory(run, family) {
   const routeCorrect = finalDecision === run.expected_decision;
   const changedByAudit = directDecision !== run.decision;
   const changedByRegistry = run.decision !== overlay.decision;
-  const verdictClass = routeCorrect ? "pass" : "fail";
-  const verdictText = routeCorrect ? "Matches frozen oracle" : "Known failure boundary";
-  const registryCards = state.registry
-    ? `<div class="registry-receipt"><strong>Registry receipt</strong><span>${overlay.new_card_ids.length ? esc(overlay.new_card_ids.join(" · ")) : "No new decisive proof"}</span><small>${esc(overlay.label)}</small></div>`
-    : "";
-  const finalChip = state.registry
-    ? `<span class="pipeline-arrow">${changedByRegistry ? "→ rescued →" : "→ checked →"}</span><div class="route-chip ${routeClass(finalDecision)}"><small>Registry</small><strong>${esc(finalLabel)}</strong></div>`
-    : "";
+  const verdictText = routeCorrect ? "Safe route matches the oracle" : "Known failure boundary";
+  const conditionCopy = run.condition === "remove_action_critical"
+    ? `Compaction can no longer see the ${family.critical_fact}.`
+    : run.condition === "remove_matched_noise"
+      ? `Only equal-size irrelevant text disappeared; the ${family.critical_fact} remains visible.`
+      : `Complete history still contains the ${family.critical_fact}.`;
+  const outcomeTitle = finalState.harmful_mutation
+    ? "A harmful change goes through"
+    : finalState.mutation_applied
+      ? "The verified change goes through"
+      : "The tool call is paused";
+  const routeVerb = finalDecision === "AUTO_EXECUTE" ? "executes" : finalDecision === "REQUEST_CONFIRMATION" ? "asks once" : "hands off";
   document.querySelector("#story-view").innerHTML = `
-    <div class="story-top">
-      <article class="request-panel">
-        <span class="panel-label">${esc(family.eyebrow)} · held-out request</span>
+    <div class="story-opening">
+      <article class="story-request">
+        <span class="panel-label">A familiar agent request</span>
         <p class="request-text">“${esc(family.request)}”</p>
-        <p class="risk-note">${esc(family.risk)}</p>
+        <p class="story-rule"><strong>Control rule:</strong> ${esc(family.risk)}</p>
       </article>
-      <article class="decision-panel">
-        <span class="panel-label">Direct route → evidence audit</span>
-        <div class="pipeline">
-          <div class="route-chip ${routeClass(directDecision)}">
-            <small>Direct</small><strong>${esc(decisionLabels[directDecision])}</strong>
-          </div>
-          <span class="pipeline-arrow">${changedByAudit ? "→ corrected →" : "→ verified →"}</span>
-          <div class="route-chip ${routeClass(run.decision)}">
-            <small>Memory audit</small><strong>${esc(run.decision_label)}</strong>
-          </div>
-          ${finalChip}
+      <article class="story-result ${finalState.harmful_mutation ? "danger" : ""}">
+        <span class="panel-label">The next tool call</span>
+        <div class="story-route ${routeClass(finalDecision)}">
+          <strong>${esc(finalLabel)}</strong><span>The agent ${esc(routeVerb)}</span>
         </div>
-        <p>${esc(finalSummary)}</p>
-        <div class="verdict ${verdictClass}">${esc(verdictText)} · expected ${esc(decisionLabels[run.expected_decision])}</div>
+        <p>${esc(outcomeTitle)}.</p>
+        <div class="story-verdict ${routeCorrect ? "pass" : "fail"}">${esc(verdictText)}</div>
       </article>
     </div>
-    <div class="journey">
-      <article class="stage">
-        <span class="panel-label">01 · active memory</span>
-        <h3>${esc(run.condition_label)}</h3>
-        <p>${esc(run.condition_summary)}.</p>
-        <div class="metric-grid">
-          <div><strong>${esc(run.exact_raw_tokens)}</strong><span>raw tokens</span></div>
-          <div><strong>${esc(run.removed_event_ids.length)}</strong><span>events removed</span></div>
-          <div><strong>${esc(run.critical_kind)}</strong><span>critical type</span></div>
+    <div class="story-causal">
+      <article class="causal-step">
+        <span class="step-number">01</span>
+        <div>
+          <span class="panel-label">Memory changes</span>
+          <h3>${esc(run.condition_label)}</h3>
+          <p>${esc(conditionCopy)}</p>
         </div>
       </article>
-      <div class="arrow">→</div>
-      <article class="stage">
-        <span class="panel-label">02 · retained proof</span>
-        <h3>${esc(run.method_label)}</h3>
-        <div class="memory-stack">${cardRows(run, true)}</div>
-        ${registryCards}
-        <p>${esc(run.retained_card_ids.length)} / ${esc(run.visible_card_ids.length)} visible cards rehydrated · citation precision ${esc(pct(run.direct.proof_citation_precision))}</p>
+      <span class="causal-arrow">→</span>
+      <article class="causal-step">
+        <span class="step-number">02</span>
+        <div>
+          <span class="panel-label">Evidence is checked</span>
+          <div class="compact-route">
+            <span>${esc(decisionLabels[directDecision])}</span>
+            <b>${changedByAudit ? "corrected to" : "verified as"}</b>
+            <strong>${esc(run.decision_label)}</strong>
+          </div>
+          <p>${esc(run.method_label)} · ${esc(run.retained_card_ids.length)}/${esc(run.visible_card_ids.length)} visible proof cards retained</p>
+        </div>
       </article>
-      <div class="arrow">→</div>
-      <article class="stage ${finalState.harmful_mutation ? "danger-stage" : ""}">
-        <span class="panel-label">03 · deterministic state replay</span>
-        <h3>${finalState.harmful_mutation ? "Harmful mutation" : finalState.mutation_applied ? "Mutation applied" : "Mutation paused"}</h3>
+      <span class="causal-arrow">→</span>
+      <article class="causal-step ${finalState.harmful_mutation ? "danger" : ""}">
+        <span class="step-number">03</span>
+        <div>
+          <span class="panel-label">External state reveals the cost</span>
+          <h3>${esc(outcomeTitle)}</h3>
         <div class="state-diff">${stateRows({state: finalState})}</div>
-        <p>${finalState.harmful_mutation ? "The missing hold was never visible to the compactor." : state.registry && changedByRegistry ? "The external registry recovered authoritative proof before the tool call." : finalState.mutation_applied ? "The verified route reached the tool." : "Confirm or Handoff stopped the tool call."}</p>
+        </div>
       </article>
+    </div>
+    <div class="story-lesson">
+      <div>
+        <span class="panel-label">The production lesson</span>
+        <h2>Conversation memory is a cache—not the source of truth.</h2>
+        <p>${state.registry && changedByRegistry ? "At the action boundary, the durable registry restores authoritative proof and prevents the mutation." : "A post-compaction audit can verify retained evidence, but it cannot recreate a hold that never reached active context."}</p>
+      </div>
+      <div class="source-comparison">
+        <div class="source-route">
+          <small>Memory only</small><strong class="${routeClass(run.decision)}">${esc(run.decision_label)}</strong>
+        </div>
+        <span>→</span>
+        <div class="source-route emphasized">
+          <small>+ durable registry</small><strong class="${routeClass(overlay.decision)}">${esc(overlay.decision_label)}</strong>
+          <em>${overlay.new_card_ids.length ? `recovers ${esc(family.critical_fact)}` : "revalidates current proof"}</em>
+        </div>
+      </div>
     </div>`;
+}
+
+function renderTraceStamp() {
+  const trace = state.payload.trace;
+  const element = document.querySelector("#trace-stamp");
+  if (state.mode === "story") {
+    element.classList.add("compact");
+    element.innerHTML = `<strong>FROZEN HELD-OUT TRACE</strong><span>${esc(trace.measured_generation_calls)} local calls · $${esc(trace.external_api_cost_usd.toFixed(2))} API cost</span>`;
+    return;
+  }
+  element.classList.remove("compact");
+  element.innerHTML = `
+    TRACE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.status)}<br>
+    MODEL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.model)} · local<br>
+    CALLS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.measured_generation_calls)} measured<br>
+    TOKENS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc((trace.prompt_tokens + trace.completion_tokens).toLocaleString("en-HK"))}<br>
+    STORE GATE&nbsp; ${esc(trace.durable_gate_status.replace("PASS_DURABLE_PROOF_STORE_GATE", "PASS"))} · ${esc(trace.durable_gate_cases)} cases<br>
+    API COST&nbsp;&nbsp;&nbsp; $${esc(trace.external_api_cost_usd.toFixed(2))}`;
 }
 
 function renderDebug(run) {
@@ -349,6 +386,7 @@ function syncDeepLink() {
 }
 
 function render() {
+  document.body.dataset.mode = state.mode;
   renderControls();
   const run = activeRun();
   const family = activeFamily();
@@ -359,6 +397,7 @@ function render() {
   document.querySelector("#suite-view").classList.toggle("hidden", state.mode !== "suite");
   document.querySelector("#debug-view").classList.toggle("hidden", state.mode !== "debug");
   document.querySelectorAll("[data-mode]").forEach(button => button.classList.toggle("active", button.dataset.mode === state.mode));
+  renderTraceStamp();
   syncDeepLink();
 }
 
@@ -367,14 +406,6 @@ async function boot() {
   if (!response.ok) throw new Error(`Trace API returned ${response.status}`);
   state.payload = await response.json();
   normalizeState();
-  const trace = state.payload.trace;
-  document.querySelector("#trace-stamp").innerHTML = `
-    TRACE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.status)}<br>
-    MODEL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.model)} · local<br>
-    CALLS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(trace.measured_generation_calls)} measured<br>
-    TOKENS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc((trace.prompt_tokens + trace.completion_tokens).toLocaleString("en-HK"))}<br>
-    STORE GATE&nbsp; ${esc(trace.durable_gate_status.replace("PASS_DURABLE_PROOF_STORE_GATE", "PASS"))} · ${esc(trace.durable_gate_cases)} cases<br>
-    API COST&nbsp;&nbsp;&nbsp; $${esc(trace.external_api_cost_usd.toFixed(2))}`;
   document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => {
     state.mode = button.dataset.mode;
     render();

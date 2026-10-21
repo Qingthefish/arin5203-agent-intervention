@@ -80,6 +80,15 @@ No official final-presentation duration has been verified in the local course re
 
 The replay is presenter-controlled and deterministic. It does not require audience interaction or a live model call.
 
+The interface follows the same progressive-disclosure rule as the talk. Its
+default Story Mode opens on the hotel active-hold failure and shows only the
+request, the missing fact, the resulting route, the external state diff, and
+the durable-source lesson. **Evidence Suite** keeps the full seven-strategy by
+three-sibling matrix for aggregate comparison, while **Trace Inspector** keeps
+exact memory, proof cards, obligations, tokens, and citation details for Q&A.
+The dense table is therefore evidence behind the story, not the first screen
+the audience must decode.
+
 ## Core figures
 
 - `figures/matched-case-held-y6.png` is the recommended opening example. It uses one frozen hotel-booking family to show that removing equal-size noise changes nothing, while removing the active hold flips Handoff to a harmful Execute and changes the external state.
@@ -121,10 +130,11 @@ python3 scripts/serve_memory_crash_test.py --port 8765
 
 Recommended sequence:
 
-1. Use `held-t8` with action-critical deletion: Direct wants to Execute, evidence audit changes the route to Handoff, and the external state remains unchanged.
-2. Use `held-y6` with action-critical deletion: the active hold disappeared before compaction, so the typed system still Executes and the state diff is marked harmful.
-3. Switch to Suite Mode to show that the example is one cell in a 7-strategy × 3-sibling regression matrix, not a handpicked animation.
-4. Turn on the durable registry overlay, then end on the playbook rule: **a compactor can preserve evidence it receives; it cannot recover evidence that never entered its active context.**
+1. Open the default `held-y6` Story Mode: the active hold disappeared before compaction, so the typed system still Executes and the hotel state diff is marked harmful.
+2. Turn on the durable registry overlay and show that the same validator now Handoffs after re-reading the authoritative hold.
+3. Switch to Evidence Suite to show that the story is one cell in a 7-strategy × 3-sibling regression matrix, not a handpicked animation.
+4. If time permits, use `held-t8` in Trace Inspector: Direct wants to Execute, evidence audit changes the route to Handoff, and the exact source-linked delegation gap is visible.
+5. End on the playbook rule: **a compactor can preserve evidence it receives; it cannot recover evidence that never entered its active context.**
 
 The demo is a replay of frozen traces, not a staged live-model generation. That makes the classroom presentation deterministic while keeping every screen traceable to the formal artifact. The adjacent command-line Crash Test Kit turns the same design into a CI interface: a JSON proof contract produces matched siblings and JSON/JUnit reports, so the product takeaway is “write memory regression tests before shipping a mutating Agent,” not “watch our website.”
 

@@ -1,0 +1,32 @@
+name: memory-crash-test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install research preview
+        run: python -m pip install -e .
+      - name: Run deterministic tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate bundled contract
+        run: agent-memory-crash-test --spec examples/memory_crash_test.json --validate-only
+      - name: Demonstrate memory-only regression
+        run: agent-memory-crash-test --spec examples/memory_crash_test.json --output-dir reports/memory --proof-source memory --strategy typed-proof-memory --allow-fail
+      - name: Require durable-registry gate to pass
+        run: agent-memory-crash-test --spec examples/memory_crash_test.json --output-dir reports/registry --proof-source registry --strategy typed-proof-memory
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: memory-crash-reports
+          path: reports/

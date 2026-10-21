@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/Qingthefish/agent-memory-crash-test/main/schemas/agent-memory-crash-test-v1.schema.json",
   "schema_version": "agent-memory-crash-test/v1",
   "suite_id": "travel-agent-memory-gate",
   "title": "State-changing travel-agent memory gate",

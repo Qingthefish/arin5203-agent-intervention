@@ -1,12 +1,88 @@
-# Compaction Aware Agent Intervention Evaluation
+# Agent Memory Crash Test
 
-This directory contains the reproducible simulator and local evaluation code for the ARIN 5203 project **Do AI Platform Agents Know What They Must Not Forget**.
+**Crash-test the evidence an AI agent retains before state-changing actions.**
+
+Agent Memory Crash Test is an installable, zero-model research toolkit for turning a memory-dependent tool call into a deterministic regression gate. A declarative contract generates three matched conditions—complete evidence, one action-critical deletion, and one exactly byte-matched noise deletion—then checks whether the agent-side policy should `AUTO_EXECUTE`, `REQUEST_CONFIRMATION`, or `HANDOFF`. Reports include retained provenance, harmful state mutations, noise sensitivity, JSON, and standard JUnit XML.
+
+This is a research preview, not a production safety certification. It helps teams test memory and compaction changes before deployment; it does not replace authorization services, identity controls, transaction validation, sandboxing, or human review.
+
+## Ten-Minute Quickstart
+
+Python 3.12 or newer is required. The deterministic path has no runtime dependencies and does not need an API key.
+
+```bash
+python3 -m pip install -e .
+agent-memory-crash-test --init my-memory-gate.json
+agent-memory-crash-test --spec my-memory-gate.json --validate-only
+```
+
+Run the bundled red-to-green example:
+
+```bash
+# Expected red: conversational memory lost an active hold.
+agent-memory-crash-test \
+  --spec examples/memory_crash_test.json \
+  --output-dir reports/memory \
+  --proof-source memory \
+  --strategy typed-proof-memory \
+  --allow-fail
+
+# Expected green: the same validator re-reads the declared durable registry.
+agent-memory-crash-test \
+  --spec examples/memory_crash_test.json \
+  --output-dir reports/registry \
+  --proof-source registry \
+  --strategy typed-proof-memory
+```
+
+The first command deliberately reports `5/6` with one harmful execution. The second reports `6/6` with zero harmful executions. The action, policy, memory strategy, and validator stay unchanged; only the source of authoritative proof changes.
+
+## What This Tests
+
+```text
+conversation or agent trace
+          │
+          ├── complete evidence
+          ├── remove one action-critical event
+          └── remove equal-size irrelevant noise
+                         │
+                 memory strategy
+                         │
+              provenance proof gate
+                         │
+          Execute / Confirm / Handoff
+                         │
+             deterministic state diff
+```
+
+The toolkit is deliberately narrower than a general memory framework. It does not decide what a user prefers, build a vector database, or claim that a model's explanation is faithful. It asks whether the evidence required for one proposed mutation survived, whether the route is grounded in retained sources, and what state would change if the operation executed.
+
+The contract schema is published at `schemas/agent-memory-crash-test-v1.schema.json`. The public Python API is available from `agent_memory_crash_test`; the underlying research modules remain under `platform_agent_eval` for reproducibility.
+
+## Where It Fits
+
+This project does not replace an Agent framework, memory database, benchmark,
+or runtime authorization service. It connects those layers through one narrow
+developer question: **if one action-relevant fact disappears while an
+equally sized irrelevant fact disappears in the control, does the proposed
+tool call still take the right route for grounded reasons?**
+
+Related work already studies long-term memory, memory-to-action failures,
+context compaction, abstention, delegation, and human intervention. The useful
+unit here is their integration into a declarative, provider-independent
+regression gate with matched deletions, provenance checks, three-way routing,
+and observable state diffs. See [`docs/related-work.md`](docs/related-work.md)
+for the positioning and claim boundary.
+
+## Research Origin
+
+This package contains the reproducible simulator and local evaluation code for the ARIN 5203 project **Do AI Platform Agents Know What They Must Not Forget? — Compaction-Aware Intervention Before State-Changing Operations**. The course research archive, immutable traces, presentation evidence, and full decision history live in the companion repository: <https://github.com/Qingthefish/arin5203-agent-intervention>.
 
 ## Current Research Question
 
 Before an AI platform agent performs a state-changing operation, can a compaction-aware intervention pipeline preserve decision-critical context and choose `AUTO_EXECUTE`, `REQUEST_CONFIRMATION`, or `HANDOFF` with a better context-efficiency and human-burden trade-off than truncation, generic summarization, or fixed constraint pinning?
 
-The current claim is deliberately limited. Small feasibility pilots show that lossy compaction can remove critical facts and change downstream routing, while a generic summary can be a strong baseline. A later grounded-routing gate showed that correct routes can still lack complete cross-event evidence. These results do not establish a safety improvement, incremental HITL value, or generalization result. See the repository-root `README.md` for the current gate and `项目复盘.md` for the reasoning behind it.
+The current claim is deliberately limited. Frozen development and held-out experiments show that lossy compaction can remove critical facts and change downstream routing, while strong summaries can remain competitive on route accuracy. Typed proof memory is most clearly differentiated by inspectable evidence provenance rather than a universal route-accuracy win. No post-compaction method can reconstruct an authoritative event that never reached active context; the reference durable registry demonstrates one system-level response to that boundary without claiming production readiness.
 
 ## System Boundary
 
@@ -44,7 +120,7 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `examples/memory_crash_test.json` and `scripts/run_memory_crash_test.py` — zero-model reference contract plus JSON/JUnit CI runner.
 - `demo/` and `scripts/serve_memory_crash_test.py` — Story / Suite / Debug replay UI backed directly by the frozen one-shot held-out trace.
 - `scripts/plot_typed_heldout_presentation.py` — zero-call derivation of the presentation evidence figures and their source-hashed metric summary.
-- `../04_项目展示/` — slide-ready evidence pack and Agent Memory Playbook derived from the frozen held-out result.
+- The companion course archive's `04_项目展示/` directory contains the slide-ready evidence pack and Agent Memory Playbook derived from the frozen held-out result.
 
 ## Reproduction
 

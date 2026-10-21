@@ -41,6 +41,11 @@ class MemoryCrashDemoTests(unittest.TestCase):
                 for method in METHOD_ORDER:
                     self.assertEqual(1, counts[(family_id, condition, method)])
 
+    def test_each_story_names_one_human_readable_critical_fact(self) -> None:
+        for family in self.payload["families"]:
+            self.assertTrue(family["critical_fact"])
+            self.assertNotIn("_", family["critical_fact"])
+
     def test_state_diff_is_applied_only_after_audited_execute(self) -> None:
         for run in self.payload["runs"]:
             with self.subTest(key=run["key"]):

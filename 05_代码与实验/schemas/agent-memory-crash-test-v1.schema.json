@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Qingthefish/agent-memory-crash-test/main/schemas/agent-memory-crash-test-v1.schema.json",
+  "title": "Agent Memory Crash Test v1",
+  "description": "A matched-sibling regression contract for memory-dependent state-changing agent actions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "suite_id", "title", "strategies", "cases"],
+  "properties": {
+    "$schema": {"type": "string", "format": "uri"},
+    "schema_version": {"const": "agent-memory-crash-test/v1"},
+    "suite_id": {"$ref": "#/$defs/nonEmptyString"},
+    "title": {"$ref": "#/$defs/nonEmptyString"},
+    "strategies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/strategy"}
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/case"}
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "stringList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonEmptyString"}
+    },
+    "scope": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/nonEmptyString"}
+    },
+    "conditionDecisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "full_evidence",
+        "remove_action_critical",
+        "remove_matched_noise"
+      ],
+      "properties": {
+        "full_evidence": {"$ref": "#/$defs/decision"},
+        "remove_action_critical": {"$ref": "#/$defs/decision"},
+        "remove_matched_noise": {"$ref": "#/$defs/decision"}
+      }
+    },
+    "conditionBooleans": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "full_evidence",
+        "remove_action_critical",
+        "remove_matched_noise"
+      ],
+      "properties": {
+        "full_evidence": {"type": "boolean"},
+        "remove_action_critical": {"type": "boolean"},
+        "remove_matched_noise": {"type": "boolean"}
+      }
+    },
+    "decision": {
+      "enum": ["AUTO_EXECUTE", "REQUEST_CONFIRMATION", "HANDOFF"]
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "selector"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nonEmptyString"},
+        "selector": {
+          "enum": ["all_visible", "proof_sources", "recent_events", "snapshot"]
+        },
+        "event_count": {"type": "integer", "minimum": 1},
+        "snapshots": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "full_evidence",
+            "remove_action_critical",
+            "remove_matched_noise"
+          ],
+          "properties": {
+            "full_evidence": {"type": "array", "items": {"type": "string"}},
+            "remove_action_critical": {"type": "array", "items": {"type": "string"}},
+            "remove_matched_noise": {"type": "array", "items": {"type": "string"}}
+          }
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "operation", "target_id", "scope", "effective_at"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/nonEmptyString"},
+        "operation": {"$ref": "#/$defs/nonEmptyString"},
+        "target_id": {"$ref": "#/$defs/nonEmptyString"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "effective_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_issuers",
+        "clearance_issuers",
+        "hold_issuers",
+        "delegation_issuers",
+        "recovery_issuers",
+        "repair_channel_issuers",
+        "confirmable_authority_actors",
+        "requires_clearance",
+        "requires_delegation",
+        "requires_recovery"
+      ],
+      "properties": {
+        "authority_issuers": {"$ref": "#/$defs/stringList"},
+        "clearance_issuers": {"$ref": "#/$defs/stringList"},
+        "hold_issuers": {"$ref": "#/$defs/stringList"},
+        "delegation_issuers": {"$ref": "#/$defs/stringList"},
+        "recovery_issuers": {"$ref": "#/$defs/stringList"},
+        "repair_channel_issuers": {"$ref": "#/$defs/stringList"},
+        "confirmable_authority_actors": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "requires_clearance": {"type": "boolean"},
+        "requires_delegation": {"type": "boolean"},
+        "requires_recovery": {"type": "boolean"}
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "role", "content"],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/nonEmptyString"},
+        "role": {"$ref": "#/$defs/nonEmptyString"},
+        "content": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "proofCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "card_id",
+        "kind",
+        "source_event_ids",
+        "issuer_id",
+        "subject_id",
+        "operation",
+        "target_id",
+        "scope",
+        "valid_from",
+        "valid_until"
+      ],
+      "properties": {
+        "card_id": {"$ref": "#/$defs/nonEmptyString"},
+        "kind": {
+          "enum": [
+            "AUTHORITY",
+            "CLEARANCE",
+            "ACTIVE_HOLD",
+            "DELEGATION",
+            "RECOVERY",
+            "REPAIR_CHANNEL"
+          ]
+        },
+        "source_event_ids": {"$ref": "#/$defs/stringList"},
+        "issuer_id": {"$ref": "#/$defs/nonEmptyString"},
+        "subject_id": {"$ref": "#/$defs/nonEmptyString"},
+        "operation": {"$ref": "#/$defs/nonEmptyString"},
+        "target_id": {"$ref": "#/$defs/nonEmptyString"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "valid_from": {"type": "string", "format": "date-time"},
+        "valid_until": {"type": "string", "format": "date-time"},
+        "authenticated": {"type": "boolean"},
+        "transferable": {"type": "boolean"}
+      }
+    },
+    "durableRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_id", "card_id", "committed_at"],
+      "properties": {
+        "record_id": {"$ref": "#/$defs/nonEmptyString"},
+        "card_id": {"$ref": "#/$defs/nonEmptyString"},
+        "committed_at": {"type": "string", "format": "date-time"},
+        "revoked_at": {"type": ["string", "null"], "format": "date-time"},
+        "integrity_verified": {"type": "boolean"}
+      }
+    },
+    "durableStore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["store_id", "snapshot_id", "records"],
+      "properties": {
+        "store_id": {"$ref": "#/$defs/nonEmptyString"},
+        "snapshot_id": {"$ref": "#/$defs/nonEmptyString"},
+        "records": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/durableRecord"}
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["before", "after"],
+      "properties": {
+        "before": {"type": "object"},
+        "after": {"type": "object"}
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "title",
+        "action",
+        "policy",
+        "events",
+        "proof_cards",
+        "critical_event_id",
+        "matched_noise_event_id",
+        "expected_decisions",
+        "unsafe_if_executed",
+        "state"
+      ],
+      "properties": {
+        "case_id": {"$ref": "#/$defs/nonEmptyString"},
+        "title": {"$ref": "#/$defs/nonEmptyString"},
+        "action": {"$ref": "#/$defs/action"},
+        "policy": {"$ref": "#/$defs/policy"},
+        "events": {
+          "type": "array",
+          "minItems": 3,
+          "items": {"$ref": "#/$defs/event"}
+        },
+        "proof_cards": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/proofCard"}
+        },
+        "critical_event_id": {"$ref": "#/$defs/nonEmptyString"},
+        "matched_noise_event_id": {"$ref": "#/$defs/nonEmptyString"},
+        "expected_decisions": {"$ref": "#/$defs/conditionDecisions"},
+        "unsafe_if_executed": {"$ref": "#/$defs/conditionBooleans"},
+        "state": {"$ref": "#/$defs/state"},
+        "durable_store": {"$ref": "#/$defs/durableStore"}
+      }
+    }
+  }
+}

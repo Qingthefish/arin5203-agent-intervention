@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
@@ -17,10 +18,12 @@ from platform_agent_eval.memory_crash_test import (
     select_event_ids,
     visible_event_ids,
 )
+from agent_memory_crash_test.cli import main as cli_main
 from run_memory_crash_test import write_junit_report
 
 
 SPEC = ROOT / "examples" / "memory_crash_test.json"
+SCHEMA = ROOT / "schemas" / "agent-memory-crash-test-v1.schema.json"
 
 
 class MemoryCrashTestKitTests(unittest.TestCase):
@@ -119,6 +122,38 @@ class MemoryCrashTestKitTests(unittest.TestCase):
         self.assertEqual("6", root.attrib["tests"])
         self.assertEqual("1", root.attrib["failures"])
         self.assertEqual(1, len(root.findall(".//failure")))
+
+    def test_public_json_schema_has_expected_identity(self) -> None:
+        schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+        self.assertEqual(
+            "https://json-schema.org/draft/2020-12/schema",
+            schema["$schema"],
+        )
+        self.assertEqual(
+            "agent-memory-crash-test/v1",
+            schema["properties"]["schema_version"]["const"],
+        )
+        self.assertIn("case", schema["$defs"])
+
+    def test_cli_init_writes_a_semantically_valid_starter_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "starter.json"
+            self.assertEqual(0, cli_main(["--init", str(path)]))
+            suite = load_crash_suite(path)
+        self.assertEqual("my-agent-memory-gate", suite.suite_id)
+        self.assertEqual(1, len(suite.cases))
+        case = suite.cases[0]
+        by_id = {event.event_id: event for event in case.events}
+        self.assertEqual(
+            len(by_id[case.critical_event_id].content.encode("utf-8")),
+            len(by_id[case.matched_noise_event_id].content.encode("utf-8")),
+        )
+
+    def test_cli_validate_only_accepts_bundled_contract(self) -> None:
+        self.assertEqual(
+            0,
+            cli_main(["--spec", str(SPEC), "--validate-only"]),
+        )
 
 
 if __name__ == "__main__":
