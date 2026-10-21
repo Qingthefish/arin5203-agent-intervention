@@ -130,6 +130,38 @@ Gold decisions, private approval requirements, and oracle conclusions remain out
 - `scripts/plot_typed_heldout_presentation.py` — zero-call derivation of the presentation evidence figures and their source-hashed metric summary.
 - The companion course archive's `04_项目展示/` directory contains the slide-ready evidence pack and Agent Memory Playbook derived from the frozen held-out result.
 
+## Natural-Language Evidence Extension
+
+The course contribution in PR #1 adds an optional extraction diagnostic:
+ordinary messages → literal evidence fields with source quotes → the existing
+proof validator. The v1 interface preserves the extracted subject, operation,
+target, scope and validity window; it never fills these from the proposed
+action. Any malformed claim invalidates the output and routes to Handoff.
+Citation presence is checked against the actual event text. Quote containment
+does not independently establish semantic entailment or cryptographic trust.
+
+`results/nl_evidence_v0_dataset*` preserves the contributor's original export.
+`results/nl_evidence_v1_dataset*` is the revised snapshot, with same-role,
+same-position, equal-UTF-8-byte critical/noise events. This is not a claim of
+equal token budgets. The 120 contexts reuse the existing 20 base families;
+test-family rewrites are not new independent held-out data. No extraction
+model run has been completed. This extension has no compactor comparison.
+
+Print a development plan without contacting a model:
+
+```bash
+python3 scripts/run_nl_evidence_extraction.py --split dev --variant clean --limit 6
+```
+
+The runner requires both `--run` and `--acknowledge-experiment-plan` to contact
+loopback Ollama. `--limit` preserves whole sibling triples. Each versioned run
+reserves its prefix and writes raw JSONL, summary CSV, audit JSON and a manifest,
+including prompt/config/dataset hashes, generation settings, Git revision,
+model identity, latency and tokens. Offline launches and interruptions remain
+discoverable. Audit PASS is an instrumentation result, not an extraction
+quality claim. After any actual run, regenerate and check `results/index.json`.
+Dataset export also refuses to overwrite existing versioned files.
+
 ## Reproduction
 
 Run from this directory with Python 3.12 or newer.

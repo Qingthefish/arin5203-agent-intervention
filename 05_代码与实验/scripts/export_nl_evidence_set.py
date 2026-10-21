@@ -33,9 +33,13 @@ def main() -> None:
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
+    prefix = NL_EVIDENCE_VERSION.replace("-", "_")
+    jsonl = out / f"{prefix}_dataset.jsonl"
+    preview = out / f"{prefix}_dataset_preview.md"
+    if jsonl.exists() or preview.exists():
+        raise SystemExit("refusing to overwrite an existing dataset export")
     contexts = build_nl_contexts()
     records = [context_record(context) for context in contexts]
-    jsonl = out / "nl_evidence_v0_dataset.jsonl"
     jsonl.write_text(
         "".join(json.dumps(record, ensure_ascii=False) + "\n" for record in records),
         encoding="utf-8",
@@ -50,6 +54,8 @@ def main() -> None:
         "",
         f"- Contexts: {len(contexts)} (20 families x 2 variants x 3 conditions)",
         f"- Typed-format leaks: {len(leaks)}",
+        "- Matching: UTF-8 bytes, role and position; no token-budget equivalence claimed",
+        "- Scope: templated rewrites of existing families, not new independent test data",
         "- Contexts where perfect extraction still disagrees with gold "
         f"(expected hidden-hold deletions): {len(mismatches)}",
         "",
@@ -85,7 +91,6 @@ def main() -> None:
                 continue
             lines.append(f"- `{event.event_id}` {event.role}{tag}: {event.content}")
         lines.append("")
-    preview = out / "nl_evidence_v0_dataset_preview.md"
     preview.write_text("\n".join(lines), encoding="utf-8")
     print(f"wrote {jsonl} and {preview}")
     print(f"contexts={len(contexts)} leaks={len(leaks)} expected_mismatches={len(mismatches)}")
