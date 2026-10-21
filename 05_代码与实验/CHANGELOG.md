@@ -8,6 +8,6 @@
 - Added deterministic external state replay and harmful-mutation detection.
 - Added optional point-in-time durable proof registry lookup.
 - Added JSON and JUnit reports with nonzero CI exit status on regressions.
-- Added an installable CLI, starter-contract generator, JSON Schema, and CI workflow.
+- Added an installable CLI, starter-contract generator, JSON Schema, and copy-ready CI workflow template.
 
 This release is a research preview, not a production safety certification.

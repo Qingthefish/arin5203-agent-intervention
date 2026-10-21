@@ -16,6 +16,14 @@ agent-memory-crash-test --init my-memory-gate.json
 agent-memory-crash-test --spec my-memory-gate.json --validate-only
 ```
 
+The repository includes a copy-ready GitHub Actions gate. A maintainer with
+workflow permission can enable it with:
+
+```bash
+mkdir -p .github/workflows
+cp ci/github-actions.yml .github/workflows/memory-crash-test.yml
+```
+
 Run the bundled red-to-green example:
 
 ```bash
