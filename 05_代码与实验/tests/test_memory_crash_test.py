@@ -4,6 +4,8 @@ import json
 import sys
 import tempfile
 import unittest
+import io
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -154,6 +156,99 @@ class MemoryCrashTestKitTests(unittest.TestCase):
             0,
             cli_main(["--spec", str(SPEC), "--validate-only"]),
         )
+
+    def _load_payload(self, payload):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "spec.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            return load_crash_suite(path)
+
+    def test_nonboolean_security_flags_are_rejected_instead_of_coerced(self) -> None:
+        paths = [
+            ("cases", 0, "policy", "requires_clearance"),
+            ("cases", 0, "policy", "requires_delegation"),
+            ("cases", 0, "policy", "requires_recovery"),
+            ("cases", 0, "proof_cards", 0, "authenticated"),
+            ("cases", 0, "proof_cards", 0, "transferable"),
+            ("cases", 1, "durable_store", "records", 0, "integrity_verified"),
+        ]
+        for path in paths:
+            for value in ("false", "true", 0, 1, None, [], {}):
+                payload = json.loads(SPEC.read_text())
+                cursor = payload
+                for key in path[:-1]:
+                    cursor = cursor[key]
+                cursor[path[-1]] = value
+                with self.subTest(path=path, value=value), self.assertRaisesRegex(ValueError, "Boolean"):
+                    self._load_payload(payload)
+
+    def test_real_false_authentication_is_not_promoted_to_authority(self) -> None:
+        payload = json.loads(SPEC.read_text())
+        for card in payload["cases"][0]["proof_cards"]:
+            if card["kind"] == "DELEGATION":
+                card["authenticated"] = False
+        report = run_crash_suite(self._load_payload(payload), strategy_names=("typed-proof-memory",))
+        record = next(r for r in report["records"] if r["case_id"] == payload["cases"][0]["case_id"]
+                      and r["condition"] == "full_evidence")
+        self.assertEqual("HANDOFF", record["decision"])
+
+    def test_unknown_fields_and_missing_obligations_are_rejected(self) -> None:
+        for path in ((), ("cases", 0), ("cases", 0, "policy"),
+                     ("cases", 0, "action"), ("cases", 0, "proof_cards", 0),
+                     ("cases", 0, "events", 0), ("cases", 0, "state"),
+                     ("strategies", 0), ("cases", 1, "durable_store"),
+                     ("cases", 1, "durable_store", "records", 0)):
+            payload = json.loads(SPEC.read_text())
+            cursor = payload
+            for key in path:
+                cursor = cursor[key]
+            cursor["typo"] = True
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, "unknown fields"):
+                self._load_payload(payload)
+        payload = json.loads(SPEC.read_text())
+        del payload["cases"][0]["policy"]["requires_delegation"]
+        with self.assertRaisesRegex(ValueError, "missing fields"):
+            self._load_payload(payload)
+
+    def test_deletion_events_must_distinguish_proof_from_noise(self) -> None:
+        payload = json.loads(SPEC.read_text())
+        case = payload["cases"][0]
+        for card in case["proof_cards"]:
+            if case["critical_event_id"] in card["source_event_ids"]:
+                card["source_event_ids"] = [case["matched_noise_event_id"]]
+        with self.assertRaisesRegex(ValueError, "critical event must support"):
+            self._load_payload(payload)
+        payload = json.loads(SPEC.read_text())
+        case = payload["cases"][0]
+        case["proof_cards"][0]["source_event_ids"].append(case["matched_noise_event_id"])
+        with self.assertRaisesRegex(ValueError, "matched noise must not support"):
+            self._load_payload(payload)
+
+    def test_validate_only_checks_snapshot_sources_and_returns_input_error(self) -> None:
+        payload = json.loads(SPEC.read_text())
+        payload["strategies"] = [{
+            "name": "bad-import", "selector": "snapshot",
+            "snapshots": {condition: ["not-in-trace"] for condition in CONDITIONS},
+        }]
+        with tempfile.TemporaryDirectory() as directory, redirect_stderr(io.StringIO()):
+            path = Path(directory) / "spec.json"
+            path.write_text(json.dumps(payload))
+            with self.assertRaises(SystemExit) as raised:
+                cli_main(["--spec", str(path), "--validate-only"])
+        self.assertEqual(2, raised.exception.code)
+
+    def test_report_label_cannot_escape_output_directory(self) -> None:
+        payload = json.loads(SPEC.read_text())
+        payload["suite_id"] = "../escaped"
+        with tempfile.TemporaryDirectory() as directory, redirect_stdout(io.StringIO()):
+            root = Path(directory)
+            path = root / "spec.json"
+            path.write_text(json.dumps(payload))
+            out = root / "reports"
+            self.assertEqual(0, cli_main(["--spec", str(path), "--output-dir", str(out), "--allow-fail"]))
+            self.assertEqual(2, len(list(out.iterdir())))
+            self.assertTrue(all(p.parent == out for p in out.iterdir()))
+            self.assertFalse((root / "escaped_memory.json").exists())
 
 
 if __name__ == "__main__":

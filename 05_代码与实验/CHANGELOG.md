@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.1 — 2026-10-21
+
+- Reject non-Boolean authentication, transferability, integrity and policy flags instead of coercing strings or numbers.
+- Reject unknown fields, missing required policy/state fields and invalid snapshot references during contract loading.
+- Require the critical event to support a proof card and matched noise to support none.
+- Keep report filenames inside the selected output directory even when an imported suite ID contains path separators.
+- Return a clear CLI input error for invalid contracts or selections.
+- Clarify canonical-record, simulated-state and proof-source-selector assumptions in the documentation.
+
 ## 0.1.0 — 2026-10-21
 
 - Added a declarative memory crash-test contract.

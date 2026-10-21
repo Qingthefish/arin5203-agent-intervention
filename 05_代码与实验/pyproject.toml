@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-memory-crash-test"
-version = "0.1.0"
+version = "0.1.1"
 description = "Crash-test the evidence an AI agent retains before state-changing actions."
 readme = "README.md"
 requires-python = ">=3.12"

@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any, Sequence
+from urllib.parse import quote
 from xml.etree import ElementTree
 
 from platform_agent_eval.memory_crash_test import (
@@ -267,7 +268,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     assert args.spec is not None
-    suite = load_crash_suite(args.spec)
+    try:
+        suite = load_crash_suite(args.spec)
+    except (OSError, ValueError) as exc:
+        parser.error(str(exc))
     if args.validate_only:
         print(
             f"VALID · {suite.suite_id} · {len(suite.cases)} cases · "
@@ -275,12 +279,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return 0
 
-    report = run_crash_suite(
-        suite,
-        proof_source=args.proof_source,
-        strategy_names=tuple(args.strategies) if args.strategies else None,
-    )
-    stem = f"{suite.suite_id}_{args.proof_source}"
+    try:
+        report = run_crash_suite(
+            suite,
+            proof_source=args.proof_source,
+            strategy_names=tuple(args.strategies) if args.strategies else None,
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
+    # Imported suite IDs are report labels, never directory components.
+    stem = f"{quote(suite.suite_id, safe='')}_{args.proof_source}"
     json_path = args.output_dir / f"{stem}.json"
     junit_path = args.output_dir / f"{stem}.junit.xml"
     write_json_report(report, json_path)

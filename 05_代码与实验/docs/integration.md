@@ -10,8 +10,9 @@ compactor, tool runtime, or approval mechanism.
    publishing, changing permissions, or updating a production record.
 2. Capture a sanitized trace with stable event IDs.
 3. Define the action's proof obligations and trusted issuers.
-4. Export the events retained by the current memory strategy as `snapshot`
-   selectors.
+4. Apply the current memory strategy separately to each perturbed input and
+   export its retained events as `snapshot` selectors. Keep oracle fields out
+   of this process.
 5. Run full, critical-deletion, and matched-noise siblings in CI.
 6. Fail the build on an incorrect route, harmful mutation, missing decisive
    provenance, or noise-induced instability.
@@ -39,6 +40,16 @@ An adapter only needs to produce:
 Map the retained IDs into a contract's `snapshot` strategy. Keep raw credentials,
 personal data, and proprietary production content out of the fixture; synthetic
 or carefully sanitized traces are preferable for a public suite.
+
+The `proof_sources` selector is an idealized reference over declared fixture
+cards. It cannot establish whether an actual framework correctly extracted or
+retained evidence. The deterministic audit can rehydrate canonical cards from
+retained source IDs; account separately for that external record store, trust
+verification and lookup cost when designing a real system.
+
+State diffs in this kit replay the contract author's declared transition. The
+kit does not send bookings, payments or production tool calls. Its unsafe labels
+are also author-supplied and require review for the intended business policy.
 
 ## Runtime use
 

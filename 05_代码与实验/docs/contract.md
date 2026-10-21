@@ -27,6 +27,12 @@ authority.
 These types are intentionally not interchangeable. Clearance is not authority,
 and a generic user confirmation cannot override an operator-only hold.
 
+Boolean fields must use JSON `true` or `false`. Strings such as `"false"`,
+numbers and null are rejected. All fields required by the published schema
+must be present; unknown fields are rejected so a misspelled obligation cannot
+silently fall back to another policy. Optional card/store flags retain their
+schema-compatible defaults when omitted.
+
 ## 3. Link cards to source events
 
 Every proof card names one or more `source_event_ids`. A card is available from
@@ -46,7 +52,10 @@ Each base case identifies:
 - one `matched_noise_event_id` with the same role and exactly the same UTF-8
   byte length whose removal should not change the route.
 
-The runner rejects contracts where those two events do not satisfy the match.
+The critical event must support at least one declared proof card, and matched
+noise must not support any. The runner rejects contracts that violate these
+relationships or the role/byte match. This does not independently establish
+the semantic truth of the author-supplied card or oracle.
 This turns "the agent forgot something" into a controlled causal comparison.
 
 ## 5. Declare the oracle and state transition
@@ -69,6 +78,14 @@ Version 1 supports four deterministic selectors:
 `snapshot` is the main integration boundary for a real Agent stack. Capture the
 IDs retained by the production compactor and place them under the three matched
 conditions; the crash-test runner remains independent of the model provider.
+Run that compactor separately on each condition's input. Do not reuse a full
+history snapshot or use oracle labels to choose retained IDs. Imported snapshot
+IDs are checked during contract loading, including `--validate-only`.
+
+`proof_sources` is a deterministic fixture reference that selects from the
+author-declared cards. It assumes those cards already exist; it does not discover
+proof in free text or validate a real compactor's behavior. Use actual snapshots
+to test your own retention policy.
 
 ## 7. Treat registries as authoritative reads, not extra prose
 

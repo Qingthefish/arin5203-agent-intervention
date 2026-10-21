@@ -79,6 +79,25 @@ def _required_text(value: object, field: str) -> str:
     return value
 
 
+def _object_fields(
+    value: object, field: str, required: set[str], optional: set[str] | None = None,
+) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{field} must be an object")
+    missing = required - value.keys()
+    unknown = value.keys() - required - (optional or set())
+    if missing or unknown:
+        raise ValueError(f"{field} has missing fields {sorted(missing)} or unknown fields {sorted(unknown)}")
+    return value
+
+
+def _boolean(value: object, field: str) -> bool:
+    # Python truthiness would turn the JSON string "false" into True.
+    if type(value) is not bool:
+        raise ValueError(f"{field} must be a JSON Boolean")
+    return value
+
+
 def _string_tuple(value: object, field: str, *, allow_empty: bool = False) -> tuple[str, ...]:
     if not isinstance(value, list) or (not value and not allow_empty):
         raise ValueError(f"{field} must be a JSON list of strings")
@@ -103,8 +122,7 @@ def _scope(value: object, field: str) -> tuple[tuple[str, str], ...]:
 
 
 def _action(value: object) -> ActionRequest:
-    if not isinstance(value, dict):
-        raise ValueError("action must be an object")
+    value = _object_fields(value, "action", {"actor_id", "operation", "target_id", "scope", "effective_at"})
     return ActionRequest(
         actor_id=_required_text(value.get("actor_id"), "action.actor_id"),
         operation=_required_text(value.get("operation"), "action.operation"),
@@ -115,8 +133,11 @@ def _action(value: object) -> ActionRequest:
 
 
 def _policy(value: object) -> ProofPolicy:
-    if not isinstance(value, dict):
-        raise ValueError("policy must be an object")
+    value = _object_fields(value, "policy", {
+        "authority_issuers", "clearance_issuers", "hold_issuers", "delegation_issuers",
+        "recovery_issuers", "repair_channel_issuers", "confirmable_authority_actors",
+        "requires_clearance", "requires_delegation", "requires_recovery",
+    })
     return ProofPolicy(
         authority_issuers=_string_tuple(value.get("authority_issuers"), "authority_issuers"),
         clearance_issuers=_string_tuple(value.get("clearance_issuers"), "clearance_issuers"),
@@ -131,15 +152,17 @@ def _policy(value: object) -> ProofPolicy:
             "confirmable_authority_actors",
             allow_empty=True,
         ),
-        requires_clearance=bool(value.get("requires_clearance", True)),
-        requires_delegation=bool(value.get("requires_delegation", False)),
-        requires_recovery=bool(value.get("requires_recovery", True)),
+        requires_clearance=_boolean(value["requires_clearance"], "policy.requires_clearance"),
+        requires_delegation=_boolean(value["requires_delegation"], "policy.requires_delegation"),
+        requires_recovery=_boolean(value["requires_recovery"], "policy.requires_recovery"),
     )
 
 
 def _proof_card(value: object) -> ProofCard:
-    if not isinstance(value, dict):
-        raise ValueError("proof card must be an object")
+    value = _object_fields(value, "proof card", {
+        "card_id", "kind", "source_event_ids", "issuer_id", "subject_id",
+        "operation", "target_id", "scope", "valid_from", "valid_until",
+    }, {"authenticated", "transferable"})
     try:
         kind = ProofCardKind(_required_text(value.get("kind"), "proof_card.kind"))
     except ValueError as exc:
@@ -157,21 +180,21 @@ def _proof_card(value: object) -> ProofCard:
         scope=_scope(value.get("scope"), "proof_card.scope"),
         valid_from=_required_text(value.get("valid_from"), "proof_card.valid_from"),
         valid_until=_required_text(value.get("valid_until"), "proof_card.valid_until"),
-        authenticated=bool(value.get("authenticated", True)),
-        transferable=bool(value.get("transferable", False)),
+        authenticated=_boolean(value.get("authenticated", True), "proof_card.authenticated"),
+        transferable=_boolean(value.get("transferable", False), "proof_card.transferable"),
     )
 
 
 def _store(value: object, cards_by_id: Mapping[str, ProofCard]) -> DurableProofStore:
-    if not isinstance(value, dict):
-        raise ValueError("durable_store must be an object")
+    value = _object_fields(value, "durable_store", {"store_id", "snapshot_id", "records"})
     records_value = value.get("records")
     if not isinstance(records_value, list):
         raise ValueError("durable_store.records must be a list")
     records: list[DurableProofRecord] = []
     for item in records_value:
-        if not isinstance(item, dict):
-            raise ValueError("durable_store record must be an object")
+        item = _object_fields(item, "durable_store record", {"record_id", "card_id", "committed_at"}, {"revoked_at", "integrity_verified"})
+        if item.get("revoked_at") is not None:
+            _required_text(item["revoked_at"], "durable_store.revoked_at")
         card_id = _required_text(item.get("card_id"), "durable_store.card_id")
         try:
             card = cards_by_id[card_id]
@@ -185,7 +208,7 @@ def _store(value: object, cards_by_id: Mapping[str, ProofCard]) -> DurableProofS
                     item.get("committed_at"), "durable_store.committed_at"
                 ),
                 revoked_at=item.get("revoked_at"),
-                integrity_verified=bool(item.get("integrity_verified", True)),
+                integrity_verified=_boolean(item.get("integrity_verified", True), "durable_store.integrity_verified"),
             )
         )
     return DurableProofStore(
@@ -196,20 +219,19 @@ def _store(value: object, cards_by_id: Mapping[str, ProofCard]) -> DurableProofS
 
 
 def _strategy(value: object) -> StrategySpec:
-    if not isinstance(value, dict):
-        raise ValueError("strategy must be an object")
+    value = _object_fields(value, "strategy", {"name", "selector"}, {"event_count", "snapshots"})
     name = _required_text(value.get("name"), "strategy.name")
     selector = _required_text(value.get("selector"), f"strategy {name}.selector")
     if selector not in {"all_visible", "proof_sources", "recent_events", "snapshot"}:
         raise ValueError(f"unsupported selector {selector!r} for strategy {name!r}")
     event_count = value.get("event_count")
-    if selector == "recent_events" and (
+    if (selector == "recent_events" or "event_count" in value) and (
         not isinstance(event_count, int) or isinstance(event_count, bool) or event_count < 1
     ):
         raise ValueError(f"strategy {name!r} requires positive event_count")
     snapshots_value = value.get("snapshots")
     snapshots: dict[str, tuple[str, ...]] | None = None
-    if selector == "snapshot":
+    if selector == "snapshot" or "snapshots" in value:
         if not isinstance(snapshots_value, dict) or set(snapshots_value) != set(CONDITIONS):
             raise ValueError(
                 f"strategy {name!r} snapshots must define exactly {', '.join(CONDITIONS)}"
@@ -243,12 +265,17 @@ def _booleans(value: object, field: str) -> dict[str, bool]:
 
 
 def _case(value: object) -> CrashCase:
-    if not isinstance(value, dict):
-        raise ValueError("case must be an object")
+    value = _object_fields(value, "case", {
+        "case_id", "title", "action", "policy", "events", "proof_cards",
+        "critical_event_id", "matched_noise_event_id", "expected_decisions",
+        "unsafe_if_executed", "state",
+    }, {"durable_store"})
     case_id = _required_text(value.get("case_id"), "case.case_id")
     events_value = value.get("events")
     if not isinstance(events_value, list) or len(events_value) < 3:
         raise ValueError(f"case {case_id!r} needs at least three events")
+    for item in events_value:
+        _object_fields(item, "event", {"event_id", "role", "content"})
     events = tuple(
         CrashEvent(
             event_id=_required_text(item.get("event_id"), "event.event_id"),
@@ -288,11 +315,14 @@ def _case(value: object) -> CrashCase:
         raise ValueError(f"case {case_id!r} critical and noise events must share a role")
     if len(critical.content.encode("utf-8")) != len(noise.content.encode("utf-8")):
         raise ValueError(f"case {case_id!r} critical and noise events must match in UTF-8 bytes")
-    state = value.get("state", {})
-    if not isinstance(state, dict):
-        raise ValueError(f"case {case_id!r} state must be an object")
-    before = state.get("before", {})
-    after = state.get("after", {})
+    proof_sources = {source for card in cards for source in card.source_event_ids}
+    if critical_id not in proof_sources:
+        raise ValueError(f"case {case_id!r} critical event must support a declared proof card")
+    if noise_id in proof_sources:
+        raise ValueError(f"case {case_id!r} matched noise must not support a proof card")
+    state = _object_fields(value["state"], f"case {case_id!r} state", {"before", "after"})
+    before = state["before"]
+    after = state["after"]
     if not isinstance(before, dict) or not isinstance(after, dict):
         raise ValueError(f"case {case_id!r} state.before/after must be objects")
     cards_by_id = {card.card_id: card for card in cards}
@@ -312,14 +342,15 @@ def _case(value: object) -> CrashCase:
         ),
         state_before=before,
         state_after=after,
-        durable_store=_store(store_value, cards_by_id) if store_value is not None else None,
+        durable_store=_store(store_value, cards_by_id) if "durable_store" in value else None,
     )
 
 
 def load_crash_suite(path: Path) -> CrashSuite:
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(payload, dict):
-        raise ValueError("crash-test spec must be a JSON object")
+    payload = _object_fields(json.loads(path.read_text(encoding="utf-8")), "crash-test spec",
+                             {"schema_version", "suite_id", "title", "cases", "strategies"}, {"$schema"})
+    if "$schema" in payload:
+        _required_text(payload["$schema"], "$schema")
     if payload.get("schema_version") != MEMORY_CRASH_TEST_VERSION:
         raise ValueError(f"schema_version must be {MEMORY_CRASH_TEST_VERSION!r}")
     cases_value = payload.get("cases")
@@ -334,6 +365,10 @@ def load_crash_suite(path: Path) -> CrashSuite:
         raise ValueError("case IDs must be unique")
     if len({strategy.name for strategy in strategies}) != len(strategies):
         raise ValueError("strategy names must be unique")
+    for case in cases:
+        for strategy in strategies:
+            for condition in CONDITIONS:
+                select_event_ids(case, strategy, condition)
     return CrashSuite(
         suite_id=_required_text(payload.get("suite_id"), "suite_id"),
         title=_required_text(payload.get("title"), "title"),
