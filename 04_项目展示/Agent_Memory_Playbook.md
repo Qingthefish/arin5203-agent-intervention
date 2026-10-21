@@ -50,14 +50,14 @@ Immediately before the tool call, check the proof records against the proposed a
 - Is the proof still valid now?
 - Is any active hold visible?
 - Is recovery adequate for this operation?
-- Does each decisive claim cite a source still present in active memory?
+- Does each decisive claim cite a retained source or a separately authenticated registry read?
 
 Treat this as a control-plane check, not another free-form “please review” prompt.
 
 ### 5. Route the gap, not just the risk score
 
 - **Execute** when all mandatory proof obligations are satisfied and no blocking condition is active.
-- **Confirm** when one authenticated answer from the current user can repair the exact missing fact.
+- **Confirm** when one authenticated answer from the designated authorized responder can repair the exact missing fact.
 - **Handoff** when authority belongs to another role, policy remains blocked, recovery is inadequate, or a user answer cannot legitimately repair the gap.
 
 Always Confirm is not a safe default: it creates unnecessary intervention and can invite an ordinary requester to “approve” something only an operator may authorize.
@@ -82,6 +82,12 @@ Then measure both the decision and its evidence chain:
 If critical deletion and noise deletion behave the same, the Agent may be following surface cues instead of evidence.
 
 ## What the held-out experiment supports
+
+The main experiment assumes source-linked proof cards already exist. Retained
+source IDs let the audit rehydrate canonical records; the raw-token budget
+covers active memory, not external record storage or lookup cost. This tests
+retention and validation. Reliable extraction from arbitrary prose remains a
+separate question addressed by the optional natural-language extension.
 
 On 11 untouched bases / 33 matched contexts under a 384 raw-token budget, the typed-proof method plus deterministic audit routed all 22 full and matched-noise contexts correctly. It retained every visible card and critical event, made 10 helpful corrections, made zero harmful corrections, and produced no harmful execution or unnecessary intervention on those stable contexts.
 

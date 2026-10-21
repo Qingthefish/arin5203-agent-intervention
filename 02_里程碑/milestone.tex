@@ -121,12 +121,13 @@ method identity, and exact token counts are cached by content hash.
   \label{fig:pipeline}
 \end{figure}
 
-Our method stores action proof as compact typed records with source, proof
-kind, issuer, subject, target, scope, validity, and recovery information. A
-deterministic validator checks whether the visible records satisfy the current
-operation's obligations. It does not infer missing authority from a clearance
-or a plausible narrative. One authenticated answer may resume a Confirm case;
-an ordinary requester cannot resolve a Handoff case.
+Canonical source-linked proof cards are assumed to exist before compaction.
+Memory retains compact records or citations; the audit rehydrates canonical
+cards through retained source IDs and checks issuer, subject, target, scope,
+and validity. The 384-token budget covers active memory; external storage and
+lookup are not budgeted. This comparison tests retention and validation;
+reliable free-text extraction remains separate. Confirm denotes a gap one
+authenticated answer can repair; an ordinary requester cannot resolve Handoff.
 
 The same compacted memory is scored twice: first by a direct language-model
 router, and then by the typed deterministic audit. This isolates the audit's
@@ -200,7 +201,7 @@ another tuning target.
 
 The final deliverables will combine the frozen comparison with a deterministic
 Memory Crash Test replay showing compacted memory, cited proof, the three-way
-route, and the actual state diff. The benchmark is synthetic, risk-enriched,
+route, and the simulated state diff. The benchmark is synthetic, risk-enriched,
 and currently uses one local model and one generation per context; it cannot
 certify production safety. Its engineering rule is concrete: treat conversation
 memory as a cache, validate visible proof at the tool boundary, and re-read
