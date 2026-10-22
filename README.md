@@ -23,7 +23,7 @@ These are primary responsibilities; scenario review, implementation and final co
 | Milestone | Two-page progress snapshot prepared; submission entry must be checked before submitting. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | Presentation | Replay and seven evidence figures available; claim/metric interpretation reviewed. Team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
-| Natural-language extension | PR #1 merged with interface repairs; dataset and plan-only runner available, no model result yet. | [Runbook](05_代码与实验/README.md#natural-language-evidence-extension), [PR #1](https://github.com/Qingthefish/arin5203-agent-intervention/pull/1) |
+| Natural-language extension | Literal-field and distractor controls repaired in v2; a 24-context development-only extraction diagnostic is frozen, result pending. | [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json), [Runbook](05_代码与实验/README.md#natural-language-evidence-extension) |
 | Final report | Evidence exists; the full report still needs to be written and assembled. | [Research rationale and claim boundaries](项目复盘.md) |
 
 Exact calls, timings, tokens and scores live in manifests, summaries and audits. Historical pilots, failed gates and design changes are recorded in [项目复盘.md](项目复盘.md); the homepage is a current map, not a second experiment diary.
@@ -56,6 +56,13 @@ The [related-work review](05_代码与实验/docs/related-work.md) distinguishes
 The core experimental question is answered at course-project scale. The remaining required work is to turn that evidence into a clear Final report and the team's hand-made slides. The 2026-10-23 review corrects interpretation, not frozen scores or method selection; its source-existence recount is explicitly post-hoc.
 
 One optional experiment remains justified: a small **development-only natural-language extraction diagnostic**, covering all three domains and Execute / Confirm / Handoff with clean and distractor variants. Freeze its selection, prompt, scoring and output prefix before a model run. Measure extraction fidelity and downstream mistakes. A successful diagnostic would support a larger end-to-end follow-up; failure would define the boundary to report. Neither outcome changes the original frozen held-out result.
+
+The first diagnostic is now preregistered: four existing development families,
+24 contexts, both variants, no compactor and no held-out model calls. It covers
+the domain/route margins and three explicit distractor types, not all
+domain-by-route cells. The plan separates recording integrity from extraction
+quality, and visible-evidence oracle agreement from full-state route accuracy.
+No automatic rerun or expansion follows either result.
 
 Further experiments need a concrete unanswered question that could change a design decision or claim. Extra model calls, models or charts alone are not a reason to run them.
 

@@ -268,8 +268,11 @@ class ModelRouter:
 class OllamaClient:
     """Minimal stdlib client for a local Ollama server; no request on import."""
 
-    def __init__(self, base_url: str = "http://127.0.0.1:11434") -> None:
+    def __init__(self, base_url: str = "http://127.0.0.1:11434", *, num_ctx: int | None = None) -> None:
+        if num_ctx is not None and (type(num_ctx) is not int or num_ctx <= 0):
+            raise ValueError("num_ctx must be a positive integer")
         self.base_url = base_url.rstrip("/")
+        self.num_ctx = num_ctx
         self._digest_cache: dict[str, str | None] = {}
 
     def _model_digest(self, model: str, timeout_seconds: float) -> str | None:
@@ -303,6 +306,8 @@ class OllamaClient:
                 "num_predict": config.max_tokens,
             },
         }
+        if self.num_ctx is not None:
+            payload["options"]["num_ctx"] = self.num_ctx
         request = urllib.request.Request(
             f"{self.base_url}/api/chat",
             data=json.dumps(payload).encode("utf-8"),

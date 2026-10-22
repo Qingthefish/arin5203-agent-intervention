@@ -166,14 +166,48 @@ does not independently establish semantic entailment or cryptographic trust.
 `results/nl_evidence_v1_dataset*` is the revised snapshot, with same-role,
 same-position, equal-UTF-8-byte critical/noise events. This is not a claim of
 equal token budgets. The 120 contexts reuse the existing 20 base families;
-test-family rewrites are not new independent held-out data. No extraction
-model run has been completed. This extension has no compactor comparison.
+test-family rewrites are not new independent held-out data. The v2 snapshot
+repairs missing literal operations, makes invalid distractors fully specified,
+and pairs clean/distractor replacement events by role, position and UTF-8 bytes.
+Invalid records must be extracted faithfully, then rejected for the declared
+scope/target/authentication mismatch. No extraction model result exists yet.
+This extension has no compactor comparison.
 
 Print a development plan without contacting a model:
 
 ```bash
 python3 scripts/run_nl_evidence_extraction.py --split dev --variant clean --limit 6
 ```
+
+The frozen first diagnostic selects four development families (`v7`, `c4`,
+`d8`, `r5`), both variants and all three siblings: 24 calls covering three
+domains, three original routes and all three distractor styles. This is not a
+full domain-by-route grid. Its immutable plan is
+`configs/nl_extraction_dev_diagnostic_v1.json`. Reprint/verify it with:
+
+```bash
+python3 scripts/run_nl_evidence_extraction.py --split dev --variant all \
+  --family-id nl-typed-v7 --family-id nl-typed-c4 \
+  --family-id nl-typed-d8 --family-id nl-typed-r5 \
+  --max-tokens 3072 --context-window 8192 --timeout-seconds 240 \
+  --output-prefix nl_extraction_dev_diagnostic_qwen_v1 \
+  --plan-file configs/nl_extraction_dev_diagnostic_v1.json
+```
+
+Multi-variant runs require explicit family selection rather than prefix
+`--limit`, which would silently select clean records first. A plan file is
+created exclusively in plan-only mode and must match on a real run. It freezes
+source code, selected prompts, complete scoring references, config and output
+prefix. `num_ctx=8192` is passed explicitly for this diagnostic; older runners
+retain their existing behavior when no context override is set.
+
+Model formatting and field errors are measured outcomes, not recording-gate
+failures or permission to tune and retry. Report literal-source exact P/R,
+conditional matched-field accuracy, omissions, invalid-distractor acceptance,
+candidate versus released decisions, and paired changes. Perfect visible
+extraction still disagrees with world-gold on the two selected hidden-hold
+deletions; visible-oracle agreement must be reported separately. Run once,
+report either outcome, and stop rather than expanding automatically.
 
 The runner requires both `--run` and `--acknowledge-experiment-plan` to contact
 loopback Ollama. `--limit` preserves whole sibling triples. Each versioned run

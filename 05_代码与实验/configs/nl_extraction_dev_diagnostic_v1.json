@@ -1,0 +1,135 @@
+{
+  "status": "PLAN_ONLY_NO_MODEL_CALLS",
+  "experiment": "natural-language-evidence-extraction",
+  "scenario_set": "nl-evidence-v2",
+  "prompt_version": "nl-evidence-extraction-v2",
+  "provider": "ollama",
+  "location": "local_machine",
+  "model": "qwen3.5:9b",
+  "configuration": {
+    "model": "qwen3.5:9b",
+    "temperature": 0.0,
+    "seed": 5203,
+    "max_tokens": 3072,
+    "timeout_seconds": 240.0,
+    "base_url": "http://127.0.0.1:11434",
+    "context_window_tokens": 8192
+  },
+  "config_sha256": "816f6777fd444269721714cc975b2b35997ac2216041492fcce2ac63fe5aaa2f",
+  "dataset_sha256": "db2657c16c53727eef09a0d75c5f74c36b2a4b0b3b9a743e561832c2389fee7f",
+  "scoring_reference_sha256": "663ea0cb5ba4218cae5524d9fcffcbcd0579f4d2c69dcf96ce4a219e6f8f1b75",
+  "implementation_sha256": {
+    "scripts/run_nl_evidence_extraction.py": "412cc530838c44c713a3f14a3079965b8152996cadbd879ccac3da273376fa02",
+    "src/platform_agent_eval/natural_language_evidence.py": "eee39e97ee435b44f24d15697314e47d5b246555b04c0113188b534b8694bdb0",
+    "src/platform_agent_eval/proof_cards.py": "88cb4a2ea44856bc652fc1d46c788f1be3da6ba8e40c3846e7eed8aada29fd2f",
+    "src/platform_agent_eval/model_routing.py": "db879291fa713192d9ba9fad127ab7dfd8f1cf7591956d9302cbc60198d05377"
+  },
+  "prompt_hashes": {
+    "nl-typed-v7::clean::full_evidence": "4ddd923dd89ff00c13bedabb8dc91a8abd2d7257a06d33d1857a26d9b5793f86",
+    "nl-typed-v7::clean::remove_action_critical": "c76fbe86ef57d6a4cae06a37f4487164ea349470de1fac3547290a6e572bcf6a",
+    "nl-typed-v7::clean::remove_matched_noise": "51e4ea0efd4e807aae9a316ca52913016c1199bf872671aae14fbb0ac30b37ed",
+    "nl-typed-c4::clean::full_evidence": "03fed920a2e9bcd9e98c3c39b16ff49585a28a715a37ab9aa01363cf46d077b8",
+    "nl-typed-c4::clean::remove_action_critical": "aa62c0b3217e01ec5455f00cf0341e3b36e0e2047bae1c4e281944979a652e73",
+    "nl-typed-c4::clean::remove_matched_noise": "36f205090b2ba109dd3b6c70f820ca58b540e0712fff3cafad6bc9c85d36b503",
+    "nl-typed-d8::clean::full_evidence": "7a65c619e6c4489abb5dfda9b959ad79f0c33b332c31002d2ed8cc1d31b9b8cc",
+    "nl-typed-d8::clean::remove_action_critical": "76f29c57f40846c636dd0b15833a54abbeb71062ad53b71e9030b9e425117984",
+    "nl-typed-d8::clean::remove_matched_noise": "db21a5904a4f3d10040758d54b0fe64ed9bde03a0d4ba70597a76fb5cfb789b8",
+    "nl-typed-r5::clean::full_evidence": "39c71878e97bac116344f5fdd029be56d14cc8bd9f2559cf4734c5832406dd9d",
+    "nl-typed-r5::clean::remove_action_critical": "d3f468dc60a5e1c095ea2624d120a2d9e78125875c4dbc5e4393fa637d16212b",
+    "nl-typed-r5::clean::remove_matched_noise": "80d0a31a807a8cb7c4633d703d4dc2181de7538aa29b92bfe3e5451a2147f683",
+    "nl-typed-v7::distractor::full_evidence": "6f13dfd050b8c1413417f0f7f8254e19da84e6bbf746bb69b55260b64c11eb44",
+    "nl-typed-v7::distractor::remove_action_critical": "d9f545c9855daf33338356b923d061c0d00a85c93a75e8e526094a9831d5db80",
+    "nl-typed-v7::distractor::remove_matched_noise": "674123a84f13141a41c94cdede452044879936ee272e655b9b1f28516c3341f0",
+    "nl-typed-c4::distractor::full_evidence": "461fd2e485c713dc4af334825d0b5cb5682b015a4d57cba5402b3799eabb8a58",
+    "nl-typed-c4::distractor::remove_action_critical": "d34c134221a2e2ed828bf40d9cbc33f6c92f446e638e27144f9c5bfce0ae53a5",
+    "nl-typed-c4::distractor::remove_matched_noise": "90b27384b8b0a006fd466b0e30bbb54caf8092692ad052a01c3387895422f3c9",
+    "nl-typed-d8::distractor::full_evidence": "112491bc30149d7b951fee3facbef5e86f15566f4cdfe8c40ad5b666b0f87149",
+    "nl-typed-d8::distractor::remove_action_critical": "26e1eccf9ec5341340e2d23b3416d4ab91432a10d58748b3f7da05139d250ae6",
+    "nl-typed-d8::distractor::remove_matched_noise": "04a7159ca3a3c58470c216c05f95798ef1cf984be621abc20345a4ef718681ee",
+    "nl-typed-r5::distractor::full_evidence": "ec1d8b8b5d2271b483c0c4e9712a079ac372332ae993d8a4c6f895057db37655",
+    "nl-typed-r5::distractor::remove_action_critical": "f0f3ffb62818fcf7ffe2103d8cde704293a938807b29544b483c310681809380",
+    "nl-typed-r5::distractor::remove_matched_noise": "68d246c46abe7aa1af95cc78f673d1eab0a0828e2b29ba745be5a61ab4815d69"
+  },
+  "selected_family_ids": [
+    "nl-typed-c4",
+    "nl-typed-d8",
+    "nl-typed-r5",
+    "nl-typed-v7"
+  ],
+  "selected_case_ids": [
+    "nl-typed-v7::clean::full_evidence",
+    "nl-typed-v7::clean::remove_action_critical",
+    "nl-typed-v7::clean::remove_matched_noise",
+    "nl-typed-c4::clean::full_evidence",
+    "nl-typed-c4::clean::remove_action_critical",
+    "nl-typed-c4::clean::remove_matched_noise",
+    "nl-typed-d8::clean::full_evidence",
+    "nl-typed-d8::clean::remove_action_critical",
+    "nl-typed-d8::clean::remove_matched_noise",
+    "nl-typed-r5::clean::full_evidence",
+    "nl-typed-r5::clean::remove_action_critical",
+    "nl-typed-r5::clean::remove_matched_noise",
+    "nl-typed-v7::distractor::full_evidence",
+    "nl-typed-v7::distractor::remove_action_critical",
+    "nl-typed-v7::distractor::remove_matched_noise",
+    "nl-typed-c4::distractor::full_evidence",
+    "nl-typed-c4::distractor::remove_action_critical",
+    "nl-typed-c4::distractor::remove_matched_noise",
+    "nl-typed-d8::distractor::full_evidence",
+    "nl-typed-d8::distractor::remove_action_critical",
+    "nl-typed-d8::distractor::remove_matched_noise",
+    "nl-typed-r5::distractor::full_evidence",
+    "nl-typed-r5::distractor::remove_action_critical",
+    "nl-typed-r5::distractor::remove_matched_noise"
+  ],
+  "splits": [
+    "dev"
+  ],
+  "variants": [
+    "clean",
+    "distractor"
+  ],
+  "contexts": 24,
+  "model_calls": 24,
+  "estimated_minutes_local_range": [
+    8.0,
+    36.0
+  ],
+  "estimated_input_tokens_range": [
+    26740,
+    80222
+  ],
+  "maximum_output_tokens": 73728,
+  "token_estimate_note": "planning estimate only; not tokenizer-matched or a compaction comparison",
+  "external_api_cost_usd": 0.0,
+  "claim_scope": "derived-family extraction diagnostic; no independent held-out or compaction-ranking claim",
+  "protocol_gate": {
+    "missing_or_duplicate_records": 0,
+    "prompt_hash_errors": 0,
+    "unknown_usage_records": 0
+  },
+  "quality_policy": "Report format errors, fidelity and downstream mistakes; no effectiveness PASS threshold, retries or automatic expansion.",
+  "field_fidelity_definitions": {
+    "card_precision/card_recall": "Legacy exact-card metrics over action-applicable cards only; correctly extracted invalid distractors are excluded from both sets.",
+    "matched_field_correct/total": "Matching normalized fields / 10 fields for each parsed claim citing a declared literal source, including invalid distractors. Fields are kind, issuer, subject, operation, target, scope, valid_from, valid_until, verified, transferable. Scope is one field; timestamps compare instants. Omissions, unsupported sources and dropped claims are reported separately.",
+    "all_source_exact_precision/recall": "Exact literal-card matches / (parsed claims + dropped malformed claims), and exact literal-card matches / all declared literal cards. Includes nonapplicable distractors: they should be extracted faithfully and rejected by the validator. Empty prediction precision is 0 if gold is nonempty, otherwise 1; empty gold recall is 1.",
+    "unsupported_source_claims": "Parsed claims citing visible events with no declared literal evidence record; invisible/malformed claims are counted in dropped_claims.",
+    "invented_field_claims": "Parsed claims at a declared literal source with at least one normalized field different from its gold record; this includes incorrect normalization, not only invention.",
+    "omitted_literal_gold_claims": "Declared literal sources not cited by any parsed claim; a wrong field at a cited source is not an omission.",
+    "route_matches_visible_oracle": "Released route agrees with perfect extraction of visible applicable evidence; hidden-hold deletions may still disagree with full-state expected_decision.",
+    "source_quote": "Nonempty substring containment only; neither field entailment nor cryptographic authentication is established."
+  },
+  "metric_scope": {
+    "card_precision_recall": "Exact signatures among action-applicable claims only; these legacy metrics ignore correctly nonapplicable records.",
+    "all_source_exact_precision_recall": "Literal-source signatures including declared invalid distractors; malformed claims count against precision.",
+    "matched_fields": "Ten normalized signature fields on claimed declared sources; omitted cards are separately counted, so this conditional accuracy is not recall.",
+    "visible_oracle": "A perfect visible-evidence extractor can still Execute after an upstream hold was removed; world-gold and visible-oracle agreement are distinct.",
+    "matching": "Critical/noise and clean/distractor replacement events use equal UTF-8 bytes and the same role/position; no equal-token or compactor-ranking claim."
+  },
+  "outputs": {
+    "raw": "results/nl_extraction_dev_diagnostic_qwen_v1_raw.jsonl",
+    "summary": "results/nl_extraction_dev_diagnostic_qwen_v1_summary.csv",
+    "audit": "results/nl_extraction_dev_diagnostic_qwen_v1_audit.json",
+    "manifest": "results/nl_extraction_dev_diagnostic_qwen_v1_manifest.json"
+  }
+}

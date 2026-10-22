@@ -14,10 +14,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from platform_agent_eval.domain import Decision
 from platform_agent_eval.natural_language_evidence import (
     LEAK_MARKERS,
+    EXTRACTION_METRIC_DEFINITIONS,
     ExtractionParse,
     build_extraction_prompt,
     build_nl_contexts,
     build_nl_families,
+    applicable_keys,
     claims_to_cards,
     parse_extraction_output,
     render_card_text,
@@ -51,7 +53,7 @@ def _perfect_output(context) -> str:
             "transferable": card.transferable,
             "source_quote": messages[card.source_event_ids[0]],
         }
-        for card in context.visible_cards
+        for card in (*context.visible_cards, *context.nonapplicable_cards)
     ]
     return json.dumps({"claims": claims})
 
@@ -101,6 +103,52 @@ class NaturalLanguageEvidenceTest(unittest.TestCase):
             else:
                 self.assertIsNone(family.distractor_event_id)
 
+    def test_every_literal_source_names_its_operation(self):
+        for context in self.contexts:
+            events = {event.event_id: event.content for event in context.active_events}
+            for card in (*context.visible_cards, *context.nonapplicable_cards):
+                self.assertIn(
+                    card.operation.lower().replace("_", " "),
+                    events[card.source_event_ids[0]],
+                    (context.case_id, card.source_event_ids[0]),
+                )
+
+    def test_clean_and_distractor_change_only_equal_byte_message_content(self):
+        paired = {(c.family_id, c.condition, c.variant): c for c in self.contexts}
+        for context in self.contexts:
+            if context.variant != "distractor":
+                continue
+            clean = paired[(context.family_id, context.condition, "clean")]
+            self.assertEqual(len(clean.active_events), len(context.active_events))
+            for ordinary, distracted in zip(clean.active_events, context.active_events, strict=True):
+                self.assertEqual(ordinary.event_id, distracted.event_id)
+                self.assertEqual(ordinary.role, distracted.role)
+                if distracted.event_id == context.distractor_event_id:
+                    self.assertNotEqual(ordinary.content, distracted.content)
+                    self.assertEqual(
+                        len(ordinary.content.encode("utf-8")),
+                        len(distracted.content.encode("utf-8")),
+                    )
+                else:
+                    self.assertEqual(ordinary.content, distracted.content)
+
+    def test_invalid_literal_cards_are_complete_and_separate_from_valid_evidence(self):
+        for context in self.contexts:
+            if context.variant != "distractor":
+                self.assertEqual((), context.nonapplicable_cards)
+                continue
+            self.assertEqual(1, len(context.nonapplicable_cards))
+            self.assertEqual(set(), applicable_keys(context.nonapplicable_cards, context.action, context.policy))
+            invalid = context.nonapplicable_cards[0]
+            self.assertNotIn(invalid, context.visible_cards)
+            self.assertEqual((context.distractor_event_id,), invalid.source_event_ids)
+            text = next(e.content for e in context.active_events if e.event_id == context.distractor_event_id)
+            self.assertIn(invalid.valid_from, text)
+            self.assertIn(invalid.valid_until, text)
+            self.assertIn(invalid.target_id, text)
+            self.assertIn(invalid.issuer_id, text)
+            self.assertTrue(invalid.scope)
+
     def test_perfect_extraction_matches_gold_except_hidden_holds(self):
         for context in self.contexts:
             parse = parse_extraction_output(
@@ -114,6 +162,16 @@ class NaturalLanguageEvidenceTest(unittest.TestCase):
             self.assertEqual(score["route_correct"], not hidden_hold, context.case_id)
             self.assertEqual(score["card_recall"], 1.0)
             self.assertEqual(score["card_precision"], 1.0)
+            self.assertEqual(score["all_source_exact_recall"], 1.0)
+            self.assertEqual(score["all_source_exact_precision"], 1.0)
+            self.assertEqual(score["matched_field_correct"], score["matched_field_total"])
+            self.assertTrue(score["route_matches_visible_oracle"])
+            self.assertTrue(score["candidate_route_matches_visible_oracle"])
+            self.assertEqual(score["candidate_decision"], score["decision"])
+            self.assertEqual(score["invented_field_claims"], 0)
+            self.assertEqual(score["unsupported_source_claims"], 0)
+            self.assertEqual(score["omitted_literal_gold_claims"], 0)
+            self.assertFalse(score["distractor_false_positive"])
 
     def test_distractor_claim_is_detected_as_false_positive(self):
         context = next(
@@ -121,18 +179,23 @@ class NaturalLanguageEvidenceTest(unittest.TestCase):
             if c.variant == "distractor" and c.condition == "full_evidence"
         )
         claims = json.loads(_perfect_output(context))["claims"]
-        claims.append({
+        promoted = {
             **claims[0], "event_id": context.distractor_event_id,
             "kind": "ACTIVE_HOLD", "issuer": context.policy.hold_issuers[0],
             "subject": context.action.target_id,
+            "operation": context.action.operation,
+            "target": context.action.target_id,
+            "scope": dict(context.action.scope), "verified": True,
             "source_quote": next(e.content for e in context.active_events if e.event_id == context.distractor_event_id),
-        })
+        }
+        claims = [promoted if claim["event_id"] == context.distractor_event_id else claim for claim in claims]
         parse = parse_extraction_output(
             json.dumps({"claims": claims}), {e.event_id: e.content for e in context.active_events}
         )
         score = score_extraction(context, parse)
         self.assertTrue(score["distractor_false_positive"])
         self.assertEqual(score["decision"], Decision.HANDOFF.value)
+        self.assertEqual(score["invented_field_claims"], 1)
 
     def test_invalid_output_fails_closed(self):
         context = self.contexts[0]
@@ -211,6 +274,58 @@ class NaturalLanguageEvidenceTest(unittest.TestCase):
         self.assertLess(score["card_precision"], 1.0)
         self.assertLess(score["card_recall"], 1.0)
 
+    def test_invalid_card_omission_is_not_confused_with_correct_rejection(self):
+        context = next(c for c in self.contexts if c.variant == "distractor"
+                       and c.condition == "full_evidence")
+        payload = json.loads(_perfect_output(context))
+        payload["claims"] = [c for c in payload["claims"] if c["event_id"] != context.distractor_event_id]
+        parsed = parse_extraction_output(json.dumps(payload), {e.event_id: e.content for e in context.active_events})
+        score = score_extraction(context, parsed)
+        self.assertTrue(score["route_matches_visible_oracle"])
+        self.assertEqual(score["card_precision"], 1.0)
+        self.assertEqual(score["card_recall"], 1.0)
+        self.assertEqual(score["all_source_exact_precision"], 1.0)
+        self.assertLess(score["all_source_exact_recall"], 1.0)
+        self.assertEqual(score["omitted_literal_gold_claims"], 1)
+
+    def test_field_counts_distinguish_wrong_normalization_and_unsupported_source(self):
+        context = self.contexts[0]
+        payload = json.loads(_perfect_output(context))
+        payload["claims"][0]["subject"] = "another-agent"
+        noise = next(e for e in context.active_events if e.event_id == context.matched_noise_event_id)
+        payload["claims"].append({**payload["claims"][0], "event_id": noise.event_id, "source_quote": noise.content})
+        parsed = parse_extraction_output(json.dumps(payload), {e.event_id: e.content for e in context.active_events})
+        score = score_extraction(context, parsed)
+        self.assertTrue(parsed.format_valid)
+        self.assertEqual(score["matched_field_total"], 10 * len(context.visible_cards))
+        self.assertEqual(score["matched_field_correct"], score["matched_field_total"] - 1)
+        self.assertEqual(score["invented_field_claims"], 1)
+        self.assertEqual(score["unsupported_source_claims"], 1)
+        self.assertEqual(score["omitted_literal_gold_claims"], 0)
+        self.assertAlmostEqual(
+            score["all_source_exact_precision"],
+            (len(context.visible_cards) - 1) / (len(context.visible_cards) + 1),
+        )
+
+    def test_malformed_extra_claim_is_in_precision_denominator_and_blocks_release(self):
+        context = next(c for c in self.contexts if c.variant == "clean"
+                       and c.condition == "full_evidence"
+                       and c.expected_decision is Decision.AUTO_EXECUTE)
+        payload = json.loads(_perfect_output(context))
+        payload["claims"].append({"kind": "ACTIVE-HOLD"})
+        parsed = parse_extraction_output(json.dumps(payload), {e.event_id: e.content for e in context.active_events})
+        score = score_extraction(context, parsed)
+        self.assertEqual(score["candidate_decision"], Decision.AUTO_EXECUTE.value)
+        self.assertEqual(score["decision"], Decision.HANDOFF.value)
+        self.assertTrue(score["format_fail_closed"])
+        self.assertTrue(score["candidate_route_matches_visible_oracle"])
+        self.assertFalse(score["route_matches_visible_oracle"])
+        self.assertAlmostEqual(
+            score["all_source_exact_precision"],
+            len(context.visible_cards) / (len(context.visible_cards) + 1),
+        )
+        self.assertIn("dropped malformed claims", EXTRACTION_METRIC_DEFINITIONS["all_source_exact_precision/recall"])
+
     def test_rendering_preserves_card_subject_and_time_instead_of_action(self):
         context = self.contexts[0]
         card = next(c for c in context.visible_cards if c.kind is ProofCardKind.AUTHORITY)
@@ -273,7 +388,7 @@ class NaturalLanguageRunnerTest(unittest.TestCase):
             self.assertEqual(json.loads(paths["audit"].read_text())["status"], "FAIL")
             self.assertTrue(all(p.exists() for p in paths.values()))
 
-    def test_partial_invalid_extraction_fails_instrumentation_gate(self):
+    def test_partial_invalid_extraction_is_recorded_without_retry(self):
         class Client:
             def generate(self, prompt, config):
                 return ModelResponse('{"claims":[{"kind":"ACTIVE-HOLD"}]}', 10, 20, 1.0, "fake-local")
@@ -281,8 +396,12 @@ class NaturalLanguageRunnerTest(unittest.TestCase):
             paths = runner.output_paths("nl_test_v1", Path(directory))
             plan = runner.build_plan(self.contexts, self.config, "http://127.0.0.1:11434", paths)
             audit = runner.run_experiment(self.contexts, self.config, plan, paths, Client())
-            self.assertEqual(audit["status"], "FAIL")
+            self.assertEqual(audit["status"], "PASS")
             self.assertEqual(audit["summary"]["all"]["format_errors"], 3)
+            self.assertEqual(audit["format_valid_records"], 0)
+            records = [json.loads(line) for line in paths["raw"].read_text().splitlines()]
+            self.assertEqual(len(records), 3)
+            self.assertTrue(all(record["score"]["decision"] == Decision.HANDOFF.value for record in records))
 
     def test_plan_rejects_remote_endpoint_and_unsafe_prefix(self):
         with tempfile.TemporaryDirectory() as directory:
