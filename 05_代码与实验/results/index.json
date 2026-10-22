@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 40,
+    "runs": 41,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 28,
+      "COMPLETED": 29,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 24,
+      "FROZEN_GATE_BUNDLE": 25,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -468,6 +468,33 @@
       },
       "manifest_sha256": "d6ecd0e0ae27f39ceed36d68acac5f4bda667cf96099ca7ca8b7febcfde88cbe",
       "audit_sha256": null
+    },
+    {
+      "prefix": "nl_extraction_dev_diagnostic_qwen_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "natural-language-evidence-extraction",
+      "scenario_set": "nl-evidence-v2",
+      "model": "qwen3.5:9b",
+      "provider": "ollama",
+      "git_commit": "fb15ee1ac021e735feae2ea73247e8f0b99d4b21",
+      "measured_generation_calls": 24,
+      "prompt_tokens": 42498,
+      "completion_tokens": 25432,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-22T17:24:14.692031+00:00",
+      "finished_at": "2026-10-22T17:53:56.954920+00:00",
+      "audit_status": "PASS",
+      "recommendation": "REPORT_DIAGNOSTIC_WITHOUT_RETUNING",
+      "claim_scope": "derived-family extraction diagnostic; no independent held-out or compaction-ranking claim",
+      "artifacts": {
+        "manifest": "results/nl_extraction_dev_diagnostic_qwen_v1_manifest.json",
+        "raw": "results/nl_extraction_dev_diagnostic_qwen_v1_raw.jsonl",
+        "summary": "results/nl_extraction_dev_diagnostic_qwen_v1_summary.csv",
+        "audit": "results/nl_extraction_dev_diagnostic_qwen_v1_audit.json"
+      },
+      "manifest_sha256": "68a605e31aada243b4337a79ded12cc607369e64882f4829071faf9696488028",
+      "audit_sha256": "94a85b78eae1973aeb528862fe9375368acf48526d72d4207cf718ea03fe66ec"
     },
     {
       "prefix": "pipeline_pilot_qwen_k3",

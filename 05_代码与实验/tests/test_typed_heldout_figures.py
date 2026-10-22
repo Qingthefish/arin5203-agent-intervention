@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import sys
 import unittest
 from pathlib import Path
@@ -34,7 +35,8 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.records = load_records(RAW)
         cls.metrics = compute_metrics(cls.records)
-        cls.experiment_scale = compute_experiment_scale(load_index(INDEX))
+        cls.index = load_index(INDEX)
+        cls.experiment_scale = compute_experiment_scale(cls.index)
         cls.benchmark_design = compute_benchmark_design(load_jsonl(DEV_RAW), cls.records)
         cls.case_story = compute_case_story(cls.records)
         cls.budget_sensitivity = compute_budget_sensitivity(
@@ -77,9 +79,13 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
 
     def test_experiment_scale_comes_from_indexed_manifests(self) -> None:
         scale = self.experiment_scale
-        self.assertEqual(40, scale["recorded_runs"])
-        self.assertEqual(2069, scale["measured_calls"])
-        self.assertEqual(1999916, scale["recorded_tokens"])
+        # This index grows with new diagnostics; held-out assertions above stay frozen.
+        self.assertEqual(len(self.index["runs"]), scale["recorded_runs"])
+        self.assertEqual(sum(int(r.get("measured_generation_calls") or 0) for r in self.index["runs"]), scale["measured_calls"])
+        self.assertEqual(sum(int(r.get("prompt_tokens") or 0) + int(r.get("completion_tokens") or 0) for r in self.index["runs"]), scale["recorded_tokens"])
+        self.assertGreaterEqual(scale["recorded_runs"], 40)
+        self.assertGreaterEqual(scale["measured_calls"], 2069)
+        self.assertGreaterEqual(scale["recorded_tokens"], 1999916)
         self.assertEqual(0.0, scale["external_api_cost_usd"])
         heldout = next(
             row
@@ -95,6 +101,18 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
         )
         self.assertEqual(324, sweep["calls"])
         self.assertAlmostEqual(123.3, sweep["minutes"], places=1)
+
+    def test_new_diagnostic_changes_archive_totals_not_frozen_turning_points(self) -> None:
+        index = copy.deepcopy(self.index)
+        index["runs"].append({"prefix": "fixture-new-diagnostic", "measured_generation_calls": 7,
+                              "prompt_tokens": 10, "completion_tokens": 11,
+                              "external_api_cost_usd": 0.0})
+        index["totals"]["runs"] += 1
+        updated = compute_experiment_scale(index)
+        self.assertEqual(self.experiment_scale["recorded_runs"] + 1, updated["recorded_runs"])
+        self.assertEqual(self.experiment_scale["measured_calls"] + 7, updated["measured_calls"])
+        self.assertEqual(self.experiment_scale["recorded_tokens"] + 21, updated["recorded_tokens"])
+        self.assertEqual(self.experiment_scale["turning_points"], updated["turning_points"])
 
     def test_durable_store_rescue_preserves_benefit_and_controls(self) -> None:
         rescue = self.durable_store_rescue

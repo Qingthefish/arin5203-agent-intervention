@@ -170,8 +170,9 @@ test-family rewrites are not new independent held-out data. The v2 snapshot
 repairs missing literal operations, makes invalid distractors fully specified,
 and pairs clean/distractor replacement events by role, position and UTF-8 bytes.
 Invalid records must be extracted faithfully, then rejected for the declared
-scope/target/authentication mismatch. No extraction model result exists yet.
-This extension has no compactor comparison.
+scope/target/authentication mismatch. The first frozen development diagnostic is
+complete; it does not establish upstream extraction readiness. This extension
+has no compactor comparison.
 
 Print a development plan without contacting a model:
 
@@ -208,6 +209,15 @@ candidate versus released decisions, and paired changes. Perfect visible
 extraction still disagrees with world-gold on the two selected hidden-hold
 deletions; visible-oracle agreement must be reported separately. Run once,
 report either outcome, and stop rather than expanding automatically.
+
+Completed evidence is under `nl_extraction_dev_diagnostic_qwen_v1`: recording
+checks pass, but every released route is Handoff. Strict string-scope contract
+failures dominate; source/quote presence is not complete field fidelity. Do not
+interpret the saved `omitted_literal_gold_claims` as raw model omissions: that
+metric counts sources absent after parsing, including rejected claims. JSON
+mode here is not schema-constrained generation. Signed-only authentication
+language is also ambiguous under the prompt rule. These are limitations of this
+frozen diagnostic, not reasons to alter its outputs or automatically rerun it.
 
 The runner requires both `--run` and `--acknowledge-experiment-plan` to contact
 loopback Ollama. `--limit` preserves whole sibling triples. Each versioned run
@@ -283,6 +293,7 @@ after adding artifacts. Do not edit it manually.
 | One-shot held-out comparison | `typed_exact_budget_heldout_qwen_v1` | Main course-project comparison; strong summaries tie on audited stable routes. |
 | Tighter memory budgets | `typed_budget_sweep_dev_qwen_v1` | Development-only sensitivity analysis, reusing frozen compactor outputs. |
 | External proof lookup | `durable_proof_store_deterministic_v1` | Deterministic architecture gate assuming authenticated cards; no LLM extraction or distributed-systems claim. |
+| Natural-language extraction | `nl_extraction_dev_diagnostic_qwen_v1` | Development-only JSON-mode interface diagnostic; uniform Handoff and contract failures, not end-to-end readiness. |
 | Correct route with weak grounding | `grounded_hitl_qwen_v4` | Development counterexample motivating joint evidence/route scoring. |
 | Unhelpful reviewer and clearance confusion | `audit_increment_qwen_v2`, `blind_proof_qwen_v1` | Failed development approaches; post-hoc trace reviews are explicitly labeled. |
 | Earlier feasibility/protocol repairs | All other prefixes in the index | Historical diagnostics; do not pool them as independent final evaluation or method rankings. |

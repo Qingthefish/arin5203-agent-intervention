@@ -101,7 +101,7 @@ the audience must decode.
 - `figures/heldout-causal-boundary.png` shows visible-proof validation, non-hold gaps that fail closed, and holds removed before compaction that cannot be reconstructed downstream. Not every non-hold gap is single-answer repairable.
 - `figures/budget-sensitivity.png` shows the development-only 384 / 256 / 192-token stress test. Strong summaries and typed proof keep 18/18 stable routes at 192 tokens; U-Fold-lite degrades, generic pinning loses most visible proof, and typed proof's only loss is one non-decisive recovery card in two records.
 - `figures/durable-store-rescue.png` closes the hidden-hold story with a development-only architecture test: memory-only proof validates 12/18 routes with three harmful Executes; point-in-time registry lookup reaches 18/18 while leaving 12 expired, revoked, and wrong-scope controls unchanged.
-- `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 40 run manifests, 2,069 measured local calls, 2.00 million recorded model tokens, 24 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
+- `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus archive totals derived from the current index. Exact changing totals live in the generated figure/metrics, not a second handwritten counter here. These counts exclude separate tokenizer probes and are not independent sample sizes.
 - `figures/presentation-metrics.json` contains every derived value, source artifact path, SHA-256 hash, and claim boundary used by all seven figures.
 
 For a short presentation, do not try to show all seven figures:
@@ -116,11 +116,11 @@ This yields one example, one causal design, one aggregate comparison, and one ar
 
 Do not add experiments merely to increase the call count. The frozen evidence
 answers the core questions under declared typed-card and external-lookup
-assumptions. The next optional run is a frozen development-only natural-language
-extraction diagnostic across domains/routes and clean/distractor conditions;
-it tests the upstream assumption rather than retuning held-out. A real
-single-workflow compactor adapter is a separate engineering acceptance test.
-Neither is required to make the existing result appear more successful.
+assumptions. The frozen development-only natural-language extraction diagnostic
+has completed with uniform Handoff and substantial contract failures. Report
+that boundary without automatically tuning or rerunning. A real single-workflow
+compactor adapter is a separate optional engineering acceptance test, not a
+prerequisite for the bounded course result.
 
 Regenerate the figures from `05_代码与实验/` with:
 
@@ -159,21 +159,47 @@ The demo is a replay of frozen traces, not a staged live-model generation. That 
 
 Do not claim production safety, universal model generalization, or that compaction physically deletes the source log. The experiment concerns what evidence remains in the Agent's active decision context.
 
-## Evidence level and Final assembly
+## Final report assembly map
 
-Keep three labels visible in notes and captions: **observed** (frozen local
-trace), **demonstrated** (deterministic replay/declared registry), and
-**recommended** (architecture inferred from these results and official docs).
-The [related-work review](../05_代码与实验/docs/related-work.md) positions our
-integration against Compaction Cliff and PAIR; do not spend a main slide
-listing papers or call inspired baselines reproductions.
+Target about **7.5 pages including references** until the reference-page rule is
+confirmed. Methods and Experiments carry 60% of the rubric. The report owns the
+full protocol and results; hand-made slides keep the main story above, and the
+two-page Milestone remains a development checkpoint.
 
-The Final also requires a written report; this evidence pack is not a substitute
-for it. Use the report for protocol/assumptions, all-condition results and
-negative gates; use hand-made slides for one trace, one fair comparison, one
-failure boundary and three implementable design decisions. The two-page
-Milestone remains a development progress snapshot, not an artificially
-incomplete report or a promise to conceal already completed work.
+A seven-page [working draft](../03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf)
+now exists, with [editable LaTeX](../03_最终报告/final_report.tex). It is not a
+submission-ready artifact; live template alignment and team review remain open.
+
+| Report content | Pages | Source owner / material to assemble |
+| --- | ---: | --- |
+| Title, Abstract, Introduction | 0.75 | [Root README](../README.md)'s question and boundaries; one travel-action example. Abstract ≤300 words. |
+| Related Work | 0.5 | `docs/related-work.md`: direct overlap with Compaction Cliff and PAIR; inspired baselines are not reproductions. |
+| Data and Protocol | 0.75 | `src/platform_agent_eval/typed_compaction_{dev,heldout}.py` and `configs/typed_exact_budget_heldout.json`: family split, word-matched siblings, blinded methods and active-token budget. |
+| Methods | 1.5 | `src/platform_agent_eval/proof_cards.py`, `docs/contract.md`, `docs/integration.md`: proof obligations, source-ID lookup, repairability and tool boundary; show external records outside the active budget. |
+| Experiments and Failure Analysis | 2.25 | `typed_exact_budget_heldout_qwen_v1` main comparison; `typed_budget_sweep_dev_qwen_v1` development sensitivity; `durable_proof_store_deterministic_v1` architecture test; one negative trace. |
+| Limitations, Developer Implications, Conclusion | 0.75 | [Playbook](Agent_Memory_Playbook.md) and the [retrospective](../项目复盘.md)'s 2026-10-23 review: three design decisions, evidence assumptions and failure boundary. |
+| References | 1.0 | Verified primary sources and any borrowed implementation, cited in the body. |
+
+Research paths/prefixes above are relative to `05_代码与实验/`; links resolve separately.
+For each run, `results/<prefix>_raw.jsonl` owns traces, `_summary.csv` scores,
+`_audit.json` protocol checks, and `_manifest.json` configuration and provenance.
+`figures/presentation-metrics.json` owns derived figure values; `results/index.json`
+is discovery metadata. The experiment-scale figure is optional backup only.
+
+Captions must distinguish **observed** frozen traces, **demonstrated** simulated
+replay/registry behavior, and **recommended** architecture. Show both stable and
+all-condition results: strong methods tie at 22/22 stable routes, while U-Fold-lite
+has 31/33 overall versus typed proof's 30/33. Proof-source selection is not semantic
+entailment; the source-existence recount is post-hoc. Main harmful-Execute scores
+combine an authored unsafe flag with the route; replay state diffs are simulated.
+
+The completed NL diagnostic occupies a short Experiments subsection linked to
+`nl_extraction_dev_diagnostic_qwen_v1`. Explain strict JSON-mode contract failure,
+raw versus post-parser omissions, signed/verified ambiguity, and why all-Handoff
+does not demonstrate useful safety. It is development-only extraction on derived
+families, not a compactor comparison or new held-out result. Verify live
+submission/template rules and sharing preference before final sign-off;
+supplementary material is submitted separately.
 
 ## Experiment evidence map for speakers
 

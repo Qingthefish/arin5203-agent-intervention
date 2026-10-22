@@ -23,8 +23,8 @@ These are primary responsibilities; scenario review, implementation and final co
 | Milestone | Two-page progress snapshot prepared; submission entry must be checked before submitting. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | Presentation | Replay and seven evidence figures available; claim/metric interpretation reviewed. Team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
-| Natural-language extension | Literal-field and distractor controls repaired in v2; a 24-context development-only extraction diagnostic is frozen, result pending. | [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json), [Runbook](05_代码与实验/README.md#natural-language-evidence-extension) |
-| Final report | Evidence exists; the full report still needs to be written and assembled. | [Research rationale and claim boundaries](项目复盘.md) |
+| Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
+| Final report | Seven-page working draft assembled; team review, live template alignment and sharing preference remain open. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
 
 Exact calls, timings, tokens and scores live in manifests, summaries and audits. Historical pilots, failed gates and design changes are recorded in [项目复盘.md](项目复盘.md); the homepage is a current map, not a second experiment diary.
 
@@ -55,14 +55,19 @@ The [related-work review](05_代码与实验/docs/related-work.md) distinguishes
 
 The core experimental question is answered at course-project scale. The remaining required work is to turn that evidence into a clear Final report and the team's hand-made slides. The 2026-10-23 review corrects interpretation, not frozen scores or method selection; its source-existence recount is explicitly post-hoc.
 
-One optional experiment remains justified: a small **development-only natural-language extraction diagnostic**, covering all three domains and Execute / Confirm / Handoff with clean and distractor variants. Freeze its selection, prompt, scoring and output prefix before a model run. Measure extraction fidelity and downstream mistakes. A successful diagnostic would support a larger end-to-end follow-up; failure would define the boundary to report. Neither outcome changes the original frozen held-out result.
+The optional **development-only natural-language extraction diagnostic** has
+completed once on four existing families, both variants and all siblings.
+The frozen JSON-mode interface is brittle: parser rejection and field mismatch
+lead to uniform Handoff, not useful safety discrimination. Authentication wording
+also limits interpreting every canonical mismatch as a model error. This does
+not change the main held-out result or establish that schema-constrained
+extraction cannot work. No automatic tuning run or expansion follows.
 
-The first diagnostic is now preregistered: four existing development families,
-24 contexts, both variants, no compactor and no held-out model calls. It covers
-the domain/route margins and three explicit distractor types, not all
-domain-by-route cells. The plan separates recording integrity from extraction
-quality, and visible-evidence oracle agreement from full-state route accuracy.
-No automatic rerun or expansion follows either result.
+Next: review the report's evidence and limitations with the team, confirm the
+live template/report-sharing requirements, and build the hand-made slides around
+one trace, one fair comparison, one boundary and three developer decisions.
+An actual single-workflow compactor adapter remains optional engineering work,
+not a prerequisite for presenting the bounded research result.
 
 Further experiments need a concrete unanswered question that could change a design decision or claim. Extra model calls, models or charts alone are not a reason to run them.
 
@@ -94,8 +99,8 @@ Open `http://127.0.0.1:8765` for the model-free frozen-trace replay. The [techni
 - [项目复盘.md](项目复盘.md) — rationale, failures and presentation decisions.
 - [05_代码与实验/README.md](05_代码与实验/README.md) — technical interfaces and reproduction.
 - [results/index.json](05_代码与实验/results/index.json) — generated artifact discovery; manifests/audits own exact results.
-- `01_提案/`, `02_里程碑/`, `04_项目展示/` — course deliverables and presentation evidence.
-- `CVPR2026_模板源码/` — instructor-linked vendor template; its README is not project documentation.
+- `01_提案/`, `02_里程碑/`, `03_最终报告/`, `04_项目展示/` — course deliverables, working report and presentation evidence.
+- `CVPR2026_模板源码/` — locally retained vendor template; exact alignment with the current course-linked template remains to be checked. Its README is not project documentation.
 
 The [course repository](https://github.com/Qingthefish/arin5203-agent-intervention) contains the research archive and latest development. The [standalone toolkit](https://github.com/Qingthefish/agent-memory-crash-test) publishes reviewed, versioned package snapshots; it does not automatically inherit every experimental extension.
 

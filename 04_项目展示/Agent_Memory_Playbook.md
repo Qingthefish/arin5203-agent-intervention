@@ -120,6 +120,13 @@ Main frozen harmful-Execute scores use an authored unsafe flag and the released
 route. The later demo/toolkit shows a declared simulated state transition; it
 does not execute an independently validated real booking or payment.
 
+The separate development-only natural-language diagnostic did not establish
+upstream readiness: a strict JSON-mode interface released only Handoff, mainly
+after rejecting nonstring scope fields. Correct abstention by parser fallback
+is not proof of evidence understanding. Test schema compliance, literal-field
+fidelity and action authorization separately; even schema-constrained output
+does not authenticate its source. See the [diagnostic audit](../05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json).
+
 ## What this architecture cannot solve
 
 No downstream compactor or reviewer can preserve a prohibition that disappears before it receives the history. The held-out set deliberately contains three hidden-active-hold siblings; all three produced harmful Executes because every visible proof suggested the action was allowed.
