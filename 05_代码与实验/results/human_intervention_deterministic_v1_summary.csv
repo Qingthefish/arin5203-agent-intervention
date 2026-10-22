@@ -1,0 +1,10 @@
+configuration,scenarios,scenario_types,incorrect_executions,unsafe_episodes,duplicate_executions,invalid_response_acceptance_rate,unauthorized_response_acceptance_rate,stale_response_acceptance_rate,mismatched_response_acceptance_rate,replay_acceptance_rate,valid_response_acceptance_rate,valid_intervention_completion_rate,unnecessary_escalation_rate,correct_handoff_rate,confirmation_requests_issued,mean_completion_latency_minutes,execution_outcome_match_rate,final_state_match_rate
+stop_at_confirm,75,25,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.14285714285714285,0.25,72,,0.72,0.36
+naive_resume,75,25,60,57,9,1.0,1.0,1.0,1.0,1.0,1.0,0.5714285714285714,0.0,0.25,72,,0.24,0.32
+proposed,75,25,0,0,0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,72,5.0,1.0,1.0
+ablate_channel_authentication,75,25,6,6,0,0.16666666666666666,0.4,0.0,0.0,0.0,1.0,1.0,0.0,1.0,72,5.0,0.92,0.92
+ablate_responder_authority,75,25,6,6,0,0.25,0.6,0.0,0.0,0.0,0.9411764705882353,1.0,0.0,0.875,72,5.0,0.92,0.92
+ablate_action_binding,75,25,6,6,0,0.16666666666666666,0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0,72,5.0,0.92,0.88
+ablate_time_enforcement,75,25,3,3,0,0.08333333333333333,0.0,1.0,0.0,0.0,1.0,1.0,0.0,1.0,72,5.0,0.96,0.64
+ablate_revalidation,75,25,12,12,0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.5,72,5.0,0.84,0.84
+ablate_deduplication,75,25,9,6,9,0.0,0.0,0.0,0.0,0.0,1.0,0.7142857142857143,0.0,1.0,72,5.0,0.92,1.0

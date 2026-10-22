@@ -13,7 +13,7 @@ Building an Agent from 0 to 1 is increasingly accessible. Keeping it reliable ov
 
 These are primary responsibilities; scenario review, implementation and final conclusions are shared. Team experience motivates synthetic cases, not claims about company production systems.
 
-## Current Snapshot — 2026-10-21
+## Current Snapshot — 2026-10-23
 
 | Workstream | Status | Evidence or entry point |
 | --- | --- | --- |
@@ -24,6 +24,7 @@ These are primary responsibilities; scenario review, implementation and final co
 | Presentation | Frozen-trace replay, seven evidence figures and developer Playbook ready. Team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
 | Natural-language extension | PR #1 merged with interface repairs; dataset and plan-only runner available, no model result yet. | [Runbook](05_代码与实验/README.md#natural-language-evidence-extension), [PR #1](https://github.com/Qingthefish/arin5203-agent-intervention/pull/1) |
+| Confirmation lifecycle | Deterministic workflow turns `REQUEST_CONFIRMATION` into a bound, revalidated, execute-once repair; protocol evaluation with scripted responders only. | [Technical notes](05_代码与实验/docs/human-intervention.md) |
 | Final report | Evidence exists; the full report still needs to be written and assembled. | [Research rationale and claim boundaries](项目复盘.md) |
 
 Exact calls, timings, tokens and scores live in manifests, summaries and audits. Historical pilots, failed gates and design changes are recorded in [项目复盘.md](项目复盘.md); the homepage is a current map, not a second experiment diary.

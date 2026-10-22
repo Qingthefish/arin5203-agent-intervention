@@ -126,6 +126,7 @@ not a live booking, payment or production service.
 - `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
 - `src/platform_agent_eval/proof_cards.py` — provenance-typed authority, clearance, active-hold, delegation, recovery, and repair-channel cards with scoped deterministic validation.
 - `src/platform_agent_eval/durable_proof_store.py` — point-in-time lookup and collision-safe merging for proof cards stored outside conversational memory.
+- `src/platform_agent_eval/human_intervention_workflow.py` and `human_intervention_scenarios.py` — closed-loop handling of `REQUEST_CONFIRMATION`: bound requests, channel-authenticated responses, revalidation with the unchanged validator, idempotent simulated execution, and the protocol scenario matrix.
 - `src/platform_agent_eval/memory_crash_test.py` — declarative matched-sibling generation, memory selectors, proof validation, state replay, and CI scoring for a reusable crash-test contract.
 - `src/platform_agent_eval/typed_compaction_dev.py` — nine fresh typed-proof bases and 27 role/position/length-matched deletion siblings for the exact-budget development stage.
 - `src/platform_agent_eval/typed_budget_compaction.py` — blinded full, recency, neutral/task-aware summary, generic pinning, U-Fold-lite, and typed-card-retention contexts with neutral-only budget fill.
@@ -171,6 +172,27 @@ model identity, latency and tokens. Offline launches and interruptions remain
 discoverable. Audit PASS is an instrumentation result, not an extraction
 quality claim. After any actual run, regenerate and check `results/index.json`.
 Dataset export also refuses to overwrite existing versioned files.
+
+## Closed-Loop Human Intervention
+
+The validator's `REQUEST_CONFIRMATION` route now has a run-time lifecycle.
+`human_intervention_workflow.py` binds each request to one action and one
+authorized responder from the existing repair-channel card. It accepts only
+structured replies whose identity comes from a trusted channel fixture. An
+accepted approval becomes one `AUTHORITY` card, and the unchanged validator
+re-runs on evidence read at execution time before a single simulated mutation.
+Handoff is never converted into Confirm. See
+[`docs/human-intervention.md`](docs/human-intervention.md) for states, checks,
+trust boundaries, results and limitations.
+
+```bash
+python3 -m unittest tests.test_human_intervention_workflow -v
+python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_eval.json
+```
+
+The evaluation runner is deterministic and plan-only without `--run` and
+`--acknowledge-experiment-plan`. It refuses to run if the workflow or scenario
+module differs from the hashes frozen in the config.
 
 ## Reproduction
 
@@ -237,6 +259,7 @@ after adding artifacts. Do not edit it manually.
 | One-shot held-out comparison | `typed_exact_budget_heldout_qwen_v1` | Main course-project comparison; strong summaries tie on audited stable routes. |
 | Tighter memory budgets | `typed_budget_sweep_dev_qwen_v1` | Development-only sensitivity analysis, reusing frozen compactor outputs. |
 | External proof lookup | `durable_proof_store_deterministic_v1` | Deterministic architecture gate assuming authenticated cards; no LLM extraction or distributed-systems claim. |
+| Confirmation lifecycle | `human_intervention_deterministic_v1` | Deterministic protocol evaluation with scripted responders; full workflow vs stop-at-confirm, naive resume and single-check ablations. No LLM, user-study or real-identity claim. |
 | Correct route with weak grounding | `grounded_hitl_qwen_v4` | Development counterexample motivating joint evidence/route scoring. |
 | Unhelpful reviewer and clearance confusion | `audit_increment_qwen_v2`, `blind_proof_qwen_v1` | Failed development approaches; post-hoc trace reviews are explicitly labeled. |
 | Earlier feasibility/protocol repairs | All other prefixes in the index | Historical diagnostics; do not pool them as independent final evaluation or method rankings. |

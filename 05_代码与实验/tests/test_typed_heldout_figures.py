@@ -77,7 +77,8 @@ class TypedHeldoutPresentationFigureTests(unittest.TestCase):
 
     def test_experiment_scale_comes_from_indexed_manifests(self) -> None:
         scale = self.experiment_scale
-        self.assertEqual(40, scale["recorded_runs"])
+        # 41 includes the zero-call human_intervention_deterministic_v1 bundle.
+        self.assertEqual(41, scale["recorded_runs"])
         self.assertEqual(2069, scale["measured_calls"])
         self.assertEqual(1999916, scale["recorded_tokens"])
         self.assertEqual(0.0, scale["external_api_cost_usd"])
