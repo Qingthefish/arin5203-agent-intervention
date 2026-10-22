@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — 2026-10-22
+
+- Added a deterministic two-phase prepare/commit freshness gate that binds the approved action, transition, policy and evidence versions, then revalidates them immediately before the simulated mutation.
+- Added serializable commit-section semantics and fail-closed handling for new holds, authority revocation or expiry, changed parameters, unavailable registries and duplicate commit attempts.
+- Added a frozen development-only configuration, plan-only deterministic runner, five comparison modes, thirteen conditions and 30 focused tests; the formal versioned run remains pending.
+
 ## 0.1.1 — 2026-10-21
 
 - Reject non-Boolean authentication, transferability, integrity and policy flags instead of coercing strings or numbers.
