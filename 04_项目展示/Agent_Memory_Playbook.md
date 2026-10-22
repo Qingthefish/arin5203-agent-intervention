@@ -39,7 +39,11 @@ The source event remains the audit anchor. The typed record is a compact control
 
 Use semantic summaries for goals, preferences, and narrative continuity. Use deterministic inclusion and validation rules for action proof. Filling a token budget with recent raw messages or plausible prose must not silently recreate authority.
 
-In our held-out run, strong summaries matched audited route accuracy, but their route citations were less consistently grounded in visible sources. A correct route is not enough when its stated approval never existed in active memory.
+In our held-out run, strong summaries matched audited stable-route accuracy.
+Their citations selected proof-card sources less consistently, but every method's
+parsed citations referred to active source IDs. This is a source-selection
+metric, not proof that the cited text entails an approval. Earlier development
+gates separately showed correct routes with unsupported approval claims.
 
 ### 4. Revalidate at the tool boundary
 
@@ -68,7 +72,9 @@ For every important workflow, test three versions of the same history:
 
 1. complete evidence;
 2. remove exactly one action-critical fact;
-3. remove equal-size noise from the same role and nearby position.
+3. remove matched noise from the same role and nearby position. Specify the
+   matching unit: our main research set uses word counts; the reusable contract
+   uses UTF-8 bytes. Neither is exact tokenizer-token matching.
 
 Then measure both the decision and its evidence chain:
 
@@ -79,7 +85,12 @@ Then measure both the decision and its evidence chain:
 - changes caused by deleting noise;
 - helpful versus harmful audit corrections.
 
-If critical deletion and noise deletion behave the same, the Agent may be following surface cues instead of evidence.
+Interpret the perturbation against the action contract. Deleting a necessary
+approval should block execution; deleting an active prohibition should not
+grant permission in the real world. The latter deliberately tests missing
+observability and may require an independent authoritative read. Identical
+routes across siblings can be correct, so route sensitivity alone is not proof
+that evidence was used.
 
 ## What the held-out experiment supports
 
@@ -91,7 +102,23 @@ separate question addressed by the optional natural-language extension.
 
 On 11 untouched bases / 33 matched contexts under a 384 raw-token budget, the typed-proof method plus deterministic audit routed all 22 full and matched-noise contexts correctly. It retained every visible card and critical event, made 10 helpful corrections, made zero harmful corrections, and produced no harmful execution or unnecessary intervention on those stable contexts.
 
-The result does **not** show that only typed memory can route correctly. Three strong summary baselines also reached 22/22 after the same provenance-aware audit. The observed distinction was evidence-chain inspectability: typed proof reached 100% visible-source citation precision, while the comparison summaries were lower.
+The result does **not** show that only typed memory can route correctly. Three
+strong baselines also reached 22/22 after the same provenance-aware audit.
+Across all 33 contexts, U-Fold-lite reached 31/33 versus typed proof's 30/33;
+conservative evidence loss prevented one hidden-hold Execute. The typed method
+is not the unique accuracy winner.
+
+The stored `proof_citation_precision` is a mean of per-record fractions of
+citations selecting **any visible proof-card source**. Typed proof reached
+100%; lower summary values include citations to visible non-proof events. A
+post-hoc recount found zero outside-active-ID citations for all seven methods.
+Neither source existence nor proof-source membership establishes semantic
+entailment, complete decisive proof, or issuer authenticity. The deterministic
+validator checks canonical records separately.
+
+Main frozen harmful-Execute scores use an authored unsafe flag and the released
+route. The later demo/toolkit shows a declared simulated state transition; it
+does not execute an independently validated real booking or payment.
 
 ## What this architecture cannot solve
 
@@ -105,6 +132,28 @@ That boundary requires a separate upstream control:
 - fail-closed handling when required sources are unavailable.
 
 Memory design is one control layer, not the whole safety system.
+
+## Configure auto-compaction: three separate decisions
+
+1. **When to compact:** choose a resource trigger and retention window; record
+   the actual tokenizer/counter and leave headroom for tool results. A larger
+   window changes pressure, not the action's authorization requirements.
+2. **What must remain available:** define action-specific obligations, source
+   records, current-state lookups and their failure behavior. A useful summary
+   prompt is one control, not a permission database.
+3. **Whether to execute now:** validate the exact tool arguments at the side
+   effect boundary; bind any confirmation to those arguments and test resumed
+   execution for duplicate effects.
+
+Providers/frameworks expose different hooks, including readable summaries,
+opaque compaction and checkpointed review. The [integration guide](../05_代码与实验/docs/integration.md#provider-mechanisms-versus-application-obligations)
+maps current official mechanisms to these responsibilities. This is an
+engineering synthesis; our experiment did not benchmark those providers or
+test production resume/idempotency behavior.
+
+For evaluation, keep three questions separate: **does the cited source exist;
+does it support this claim; and is the complete proof sufficient for this exact
+action now?** One citation score cannot answer all three.
 
 ## One-slide version
 

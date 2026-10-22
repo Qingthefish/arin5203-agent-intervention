@@ -77,8 +77,8 @@ tool call still take the right route for grounded reasons?**
 
 Related work already studies long-term memory, memory-to-action failures,
 context compaction, abstention, delegation, and human intervention. The useful
-unit here is their integration into a declarative, provider-independent
-regression gate with matched deletions, provenance checks, three-way routing,
+unit here is their integration into a declarative, provider-agnostic fixture
+format for regression tests with matched deletions, provenance checks, three-way routing,
 and observable state diffs. See [`docs/related-work.md`](docs/related-work.md)
 for the positioning and claim boundary.
 
@@ -108,8 +108,20 @@ real signature verification or a deployed human workflow. Confirm/Handoff are
 route semantics here; an authenticated follow-up must be evaluated separately.
 
 Gold decisions and oracle conclusions stay outside model-visible inputs. State
-diffs come from the deterministic simulator or declared contract transition,
-not a live booking, payment or production service.
+diffs in the replay/toolkit come from a declared simulated transition, not a live
+booking, payment or production service. The main frozen comparison instead
+scores harmful Execute as the authored `unsafe_if_executed` flag AND the
+released Execute route; do not describe those raw records as independent
+domain-state execution traces.
+
+The frozen field `proof_citation_precision` measures the macro-averaged fraction
+of direct-router citations selecting visible proof-card sources, not semantic
+entailment or complete decisive proof. A labeled post-hoc recount in the
+presentation metrics separates source-ID existence from proof-source selection.
+Main research siblings are word-count matched; the later toolkit and NL-v1
+contracts use exact UTF-8 bytes. Neither matching rule means equal tokenizer
+length. Only the six compressed strategies share the active-memory token cap;
+full history is an unbudgeted reference.
 
 ## Repository Map
 

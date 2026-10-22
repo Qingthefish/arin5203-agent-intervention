@@ -40,7 +40,11 @@ The project is a controlled comparison along five independent axes. Keeping thes
 | Token pressure | 384, 256, and 192 raw tokens on the frozen development set | Which methods fail first as memory becomes tighter, and what proof disappears? |
 | Source architecture | memory only versus point-in-time durable proof lookup | Can downstream memory solve the failure, or must the system re-read authoritative state? |
 
-Every comparison ends at the same outcomes: Execute / Confirm / Handoff, cited decisive evidence, harmful or unnecessary intervention, and the actual external state diff. Summary fluency is never the final score.
+Every comparison concerns Execute / Confirm / Handoff, evidence selection,
+harmful or unnecessary intervention. Main frozen harmful-Execute scores are an
+authored unsafe flag AND the released route. The later replay/toolkit applies a
+declared simulated transition to illustrate the state diff; it is not an
+independent live-domain outcome measurement. Summary fluency is never the final score.
 
 ## Three-claim spine
 
@@ -48,9 +52,9 @@ Do not narrate every experiment chronologically. The failed and intermediate run
 
 | Claim | Best evidence | What the audience learns |
 | --- | --- | --- |
-| Compaction can silently change a tool decision | Full / critical-deletion / equal-noise matched siblings | Test memory by changing one fact at a time, not by reading plausible summaries |
-| A correct route is not enough | Earlier grounded-routing cases where the button was right but the cited approval was absent; held-out citation precision | Score whether the decisive evidence really exists and can be traced |
-| Audit has a sharp boundary | 22/22 stable typed audited routes; 8/8 repairable omissions fail closed; 3/3 hidden holds remain harmful | Revalidate visible proof at the tool boundary, and protect upstream event delivery separately |
+| Evidence availability can change a tool decision | Controlled critical/noise deletions plus the fixed-budget strategy comparison | Distinguish induced upstream evidence loss from a compactor's actual retention failure |
+| A correct route is not enough | Failed grounded-routing development gates; separately, held-out proof-source selection | Test source existence, claim support and complete action proof separately |
+| Audit has a sharp boundary | 22/22 stable typed audited routes; 8/8 non-hold omissions fail closed; 3/3 hidden holds remain harmful | Revalidate visible proof at the tool boundary, and protect upstream event delivery separately |
 
 This framing preserves all of the research work without forcing the audience to remember the protocol-falsification gate, multiple router versions, or each failed schema. Those belong in the report and backup slides as the evidence trail behind the final design.
 
@@ -74,7 +78,7 @@ The live narration should spend more time on slides 2, 4, 7, and 8 than on listi
 
 No official final-presentation duration has been verified in the local course requirements, so prepare a compact core that can expand without changing the story:
 
-- **12-minute core:** 1.5 minutes hook and failure; 2 minutes research question and Crash Test; 2 minutes matched design; 2.5 minutes results; 2 minutes deterministic replay; 1.5 minutes playbook; 0.5 minute close.
+- **12-minute core:** 1.5 minutes hook and failure; 1.5 minutes research question and Crash Test; 2 minutes matched design; 2.5 minutes results; 2 minutes deterministic replay; 2 minutes playbook; 0.5 minute close.
 - **Optional 5-minute depth:** baseline definitions, route-versus-grounding failure, exact-token fairness, and one negative audit experiment.
 - **Backup only:** full experiment chronology, implementation details, all metrics, and additional domains.
 
@@ -91,10 +95,10 @@ the audience must decode.
 
 ## Core figures
 
-- `figures/matched-case-held-y6.png` is the recommended opening example. It uses one frozen hotel-booking family to show that removing equal-size noise changes nothing, while removing the active hold flips Handoff to a harmful Execute and changes the external state.
-- `figures/benchmark-design.png` explains the full experiment in one frame: 20 bases become 60 matched contexts, seven memory strategies share a 384-token budget, siblings remain in one split, and the state oracle scores Execute / Confirm / Handoff consequences.
-- `figures/heldout-method-comparison.png` shows the main empirical nuance: several strong methods tie after deterministic audit on stable routing, while evidence-chain quality still separates them. Typed proof is the only evaluated method at 100% for both visible-card retention and citation precision in the frozen run.
-- `figures/heldout-causal-boundary.png` shows the causal boundary: visible evidence can be validated, repairable proof gaps fail closed, but a hidden hold removed before compaction cannot be recovered by any downstream audit.
+- `figures/matched-case-held-y6.png` is the opening boundary example. Word-matched noise deletion changes nothing; deleting a hold **before compaction** flips Handoff to harmful Execute. The pictured state diff is a simulated replay. Do not call this proof that the compactor deleted the hold.
+- `figures/benchmark-design.png` shows 20 bases / 60 matched contexts, six compressed strategies under 384 raw tokens plus unbudgeted full history, and family-level splits. Core critical/noise events are word-count matched, not token- or byte-matched.
+- `figures/heldout-method-comparison.png` separates stable-route accuracy, visible-card recall and proof-source selection. Several strong baselines tie on stable audited routing. Typed proof alone is 100% on both displayed evidence metrics; that is not semantic-entailment verification.
+- `figures/heldout-causal-boundary.png` shows visible-proof validation, non-hold gaps that fail closed, and holds removed before compaction that cannot be reconstructed downstream. Not every non-hold gap is single-answer repairable.
 - `figures/budget-sensitivity.png` shows the development-only 384 / 256 / 192-token stress test. Strong summaries and typed proof keep 18/18 stable routes at 192 tokens; U-Fold-lite degrades, generic pinning loses most visible proof, and typed proof's only loss is one non-decisive recovery card in two records.
 - `figures/durable-store-rescue.png` closes the hidden-hold story with a development-only architecture test: memory-only proof validates 12/18 routes with three harmful Executes; point-in-time registry lookup reaches 18/18 while leaving 12 expired, revoked, and wrong-scope controls unchanged.
 - `figures/experiment-scale.png` is optional evidence for the work behind the result. It reports selected stages with measured calls and wall time, plus the machine-indexed totals: 40 run manifests, 2,069 measured local calls, 2.00 million recorded model tokens, 24 frozen gate bundles, 10 retained failed/aborted runs, and `$0` external API cost.
@@ -110,7 +114,13 @@ This yields one example, one causal design, one aggregate comparison, and one ar
 
 ## Experiment stopping rule
 
-Do not add experiments merely to increase the call count. The frozen evidence already answers the main causal, budget, audit-increment, and upstream-boundary questions. A new run is justified only if slide rehearsal exposes a decision-relevant question that no existing immutable artifact can answer. The most plausible optional extension is a second already-installed local model as a transfer check; downloading a new large model solely for another bar chart is out of scope.
+Do not add experiments merely to increase the call count. The frozen evidence
+answers the core questions under declared typed-card and external-lookup
+assumptions. The next optional run is a frozen development-only natural-language
+extraction diagnostic across domains/routes and clean/distractor conditions;
+it tests the upstream assumption rather than retuning held-out. A real
+single-workflow compactor adapter is a separate engineering acceptance test.
+Neither is required to make the existing result appear more successful.
 
 Regenerate the figures from `05_代码与实验/` with:
 
@@ -143,10 +153,27 @@ The demo is a replay of frozen traces, not a staged live-model generation. That 
 - In the frozen held-out run, typed proof retention plus deterministic audit achieved 22/22 correct stable routes, 100% visible-card and critical-event retention, zero harmful executions, zero unnecessary interventions, and zero matched-noise route changes.
 - The audit corrected 10 typed direct-router errors and spoiled none.
 - Neutral summary, task-aware summary, and U-Fold-lite also achieved 22/22 audited stable routes; this is not a unique route-accuracy win.
-- Typed proof's clearest observed advantage was inspectability: 100% visible-source citation precision, compared with 75.7% for neutral summary, 69.1% for task-aware summary, and 98.2% for U-Fold-lite.
+- Typed proof's evidence-selection metric was 100%, versus 75.7% neutral, 69.1% task-aware and 98.2% U-Fold-lite. These are macro-averaged **proof-source citation precision** values, not semantic entailment. Every method had zero parsed citations outside active source IDs in a post-hoc recount.
+- Across all 33 contexts U-Fold-lite achieved 31/33 versus typed proof's 30/33. Its conservative evidence loss blocked one hidden-hold Execute. Do not hide this result behind the stable subset or imply a universal typed-method win.
 - All three hidden-active-hold deletion cases remained harmful Executes. This is the disclosed system boundary.
 
 Do not claim production safety, universal model generalization, or that compaction physically deletes the source log. The experiment concerns what evidence remains in the Agent's active decision context.
+
+## Evidence level and Final assembly
+
+Keep three labels visible in notes and captions: **observed** (frozen local
+trace), **demonstrated** (deterministic replay/declared registry), and
+**recommended** (architecture inferred from these results and official docs).
+The [related-work review](../05_代码与实验/docs/related-work.md) positions our
+integration against Compaction Cliff and PAIR; do not spend a main slide
+listing papers or call inspired baselines reproductions.
+
+The Final also requires a written report; this evidence pack is not a substitute
+for it. Use the report for protocol/assumptions, all-condition results and
+negative gates; use hand-made slides for one trace, one fair comparison, one
+failure boundary and three implementable design decisions. The two-page
+Milestone remains a development progress snapshot, not an artificially
+incomplete report or a promise to conceal already completed work.
 
 ## Experiment evidence map for speakers
 

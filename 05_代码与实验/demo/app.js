@@ -268,7 +268,7 @@ function renderDebug(run) {
         ${obligations}
         <div class="obligation"><span>Final route</span><span class="status ${routeClass(run.decision)}">${esc(run.decision_label.toUpperCase())}</span></div>
         <div class="obligation"><span>Route correct</span><span class="status ${run.route_correct ? "" : "blocked"}">${run.route_correct ? "YES" : "NO"}</span></div>
-        <div class="obligation"><span>Citation precision</span><span class="status">${esc(pct(run.direct.proof_citation_precision))}</span></div>
+        <div class="obligation" title="Fraction of parsed citations selecting visible proof-card sources; not semantic entailment or complete authorization."><span>Proof-source selection</span><span class="status">${esc(pct(run.direct.proof_citation_precision))}</span></div>
       </aside>
       <div class="card-table">
         <table>
@@ -306,7 +306,7 @@ function renderSuite() {
     return `<div class="suite-row">
       <div class="suite-method">
         <strong>${esc(method.label)}</strong>
-        <span>${correct}/3 routes · ${harmful} harmful · ${esc(pct(meanPrecision))} citation precision</span>
+        <span>${correct}/3 routes · ${harmful} harmful · ${esc(pct(meanPrecision))} proof-source selection</span>
       </div>
       ${methodRuns.map(suiteCell).join("")}
     </div>`;

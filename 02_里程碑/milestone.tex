@@ -59,7 +59,9 @@ latency, and cost. Governance Decay shows that previously obeyed constraints
 can disappear and later be violated~\cite{chen2026governance}. U-Fold separates
 an intent summary from a task-relevant tool log~\cite{su2026ufold}; ACON and
 StateComp study how and when to compress~\cite{kang2026acon,wang2026statecomp}.
-Our question begins after that compression step:
+Compaction Cliff already combines typed retention and verification;
+PAIR uses same-state counterfactual continuations~\cite{zerhoudi2026cliff,min2026pair}.
+We integrate these ideas around action-specific proof and gap repairability:
 
 \begin{quote}
 \emph{Under a fixed raw-token budget, can a post-compaction evidence audit
@@ -78,7 +80,7 @@ not a new general-purpose summarizer.
 Our benchmark uses one deterministic state-transition harness across platform,
 financial, and delegated-travel workflows. Twenty base scenarios each produce
 three matched contexts: (i) complete evidence, (ii) one action-critical event
-removed, and (iii) an equal-length, same-role noise event removed. This yields
+removed, and (iii) a word-count-matched, same-role noise event removed. This yields
 60 contexts. Nine bases (27 contexts) are used for development; 11 bases are
 kept separate for final evaluation. Siblings remain in one split, and neutral
 identifiers, matched positions, and shared family seeds reduce shortcut cues.
@@ -90,9 +92,10 @@ context. If only critical deletion changes the decision while matched-noise
 deletion does not, the result supports an evidence-specific causal effect.
 
 We evaluate route accuracy, harmful Execute, unnecessary intervention, safe
-autonomy, decisive-proof retention, citation precision, and invariance to
-matched-noise deletion. A private oracle applies only executed calls and
-records the resulting state difference. Stateful tool evaluation follows the
+autonomy, decisive-proof retention, proof-source citation precision, and
+noise invariance. Harmful Execute combines an authored unsafe flag with the
+released route; a later replay illustrates the declared simulated state diff.
+Stateful tool evaluation follows the
 motivation of $\tau$-bench and ToolSandbox~\cite{yao2024tau,lu2025toolsandbox};
 SABER motivates checking mutating steps rather than judging only the final
 response~\cite{cuadron2025saber}.
@@ -183,30 +186,24 @@ summary.
 
 \section{Final-Stage Plan and Limitations}
 
-We have frozen the development method, prompts, 384-token budget, validator,
-thresholds, and metric definitions. A separate 11-base / 33-context held-out
-artifact has been created without reusing development actions, actors,
-targets, or identifiers. Its full method comparison and trace-level error
-analysis are reserved for the final report rather than used to tune this
-milestone result.
+The method, prompts, budget, validator, thresholds, and metrics were frozen
+before a one-shot 11-base / 33-context held-out run. Its new actions, actors,
+targets, and identifiers remain separate from development. Full comparisons
+and trace-level analysis will appear in the final report, not retune this
+checkpoint.
 
-Two post-checkpoint extensions have been completed for the final report without
-altering the frozen method or held-out artifact. A development-only budget
-sweep stress-tests memory below 384 tokens, while a deterministic durable
-hold/authorization store tests the case in which a blocker disappears
-\emph{before} the compactor receives it. Their outcomes are reserved for the
-final comparison rather than used to revise Table~\ref{tab:dev}. If time
-permits, a second local model will be used as a transfer check rather than as
-another tuning target.
+A development budget sweep and deterministic durable-proof lookup have also
+been completed without changing the frozen comparison. The latter addresses
+blockers missing \emph{before} compaction. Their outcomes are reserved for the
+final report. An optional development-only free-text extraction diagnostic
+would test upstream card creation, not revise held-out methods.
 
-The final deliverables will combine the frozen comparison with a deterministic
-Memory Crash Test replay showing compacted memory, cited proof, the three-way
-route, and the simulated state diff. The benchmark is synthetic, risk-enriched,
-and currently uses one local model and one generation per context; it cannot
-certify production safety. Its engineering rule is concrete: treat conversation
-memory as a cache, validate visible proof at the tool boundary, and re-read
-permissions and holds from an independent source of truth because no audit can
-recreate an event it never received.
+Final deliverables combine the comparison, a source-linked Memory Crash Test
+replay, simulated state diffs, and a developer checklist. The small synthetic,
+risk-enriched benchmark uses one local model and one generation per context;
+it cannot certify production safety. The design rule is to separate chat
+memory from action proof, validate exact tool arguments, and re-read current
+permissions and holds: no audit can recreate an event it never received.
 
 {
 \footnotesize
@@ -240,6 +237,14 @@ agents. In \emph{ICML}, 2026.
 \bibitem{wang2026statecomp}
 M. Wang et al. StateComp: Learning when to compress history in long-horizon
 agents. \emph{arXiv:2609.27298}, 2026.
+
+\bibitem{zerhoudi2026cliff}
+S. Zerhoudi et al. The Compaction Cliff in long-running AI agent memory.
+\emph{arXiv:2608.22752}, 2026.
+
+\bibitem{min2026pair}
+G. Min et al. Adapting context compression for long-horizon agents with
+counterfactual continuations. \emph{arXiv:2609.36526}, 2026.
 \end{thebibliography}
 }
 
