@@ -13,7 +13,7 @@ Building an Agent from 0 to 1 is increasingly accessible. Keeping it reliable ov
 
 These are primary responsibilities; scenario review, implementation and final conclusions are shared. Team experience motivates synthetic cases, not claims about company production systems.
 
-## Current Snapshot — 2026-10-21
+## Current Snapshot — 2026-10-22
 
 | Workstream | Status | Evidence or entry point |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ These are primary responsibilities; scenario review, implementation and final co
 | Milestone | Two-page progress snapshot prepared; submission entry must be checked before submitting. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | Presentation | Frozen-trace replay, seven evidence figures and developer Playbook ready. Team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
-| Natural-language extension | PR #1 merged with interface repairs; dataset and plan-only runner available, no model result yet. | [Runbook](05_代码与实验/README.md#natural-language-evidence-extension), [PR #1](https://github.com/Qingthefish/arin5203-agent-intervention/pull/1) |
+| Natural-language extension | PR #1 merged with interface repairs; dataset and plan-only runner available, no model result yet. A deterministic field-level grounding layer now checks extracted claims against their cited messages before validation; evaluated on synthetic cases only. | [Runbook](05_代码与实验/README.md#natural-language-evidence-extension), [PR #1](https://github.com/Qingthefish/arin5203-agent-intervention/pull/1), [Grounding notes](05_代码与实验/docs/evidence-grounding.md) |
 | Final report | Evidence exists; the full report still needs to be written and assembled. | [Research rationale and claim boundaries](项目复盘.md) |
 
 Exact calls, timings, tokens and scores live in manifests, summaries and audits. Historical pilots, failed gates and design changes are recorded in [项目复盘.md](项目复盘.md); the homepage is a current map, not a second experiment diary.
@@ -41,7 +41,7 @@ The benchmark contains 20 synthetic base families and 60 matched contexts: nine 
 
 | Layer | What is established | What remains outside the claim |
 | --- | --- | --- |
-| Evidence creation | Main evaluation starts from source-linked typed records. | Reliable free-text extraction and real signature verification. PR #1 targets the first gap. |
+| Evidence creation | Main evaluation starts from source-linked typed records. | Reliable free-text extraction and real signature verification. PR #1 targets the first gap; the grounding layer checks narrow field support, not entailment or signatures. |
 | Memory and audit | Retained source IDs permit the deterministic audit to rehydrate canonical records. The fixed budget applies to active memory. | Total external storage, lookup overhead and a fully self-contained compressed-memory system. |
 | Action outcome | The simulator applies the declared transition and scores the resulting state diff. | Real bookings, transfers or production deployments. |
 | Human intervention | Route semantics distinguish a repairable answer from a required handoff. | A deployed human workflow, user study or measured production intervention burden. |

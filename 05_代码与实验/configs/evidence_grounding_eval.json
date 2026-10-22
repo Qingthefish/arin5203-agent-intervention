@@ -1,0 +1,36 @@
+{
+  "experiment": "evidence_grounding_eval_v1",
+  "scenario_set": "evidence-grounding-eval-v1",
+  "verifier_version": "evidence-grounding-v1",
+  "provider": "deterministic",
+  "model": null,
+  "output_prefix": "evidence_grounding_deterministic_v1",
+  "frozen_sources_sha256": {
+    "src/platform_agent_eval/evidence_grounding.py": "ef377759b80c40c54e86bd3020366d7e4672171977b441ffea907f8e830324af",
+    "src/platform_agent_eval/evidence_grounding_cases.py": "89d1a987c877f78588d32696270043dcda0cd50036f8e96a207f172a33937c5f"
+  },
+  "iteration_policy": "freeze the verifier before writing the 58 evaluation cases, freeze the cases and these hypotheses before the first run, run once, and preserve every failure; any later verifier change needs a new verifier version, new evaluation cases and a new output prefix",
+  "claim_scope": "development-scale deterministic comparison of the existing quote-presence and proof-validation pipeline with and without field-level grounding on author-written synthetic families and on derived corruptions of the existing natural-language templates; no extraction-model result, general natural-language-inference, real-traffic, authentication or production-safety claim is allowed",
+  "planning_estimates": {
+    "evaluation_families": 3,
+    "evaluation_cases": 58,
+    "falsification_cases": 10,
+    "route_settings": ["end_to_end", "focus_isolated"],
+    "derived_stress_contexts": 120,
+    "derived_stress_operators": ["faithful", "hold_as_authority", "drop_hold", "manufacture_action_fields"],
+    "measured_generation_calls": 0,
+    "estimated_wall_time_minutes": "<1",
+    "location": "local_machine",
+    "external_api_cost_usd": 0.0
+  },
+  "preregistered_hypotheses": {
+    "H1_fewer_unsafe_executions": "on the 48 main cases, the grounded pipeline has fewer automatic executions with a non-Execute gold route than the baseline, in both route settings",
+    "H2_contradictions_not_accepted": "at least 0.75 of gold-CONTRADICTED main focus claims are not accepted as SUPPORTED",
+    "H3_bounded_false_rejection": "at most 0.25 of gold-SUPPORTED main focus claims are rejected or abstained",
+    "H4_monotone": "in every record of both parts, the grounded route is never more permissive than the baseline route"
+  },
+  "hypothesis_thresholds": {
+    "minimum_contradiction_non_acceptance": 0.75,
+    "maximum_false_rejection_rate": 0.25
+  }
+}

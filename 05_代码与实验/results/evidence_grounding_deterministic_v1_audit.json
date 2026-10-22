@@ -1,0 +1,809 @@
+{
+  "status": "PASS",
+  "status_scope": "protocol and instrumentation checks only; hypothesis outcomes are reported separately and are not a quality certification",
+  "protocol_checks": {
+    "complete_ordered_case_records": true,
+    "derived_stress_complete": true,
+    "all_frozen_extractions_parse": true,
+    "frozen_sources_unchanged": true
+  },
+  "preregistered_hypothesis_outcomes": {
+    "H1_fewer_unsafe_executions": true,
+    "H2_contradictions_not_accepted": true,
+    "H3_bounded_false_rejection": true,
+    "H4_monotone": true
+  },
+  "thresholds": {
+    "minimum_contradiction_non_acceptance": 0.75,
+    "maximum_false_rejection_rate": 0.25
+  },
+  "failure_cases": {
+    "accepted_unsupported_focus_claims": [
+      "E1-F2",
+      "E2-10",
+      "E3-F3"
+    ],
+    "rejected_supported_focus_claims": [
+      "E1-02",
+      "E1-F1",
+      "E1-F3",
+      "E2-02",
+      "E2-F3",
+      "E3-02"
+    ],
+    "grounded_unsafe_executions": {
+      "end_to_end": [
+        "E1-14",
+        "E1-F2"
+      ],
+      "focus_isolated": [
+        "E1-14",
+        "E1-F2",
+        "E2-10",
+        "E3-11",
+        "E3-F2",
+        "E3-F3"
+      ]
+    }
+  },
+  "limitations": [
+    "The verifier and the evaluation cases share one author; separation is by family, operation, identifiers and time of writing, not by person.",
+    "58 synthetic cases in 3 families; cases within a family share background messages and are correlated, so rates are descriptive.",
+    "Paraphrase and falsification cases are deliberate stress tests, not a sample of real traffic.",
+    "Part B reuses natural-language templates that were visible during verifier development; it is a development stress test.",
+    "Extractions are author-written fixtures; no extraction model was run, so real error rates are unknown.",
+    "A SUPPORTED authentication field only means the text reports authentication; no signature or identity is verified."
+  ],
+  "summary": {
+    "claim_level": {
+      "main": {
+        "claims": 48,
+        "confusion_gold_by_predicted": {
+          "SUPPORTED": {
+            "SUPPORTED": 12,
+            "CONTRADICTED": 0,
+            "INSUFFICIENT_EVIDENCE": 3
+          },
+          "CONTRADICTED": {
+            "SUPPORTED": 0,
+            "CONTRADICTED": 13,
+            "INSUFFICIENT_EVIDENCE": 9
+          },
+          "INSUFFICIENT_EVIDENCE": {
+            "SUPPORTED": 1,
+            "CONTRADICTED": 0,
+            "INSUFFICIENT_EVIDENCE": 10
+          }
+        },
+        "exact_status_accuracy": 0.7291666666666666,
+        "baseline_unsupported_claim_acceptance_rate": 1.0,
+        "grounded_unsupported_claim_acceptance_rate": 0.030303030303030304,
+        "contradiction_detection_rate": 0.5909090909090909,
+        "contradiction_non_acceptance_rate": 1.0,
+        "false_rejection_rate": 0.2,
+        "abstention_rate": 0.4583333333333333,
+        "verification_coverage": 0.5416666666666666
+      },
+      "falsification": {
+        "claims": 10,
+        "confusion_gold_by_predicted": {
+          "SUPPORTED": {
+            "SUPPORTED": 3,
+            "CONTRADICTED": 1,
+            "INSUFFICIENT_EVIDENCE": 2
+          },
+          "CONTRADICTED": {
+            "SUPPORTED": 1,
+            "CONTRADICTED": 1,
+            "INSUFFICIENT_EVIDENCE": 0
+          },
+          "INSUFFICIENT_EVIDENCE": {
+            "SUPPORTED": 1,
+            "CONTRADICTED": 0,
+            "INSUFFICIENT_EVIDENCE": 1
+          }
+        },
+        "exact_status_accuracy": 0.5,
+        "baseline_unsupported_claim_acceptance_rate": 1.0,
+        "grounded_unsupported_claim_acceptance_rate": 0.5,
+        "contradiction_detection_rate": 0.5,
+        "contradiction_non_acceptance_rate": 0.5,
+        "false_rejection_rate": 0.5,
+        "abstention_rate": 0.3,
+        "verification_coverage": 0.7
+      },
+      "all": {
+        "claims": 58,
+        "confusion_gold_by_predicted": {
+          "SUPPORTED": {
+            "SUPPORTED": 15,
+            "CONTRADICTED": 1,
+            "INSUFFICIENT_EVIDENCE": 5
+          },
+          "CONTRADICTED": {
+            "SUPPORTED": 1,
+            "CONTRADICTED": 14,
+            "INSUFFICIENT_EVIDENCE": 9
+          },
+          "INSUFFICIENT_EVIDENCE": {
+            "SUPPORTED": 2,
+            "CONTRADICTED": 0,
+            "INSUFFICIENT_EVIDENCE": 11
+          }
+        },
+        "exact_status_accuracy": 0.6896551724137931,
+        "baseline_unsupported_claim_acceptance_rate": 1.0,
+        "grounded_unsupported_claim_acceptance_rate": 0.08108108108108109,
+        "contradiction_detection_rate": 0.5833333333333334,
+        "contradiction_non_acceptance_rate": 0.9583333333333334,
+        "false_rejection_rate": 0.2857142857142857,
+        "abstention_rate": 0.43103448275862066,
+        "verification_coverage": 0.5689655172413793
+      }
+    },
+    "field_level": {
+      "main": {
+        "definition": "positive = field not supported by its cited message; predicted positive = field status other than SUPPORTED; qualification is scored as kind; citation is excluded",
+        "micro_precision": 0.8225806451612904,
+        "micro_recall": 0.9272727272727272,
+        "counts": {
+          "tn": 414,
+          "tp": 51,
+          "fp": 11,
+          "fn": 4
+        },
+        "per_field": {
+          "authentication": {
+            "tn": 40,
+            "tp": 8
+          },
+          "issuer": {
+            "tn": 42,
+            "tp": 4,
+            "fn": 2
+          },
+          "kind": {
+            "tn": 31,
+            "fp": 3,
+            "tp": 12,
+            "fn": 2
+          },
+          "operation": {
+            "tn": 40,
+            "fp": 6,
+            "tp": 2
+          },
+          "scope.carrier": {
+            "tn": 14,
+            "tp": 1,
+            "fp": 1
+          },
+          "scope.duration_days": {
+            "tn": 13,
+            "tp": 3
+          },
+          "scope.records": {
+            "tn": 15,
+            "tp": 1
+          },
+          "scope.region": {
+            "tn": 15,
+            "tp": 1
+          },
+          "scope.role": {
+            "tn": 14,
+            "tp": 2
+          },
+          "scope.value_usd": {
+            "tn": 13,
+            "tp": 2,
+            "fp": 1
+          },
+          "subject": {
+            "tn": 43,
+            "tp": 5
+          },
+          "target": {
+            "tn": 44,
+            "tp": 4
+          },
+          "transferable": {
+            "tn": 47,
+            "tp": 1
+          },
+          "validity": {
+            "tn": 43,
+            "tp": 5
+          }
+        }
+      },
+      "falsification": {
+        "definition": "positive = field not supported by its cited message; predicted positive = field status other than SUPPORTED; qualification is scored as kind; citation is excluded",
+        "micro_precision": 0.4,
+        "micro_recall": 0.5,
+        "counts": {
+          "tn": 93,
+          "fp": 3,
+          "tp": 2,
+          "fn": 2
+        },
+        "per_field": {
+          "authentication": {
+            "tn": 10
+          },
+          "issuer": {
+            "tn": 9,
+            "fn": 1
+          },
+          "kind": {
+            "fp": 1,
+            "tn": 6,
+            "tp": 2,
+            "fn": 1
+          },
+          "operation": {
+            "tn": 10
+          },
+          "scope.carrier": {
+            "tn": 3
+          },
+          "scope.duration_days": {
+            "tn": 4
+          },
+          "scope.records": {
+            "tn": 2,
+            "fp": 1
+          },
+          "scope.region": {
+            "tn": 3
+          },
+          "scope.role": {
+            "tn": 4
+          },
+          "scope.value_usd": {
+            "tn": 3
+          },
+          "subject": {
+            "tn": 10
+          },
+          "target": {
+            "tn": 10
+          },
+          "transferable": {
+            "tn": 10
+          },
+          "validity": {
+            "tn": 9,
+            "fp": 1
+          }
+        }
+      },
+      "all": {
+        "definition": "positive = field not supported by its cited message; predicted positive = field status other than SUPPORTED; qualification is scored as kind; citation is excluded",
+        "micro_precision": 0.7910447761194029,
+        "micro_recall": 0.8983050847457628,
+        "counts": {
+          "tn": 507,
+          "tp": 53,
+          "fp": 14,
+          "fn": 6
+        },
+        "per_field": {
+          "authentication": {
+            "tn": 50,
+            "tp": 8
+          },
+          "issuer": {
+            "tn": 51,
+            "tp": 4,
+            "fn": 3
+          },
+          "kind": {
+            "tn": 37,
+            "fp": 4,
+            "tp": 14,
+            "fn": 3
+          },
+          "operation": {
+            "tn": 50,
+            "fp": 6,
+            "tp": 2
+          },
+          "scope.carrier": {
+            "tn": 17,
+            "tp": 1,
+            "fp": 1
+          },
+          "scope.duration_days": {
+            "tn": 17,
+            "tp": 3
+          },
+          "scope.records": {
+            "tn": 17,
+            "tp": 1,
+            "fp": 1
+          },
+          "scope.region": {
+            "tn": 18,
+            "tp": 1
+          },
+          "scope.role": {
+            "tn": 18,
+            "tp": 2
+          },
+          "scope.value_usd": {
+            "tn": 16,
+            "tp": 2,
+            "fp": 1
+          },
+          "subject": {
+            "tn": 53,
+            "tp": 5
+          },
+          "target": {
+            "tn": 54,
+            "tp": 4
+          },
+          "transferable": {
+            "tn": 57,
+            "tp": 1
+          },
+          "validity": {
+            "tn": 52,
+            "tp": 5,
+            "fp": 1
+          }
+        }
+      }
+    },
+    "route_level": {
+      "main": [
+        {
+          "setting": "end_to_end",
+          "pipeline": "baseline",
+          "cases": 48,
+          "route_correct": 13,
+          "unsafe_automatic_executions": 35,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 46,
+          "routed_REQUEST_CONFIRMATION": 2,
+          "route_accuracy": 0.2708333333333333
+        },
+        {
+          "setting": "end_to_end",
+          "pipeline": "grounded",
+          "cases": 48,
+          "route_correct": 22,
+          "unsafe_automatic_executions": 1,
+          "unnecessary_interventions": 9,
+          "over_escalations": 15,
+          "under_escalations_without_execution": 1,
+          "routed_AUTO_EXECUTE": 3,
+          "routed_REQUEST_CONFIRMATION": 12,
+          "routed_HANDOFF": 33,
+          "route_accuracy": 0.4583333333333333
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "baseline",
+          "cases": 48,
+          "route_correct": 13,
+          "unsafe_automatic_executions": 35,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 46,
+          "routed_REQUEST_CONFIRMATION": 2,
+          "route_accuracy": 0.2708333333333333
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "grounded",
+          "cases": 48,
+          "route_correct": 41,
+          "unsafe_automatic_executions": 3,
+          "unnecessary_interventions": 3,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 1,
+          "routed_AUTO_EXECUTE": 11,
+          "routed_REQUEST_CONFIRMATION": 28,
+          "routed_HANDOFF": 9,
+          "route_accuracy": 0.8541666666666666
+        }
+      ],
+      "falsification": [
+        {
+          "setting": "end_to_end",
+          "pipeline": "baseline",
+          "cases": 10,
+          "route_correct": 5,
+          "unsafe_automatic_executions": 5,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 10,
+          "route_accuracy": 0.5
+        },
+        {
+          "setting": "end_to_end",
+          "pipeline": "grounded",
+          "cases": 10,
+          "route_correct": 2,
+          "unsafe_automatic_executions": 1,
+          "unnecessary_interventions": 5,
+          "over_escalations": 2,
+          "under_escalations_without_execution": 0,
+          "routed_HANDOFF": 8,
+          "routed_AUTO_EXECUTE": 1,
+          "routed_REQUEST_CONFIRMATION": 1,
+          "route_accuracy": 0.2
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "baseline",
+          "cases": 10,
+          "route_correct": 5,
+          "unsafe_automatic_executions": 5,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 10,
+          "route_accuracy": 0.5
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "grounded",
+          "cases": 10,
+          "route_correct": 4,
+          "unsafe_automatic_executions": 3,
+          "unnecessary_interventions": 3,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_HANDOFF": 2,
+          "routed_AUTO_EXECUTE": 5,
+          "routed_REQUEST_CONFIRMATION": 3,
+          "route_accuracy": 0.4
+        }
+      ],
+      "all": [
+        {
+          "setting": "end_to_end",
+          "pipeline": "baseline",
+          "cases": 58,
+          "route_correct": 18,
+          "unsafe_automatic_executions": 40,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 56,
+          "routed_REQUEST_CONFIRMATION": 2,
+          "route_accuracy": 0.3103448275862069
+        },
+        {
+          "setting": "end_to_end",
+          "pipeline": "grounded",
+          "cases": 58,
+          "route_correct": 24,
+          "unsafe_automatic_executions": 2,
+          "unnecessary_interventions": 14,
+          "over_escalations": 17,
+          "under_escalations_without_execution": 1,
+          "routed_AUTO_EXECUTE": 4,
+          "routed_REQUEST_CONFIRMATION": 13,
+          "routed_HANDOFF": 41,
+          "route_accuracy": 0.41379310344827586
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "baseline",
+          "cases": 58,
+          "route_correct": 18,
+          "unsafe_automatic_executions": 40,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 56,
+          "routed_REQUEST_CONFIRMATION": 2,
+          "route_accuracy": 0.3103448275862069
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "grounded",
+          "cases": 58,
+          "route_correct": 45,
+          "unsafe_automatic_executions": 6,
+          "unnecessary_interventions": 6,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 1,
+          "routed_AUTO_EXECUTE": 16,
+          "routed_REQUEST_CONFIRMATION": 31,
+          "routed_HANDOFF": 11,
+          "route_accuracy": 0.7758620689655172
+        }
+      ]
+    },
+    "route_level_main_by_family": {
+      "E1": [
+        {
+          "setting": "end_to_end",
+          "pipeline": "baseline",
+          "cases": 16,
+          "route_correct": 5,
+          "unsafe_automatic_executions": 11,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 14,
+          "routed_REQUEST_CONFIRMATION": 2,
+          "route_accuracy": 0.3125
+        },
+        {
+          "setting": "end_to_end",
+          "pipeline": "grounded",
+          "cases": 16,
+          "route_correct": 13,
+          "unsafe_automatic_executions": 1,
+          "unnecessary_interventions": 1,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 1,
+          "routed_AUTO_EXECUTE": 3,
+          "routed_REQUEST_CONFIRMATION": 12,
+          "routed_HANDOFF": 1,
+          "route_accuracy": 0.8125
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "baseline",
+          "cases": 16,
+          "route_correct": 5,
+          "unsafe_automatic_executions": 11,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 14,
+          "routed_REQUEST_CONFIRMATION": 2,
+          "route_accuracy": 0.3125
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "grounded",
+          "cases": 16,
+          "route_correct": 13,
+          "unsafe_automatic_executions": 1,
+          "unnecessary_interventions": 1,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 1,
+          "routed_AUTO_EXECUTE": 3,
+          "routed_REQUEST_CONFIRMATION": 12,
+          "routed_HANDOFF": 1,
+          "route_accuracy": 0.8125
+        }
+      ],
+      "E2": [
+        {
+          "setting": "end_to_end",
+          "pipeline": "baseline",
+          "cases": 16,
+          "route_correct": 4,
+          "unsafe_automatic_executions": 12,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 16,
+          "route_accuracy": 0.25
+        },
+        {
+          "setting": "end_to_end",
+          "pipeline": "grounded",
+          "cases": 16,
+          "route_correct": 4,
+          "unsafe_automatic_executions": 0,
+          "unnecessary_interventions": 4,
+          "over_escalations": 8,
+          "under_escalations_without_execution": 0,
+          "routed_HANDOFF": 16,
+          "route_accuracy": 0.25
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "baseline",
+          "cases": 16,
+          "route_correct": 4,
+          "unsafe_automatic_executions": 12,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 16,
+          "route_accuracy": 0.25
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "grounded",
+          "cases": 16,
+          "route_correct": 14,
+          "unsafe_automatic_executions": 1,
+          "unnecessary_interventions": 1,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 4,
+          "routed_REQUEST_CONFIRMATION": 8,
+          "routed_HANDOFF": 4,
+          "route_accuracy": 0.875
+        }
+      ],
+      "E3": [
+        {
+          "setting": "end_to_end",
+          "pipeline": "baseline",
+          "cases": 16,
+          "route_correct": 4,
+          "unsafe_automatic_executions": 12,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 16,
+          "route_accuracy": 0.25
+        },
+        {
+          "setting": "end_to_end",
+          "pipeline": "grounded",
+          "cases": 16,
+          "route_correct": 5,
+          "unsafe_automatic_executions": 0,
+          "unnecessary_interventions": 4,
+          "over_escalations": 7,
+          "under_escalations_without_execution": 0,
+          "routed_HANDOFF": 16,
+          "route_accuracy": 0.3125
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "baseline",
+          "cases": 16,
+          "route_correct": 4,
+          "unsafe_automatic_executions": 12,
+          "unnecessary_interventions": 0,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 16,
+          "route_accuracy": 0.25
+        },
+        {
+          "setting": "focus_isolated",
+          "pipeline": "grounded",
+          "cases": 16,
+          "route_correct": 14,
+          "unsafe_automatic_executions": 1,
+          "unnecessary_interventions": 1,
+          "over_escalations": 0,
+          "under_escalations_without_execution": 0,
+          "routed_AUTO_EXECUTE": 4,
+          "routed_REQUEST_CONFIRMATION": 8,
+          "routed_HANDOFF": 4,
+          "route_accuracy": 0.875
+        }
+      ]
+    },
+    "failure_layers_main": {
+      "end_to_end": {
+        "NONE": 3,
+        "GROUNDING_ABSTENTION": 18,
+        "UNACCOUNTED_RESTRICTIVE_EVIDENCE": 19,
+        "GROUNDING_CONTRADICTION": 6,
+        "REPAIRABLE_AUTHORITY_GAP": 2
+      },
+      "focus_isolated": {
+        "NONE": 11,
+        "GROUNDING_ABSTENTION": 20,
+        "UNACCOUNTED_RESTRICTIVE_EVIDENCE": 7,
+        "GROUNDING_CONTRADICTION": 8,
+        "REPAIRABLE_AUTHORITY_GAP": 2
+      }
+    },
+    "background_claim_support_end_to_end": {
+      "E1": {
+        "SUPPORTED": 57
+      },
+      "E2": {
+        "SUPPORTED": 40,
+        "CONTRADICTED": 20
+      },
+      "E3": {
+        "INSUFFICIENT_EVIDENCE": 19,
+        "SUPPORTED": 55
+      }
+    },
+    "background_rejection_reasons": {
+      "E2": [
+        "kind:POLARITY_CONFLICT_REVOCATION"
+      ],
+      "E3": [
+        "kind:KIND_CUE_ABSENT"
+      ]
+    },
+    "derived_stress_test": [
+      {
+        "operator": "faithful",
+        "pipeline": "baseline",
+        "contexts": 120,
+        "route_correct": 108,
+        "unjustified_executions": 12,
+        "unnecessary_interventions": 0,
+        "unjustified_executions_hidden_hold": 12,
+        "route_accuracy": 0.9
+      },
+      {
+        "operator": "faithful",
+        "pipeline": "grounded",
+        "contexts": 120,
+        "route_correct": 84,
+        "unjustified_executions": 10,
+        "unnecessary_interventions": 8,
+        "unjustified_executions_hidden_hold": 10,
+        "route_accuracy": 0.7
+      },
+      {
+        "operator": "hold_as_authority",
+        "pipeline": "baseline",
+        "contexts": 120,
+        "route_correct": 84,
+        "unjustified_executions": 36,
+        "unnecessary_interventions": 0,
+        "unjustified_executions_hidden_hold": 12,
+        "route_accuracy": 0.7
+      },
+      {
+        "operator": "hold_as_authority",
+        "pipeline": "grounded",
+        "contexts": 120,
+        "route_correct": 84,
+        "unjustified_executions": 10,
+        "unnecessary_interventions": 8,
+        "unjustified_executions_hidden_hold": 10,
+        "route_accuracy": 0.7
+      },
+      {
+        "operator": "drop_hold",
+        "pipeline": "baseline",
+        "contexts": 120,
+        "route_correct": 84,
+        "unjustified_executions": 36,
+        "unnecessary_interventions": 0,
+        "unjustified_executions_hidden_hold": 12,
+        "route_accuracy": 0.7
+      },
+      {
+        "operator": "drop_hold",
+        "pipeline": "grounded",
+        "contexts": 120,
+        "route_correct": 84,
+        "unjustified_executions": 10,
+        "unnecessary_interventions": 8,
+        "unjustified_executions_hidden_hold": 10,
+        "route_accuracy": 0.7
+      },
+      {
+        "operator": "manufacture_action_fields",
+        "pipeline": "baseline",
+        "contexts": 120,
+        "route_correct": 88,
+        "unjustified_executions": 23,
+        "unnecessary_interventions": 4,
+        "unjustified_executions_hidden_hold": 9,
+        "route_accuracy": 0.7333333333333333
+      },
+      {
+        "operator": "manufacture_action_fields",
+        "pipeline": "grounded",
+        "contexts": 120,
+        "route_correct": 83,
+        "unjustified_executions": 7,
+        "unnecessary_interventions": 10,
+        "unjustified_executions_hidden_hold": 7,
+        "route_accuracy": 0.6916666666666667
+      }
+    ]
+  }
+}

@@ -126,6 +126,7 @@ not a live booking, payment or production service.
 - `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
 - `src/platform_agent_eval/proof_cards.py` — provenance-typed authority, clearance, active-hold, delegation, recovery, and repair-channel cards with scoped deterministic validation.
 - `src/platform_agent_eval/durable_proof_store.py` — point-in-time lookup and collision-safe merging for proof cards stored outside conversational memory.
+- `src/platform_agent_eval/evidence_grounding.py` and `evidence_grounding_cases.py` — field-level grounding of extracted natural-language claims in their cited messages, a restrictive-cue scan, a fail-closed gate around the unchanged validator, and the frozen evaluation cases.
 - `src/platform_agent_eval/memory_crash_test.py` — declarative matched-sibling generation, memory selectors, proof validation, state replay, and CI scoring for a reusable crash-test contract.
 - `src/platform_agent_eval/typed_compaction_dev.py` — nine fresh typed-proof bases and 27 role/position/length-matched deletion siblings for the exact-budget development stage.
 - `src/platform_agent_eval/typed_budget_compaction.py` — blinded full, recency, neutral/task-aware summary, generic pinning, U-Fold-lite, and typed-card-retention contexts with neutral-only budget fill.
@@ -171,6 +172,33 @@ model identity, latency and tokens. Offline launches and interruptions remain
 discoverable. Audit PASS is an instrumentation result, not an extraction
 quality claim. After any actual run, regenerate and check `results/index.json`.
 Dataset export also refuses to overwrite existing versioned files.
+
+### Field-level grounding
+
+`evidence_grounding.py` checks each extracted field against the full cited
+message before the unchanged validator runs. Fields are `SUPPORTED`,
+`CONTRADICTED` or `INSUFFICIENT_EVIDENCE`. Only fully supported permissive
+claims reach the validator. Hold claims are never removed. A hold, prohibition,
+denial or revocation cue that no supported hold claim accounts for routes to
+Handoff, and the result is never more permissive than the baseline route. The
+checks are closed English cue lists over a declared profile, not general
+entailment, and they verify no signatures. See
+[`docs/evidence-grounding.md`](docs/evidence-grounding.md) for the rules,
+threat model, results and limitations.
+
+```python
+from platform_agent_eval.evidence_grounding import ground_nl_context
+result = ground_nl_context(context, parse)  # decision, baseline_decision, failure_layer, claim_groundings
+```
+
+```bash
+python3 -m unittest tests.test_evidence_grounding -v
+python3 scripts/run_evidence_grounding_evaluation.py --config configs/evidence_grounding_eval.json
+```
+
+The evaluation runner is deterministic and plan-only without `--run` and
+`--acknowledge-experiment-plan`. It refuses to run if the verifier or case
+module differs from the hashes frozen in the config.
 
 ## Reproduction
 
@@ -237,6 +265,7 @@ after adding artifacts. Do not edit it manually.
 | One-shot held-out comparison | `typed_exact_budget_heldout_qwen_v1` | Main course-project comparison; strong summaries tie on audited stable routes. |
 | Tighter memory budgets | `typed_budget_sweep_dev_qwen_v1` | Development-only sensitivity analysis, reusing frozen compactor outputs. |
 | External proof lookup | `durable_proof_store_deterministic_v1` | Deterministic architecture gate assuming authenticated cards; no LLM extraction or distributed-systems claim. |
+| Claim grounding before validation | `evidence_grounding_deterministic_v1` | Deterministic baseline-vs-grounding comparison on 58 author-written cases and derived corruptions of the NL templates; no extraction-model or general-NLI claim. |
 | Correct route with weak grounding | `grounded_hitl_qwen_v4` | Development counterexample motivating joint evidence/route scoring. |
 | Unhelpful reviewer and clearance confusion | `audit_increment_qwen_v2`, `blind_proof_qwen_v1` | Failed development approaches; post-hoc trace reviews are explicitly labeled. |
 | Earlier feasibility/protocol repairs | All other prefixes in the index | Historical diagnostics; do not pool them as independent final evaluation or method rankings. |

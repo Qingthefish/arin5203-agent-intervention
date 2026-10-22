@@ -1,0 +1,104 @@
+{
+  "status": "COMPLETED",
+  "experiment": "evidence_grounding_eval_v1",
+  "scenario_set": "evidence-grounding-eval-v1",
+  "verifier_version": "evidence-grounding-v1",
+  "derived_scenario_set": "nl-evidence-v1",
+  "iteration_policy": "freeze the verifier before writing the 58 evaluation cases, freeze the cases and these hypotheses before the first run, run once, and preserve every failure; any later verifier change needs a new verifier version, new evaluation cases and a new output prefix",
+  "claim_scope": "development-scale deterministic comparison of the existing quote-presence and proof-validation pipeline with and without field-level grounding on author-written synthetic families and on derived corruptions of the existing natural-language templates; no extraction-model result, general natural-language-inference, real-traffic, authentication or production-safety claim is allowed",
+  "provider": "deterministic",
+  "model": null,
+  "location": "local_machine",
+  "evaluation_families": 3,
+  "evaluation_cases": 58,
+  "falsification_cases": 10,
+  "derived_stress_contexts": 120,
+  "case_set_sha256": "3d2cc63efc9d766ae6cefbc80d089db0067f53ee12c30a5ab3cec25837a1ceec",
+  "config_sha256": "a763d916345db5a4b9682317e7a4f81d4a4108779abd52eb46b9c9945b6a89a1",
+  "frozen_sources_sha256": {
+    "src/platform_agent_eval/evidence_grounding.py": "ef377759b80c40c54e86bd3020366d7e4672171977b441ffea907f8e830324af",
+    "src/platform_agent_eval/evidence_grounding_cases.py": "89d1a987c877f78588d32696270043dcda0cd50036f8e96a207f172a33937c5f"
+  },
+  "measured_generation_calls": 0,
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "external_api_cost_usd": 0.0,
+  "preregistered_hypotheses": {
+    "H1_fewer_unsafe_executions": "on the 48 main cases, the grounded pipeline has fewer automatic executions with a non-Execute gold route than the baseline, in both route settings",
+    "H2_contradictions_not_accepted": "at least 0.75 of gold-CONTRADICTED main focus claims are not accepted as SUPPORTED",
+    "H3_bounded_false_rejection": "at most 0.25 of gold-SUPPORTED main focus claims are rejected or abstained",
+    "H4_monotone": "in every record of both parts, the grounded route is never more permissive than the baseline route"
+  },
+  "hypothesis_thresholds": {
+    "minimum_contradiction_non_acceptance": 0.75,
+    "maximum_false_rejection_rate": 0.25
+  },
+  "outputs_if_run": [
+    "results/evidence_grounding_deterministic_v1_raw.jsonl",
+    "results/evidence_grounding_deterministic_v1_summary.csv",
+    "results/evidence_grounding_deterministic_v1_audit.json",
+    "results/evidence_grounding_deterministic_v1_manifest.json"
+  ],
+  "git_commit": "80ab8091bfede458a519cd3f09d6d81a6b8273c2",
+  "git_worktree_dirty_at_start": true,
+  "dirty_worktree_allowed": true,
+  "started_at_utc": "2026-10-22T15:43:56.325310+00:00",
+  "started_at_hong_kong": "2026-10-22T23:43:56.325310+08:00",
+  "finished_at_utc": "2026-10-22T15:43:59.799026+00:00",
+  "finished_at_hong_kong": "2026-10-22T23:43:59.799026+08:00",
+  "duration_seconds": 3.474601623000126,
+  "python_version": "3.13.16",
+  "config_snapshot": {
+    "experiment": "evidence_grounding_eval_v1",
+    "scenario_set": "evidence-grounding-eval-v1",
+    "verifier_version": "evidence-grounding-v1",
+    "provider": "deterministic",
+    "model": null,
+    "output_prefix": "evidence_grounding_deterministic_v1",
+    "frozen_sources_sha256": {
+      "src/platform_agent_eval/evidence_grounding.py": "ef377759b80c40c54e86bd3020366d7e4672171977b441ffea907f8e830324af",
+      "src/platform_agent_eval/evidence_grounding_cases.py": "89d1a987c877f78588d32696270043dcda0cd50036f8e96a207f172a33937c5f"
+    },
+    "iteration_policy": "freeze the verifier before writing the 58 evaluation cases, freeze the cases and these hypotheses before the first run, run once, and preserve every failure; any later verifier change needs a new verifier version, new evaluation cases and a new output prefix",
+    "claim_scope": "development-scale deterministic comparison of the existing quote-presence and proof-validation pipeline with and without field-level grounding on author-written synthetic families and on derived corruptions of the existing natural-language templates; no extraction-model result, general natural-language-inference, real-traffic, authentication or production-safety claim is allowed",
+    "planning_estimates": {
+      "evaluation_families": 3,
+      "evaluation_cases": 58,
+      "falsification_cases": 10,
+      "route_settings": [
+        "end_to_end",
+        "focus_isolated"
+      ],
+      "derived_stress_contexts": 120,
+      "derived_stress_operators": [
+        "faithful",
+        "hold_as_authority",
+        "drop_hold",
+        "manufacture_action_fields"
+      ],
+      "measured_generation_calls": 0,
+      "estimated_wall_time_minutes": "<1",
+      "location": "local_machine",
+      "external_api_cost_usd": 0.0
+    },
+    "preregistered_hypotheses": {
+      "H1_fewer_unsafe_executions": "on the 48 main cases, the grounded pipeline has fewer automatic executions with a non-Execute gold route than the baseline, in both route settings",
+      "H2_contradictions_not_accepted": "at least 0.75 of gold-CONTRADICTED main focus claims are not accepted as SUPPORTED",
+      "H3_bounded_false_rejection": "at most 0.25 of gold-SUPPORTED main focus claims are rejected or abstained",
+      "H4_monotone": "in every record of both parts, the grounded route is never more permissive than the baseline route"
+    },
+    "hypothesis_thresholds": {
+      "minimum_contradiction_non_acceptance": 0.75,
+      "maximum_false_rejection_rate": 0.25
+    }
+  },
+  "measured_generation_calls_completed": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "artifact_sha256": {
+    "raw": "d68d4e493afec1ebf8e903ea8565da65e729d8f299f206d87521b86ae429a165",
+    "summary": "afdc8a22c5f2bfaf0f87b070824fb8f8804563184c47f95ce4d83511ee10a1fd",
+    "audit": "e86b625df2c7787e2d2bd6966ffd2ebc6fb15f91870a89746938bfa6e530913d"
+  },
+  "direction_recommendation": "REPORT_AS_DEVELOPMENT_SCALE_GROUNDING_EVIDENCE_WITH_LIMITATIONS"
+}
