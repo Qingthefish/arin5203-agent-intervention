@@ -23,6 +23,7 @@ These are primary responsibilities; scenario review, implementation and final co
 | Milestone | Two-page progress snapshot prepared; submission entry must be checked before submitting. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | Presentation | Frozen-trace replay, seven evidence figures and developer Playbook ready. Team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
+| Commit-time gate | Prepare/commit freshness check for stale authorization added with deterministic tests; formal versioned run pending after merge. | [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
 | Natural-language extension | PR #1 merged with interface repairs; dataset and plan-only runner available, no model result yet. | [Runbook](05_代码与实验/README.md#natural-language-evidence-extension), [PR #1](https://github.com/Qingthefish/arin5203-agent-intervention/pull/1) |
 | Final report | Evidence exists; the full report still needs to be written and assembled. | [Research rationale and claim boundaries](项目复盘.md) |
 

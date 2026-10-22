@@ -126,6 +126,7 @@ not a live booking, payment or production service.
 - `src/platform_agent_eval/blind_proof_verifier.py` — candidate-blind authority/recovery verification with a deterministic three-route mapper and separate decisive/supporting proof metrics.
 - `src/platform_agent_eval/proof_cards.py` — provenance-typed authority, clearance, active-hold, delegation, recovery, and repair-channel cards with scoped deterministic validation.
 - `src/platform_agent_eval/durable_proof_store.py` — point-in-time lookup and collision-safe merging for proof cards stored outside conversational memory.
+- `src/platform_agent_eval/commit_time_gate.py` — prepare/commit gate that re-reads a versioned registry at the commit instant and applies the simulated transition inside one serializable commit section.
 - `src/platform_agent_eval/memory_crash_test.py` — declarative matched-sibling generation, memory selectors, proof validation, state replay, and CI scoring for a reusable crash-test contract.
 - `src/platform_agent_eval/typed_compaction_dev.py` — nine fresh typed-proof bases and 27 role/position/length-matched deletion siblings for the exact-budget development stage.
 - `src/platform_agent_eval/typed_budget_compaction.py` — blinded full, recency, neutral/task-aware summary, generic pinning, U-Fold-lite, and typed-card-retention contexts with neutral-only budget fill.
@@ -171,6 +172,37 @@ model identity, latency and tokens. Offline launches and interruptions remain
 discoverable. Audit PASS is an instrumentation result, not an extraction
 quality claim. After any actual run, regenerate and check `results/index.json`.
 Dataset export also refuses to overwrite existing versioned files.
+
+## Commit-Time Evidence Freshness Gate
+
+The durable store answers what the registry said at one instant. The commit-time
+gate checks that the answer still holds when the simulated mutation is applied.
+`prepare` reuses the existing lookup, merge and proof validator and binds the
+result to the exact action, declared transition, policy and evidence versions.
+`commit` rejects changed parameters, forged or reused tokens and repeated
+actions, then re-reads the registry at the commit instant and applies the
+transition only if the validator still returns `AUTO_EXECUTE`. A registry
+revocation also removes a memory copy of the same card. An unreadable registry
+fails closed to Handoff.
+
+The consistency model is explicit and simulator-only. Registry writes submitted
+while a commit section is open are deferred and applied in order afterwards, so
+the evidence read, validation and state mutation observe one registry version.
+Distributed commit, clock skew, partitions and crash recovery are not modeled.
+
+The development evaluation reuses the three durable-store families with 13
+conditions and compares the gate with four baselines: trusting the prepare-time
+decision, an unlocked re-check, and two version-pinning variants. Print the
+model-free plan:
+
+```bash
+python3 scripts/run_commit_time_gate.py --config configs/commit_time_gate.json
+```
+
+A formal run needs `--run --acknowledge-experiment-plan` and a clean, committed
+worktree, and writes the versioned `commit_time_gate_deterministic_v1` prefix.
+No formal artifact exists yet. Regenerate and check `results/index.json` after
+that run.
 
 ## Reproduction
 
