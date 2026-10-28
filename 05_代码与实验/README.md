@@ -267,8 +267,18 @@ python3 scripts/run_commit_time_gate.py --config configs/commit_time_gate.json
 
 A formal run needs `--run --acknowledge-experiment-plan` and a clean, committed
 worktree, and writes the versioned `commit_time_gate_deterministic_v1` prefix.
-No formal artifact exists yet. Regenerate and check `results/index.json` after
-that run.
+The one-shot `commit_time_gate_deterministic_v1` bundle is now complete; do not
+rerun that prefix. Its audit passes the declared in-process development gate.
+This tests authored schedules and expected outcomes, not a new held-out LLM
+comparison or a real concurrent payment service. The added nested-value,
+deferred-error and output-path regressions remain unit checks separate from
+the formal scenario matrix. Raw, summary, audit and manifest own exact results;
+the runner writes LF CSV for byte-preserving Git storage.
+
+Read route and mutation metrics separately: the unlocked recheck matches every
+authored condition route yet still has unsafe interleaved executions. The
+condition route labels do not themselves certify the evidence state at apply;
+the commit-snapshot outcome check and version-consistency metric expose that gap.
 
 ## Reproduction
 
@@ -343,6 +353,7 @@ after adding artifacts. Do not edit it manually.
 | One-shot held-out comparison | `typed_exact_budget_heldout_qwen_v1` | Main course-project comparison; strong summaries tie on audited stable routes. |
 | Tighter memory budgets | `typed_budget_sweep_dev_qwen_v1` | Development-only sensitivity analysis, reusing frozen compactor outputs. |
 | External proof lookup | `durable_proof_store_deterministic_v1` | Deterministic architecture gate assuming authenticated cards; no LLM extraction or distributed-systems claim. |
+| Commit-time freshness | `commit_time_gate_deterministic_v1` | Model-free development acceptance over authored schedules; in-process atomicity only, no live-tool or distributed guarantee. |
 | Natural-language extraction | `nl_extraction_dev_diagnostic_qwen_v1` | Development-only JSON-mode interface diagnostic; uniform Handoff and contract failures, not end-to-end readiness. |
 | Correct route with weak grounding | `grounded_hitl_qwen_v4` | Development counterexample motivating joint evidence/route scoring. |
 | Unhelpful reviewer and clearance confusion | `audit_increment_qwen_v2`, `blind_proof_qwen_v1` | Failed development approaches; post-hoc trace reviews are explicitly labeled. |

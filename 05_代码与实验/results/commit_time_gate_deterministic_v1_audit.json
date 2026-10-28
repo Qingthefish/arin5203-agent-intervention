@@ -1,0 +1,96 @@
+{
+  "status": "PASS_COMMIT_TIME_GATE",
+  "analysis_scope": "development-only deterministic prepare/commit simulation of stale authorization",
+  "pre_specified_gate": {
+    "proposed_mode_has_no_unsafe_execution": true,
+    "proposed_mode_has_no_duplicate_mutation": true,
+    "proposed_mode_does_not_block_legitimate_actions": true,
+    "proposed_mode_detects_all_stale_authorization": true,
+    "proposed_mode_fails_closed_without_registry": true,
+    "proposed_mode_keeps_validated_and_applied_evidence_equal": true,
+    "proposed_mode_routes_match_expectations": true,
+    "stale_authorization_counterfactual_is_present": true,
+    "unlocked_recheck_window_is_observable": true
+  },
+  "thresholds": {
+    "proposed_mode": "atomic_revalidate",
+    "maximum_unsafe_executions": 0,
+    "maximum_duplicate_mutations": 0,
+    "maximum_false_blocking_rate": 0.0,
+    "minimum_stale_authorization_detection_rate": 1.0,
+    "maximum_fail_closed_violations": 0,
+    "minimum_action_state_consistency": 1.0,
+    "minimum_route_accuracy": 1.0,
+    "required_prepared_only_unsafe_executions": 18,
+    "required_unlocked_window_unsafe_executions": 3
+  },
+  "mode_observations": [
+    {
+      "mode": "prepared_only",
+      "scenarios": 39,
+      "unsafe_executions": 18,
+      "duplicate_mutations": 0,
+      "correct_execution_rate": 0.8,
+      "false_blocking_rate": 0.0,
+      "stale_authorization_detection_rate": 0.0,
+      "fail_closed_violations": 3,
+      "action_state_consistency": 0.5454545454545454,
+      "route_accuracy": 0.5384615384615384
+    },
+    {
+      "mode": "recheck_unlocked",
+      "scenarios": 39,
+      "unsafe_executions": 3,
+      "duplicate_mutations": 0,
+      "correct_execution_rate": 0.8,
+      "false_blocking_rate": 0.0,
+      "stale_authorization_detection_rate": 1.0,
+      "fail_closed_violations": 0,
+      "action_state_consistency": 0.8,
+      "route_accuracy": 1.0
+    },
+    {
+      "mode": "pin_registry_version",
+      "scenarios": 39,
+      "unsafe_executions": 0,
+      "duplicate_mutations": 0,
+      "correct_execution_rate": 0.6,
+      "false_blocking_rate": 0.4,
+      "stale_authorization_detection_rate": 1.0,
+      "fail_closed_violations": 0,
+      "action_state_consistency": 1.0,
+      "route_accuracy": 0.7692307692307693
+    },
+    {
+      "mode": "pin_relevant_version",
+      "scenarios": 39,
+      "unsafe_executions": 0,
+      "duplicate_mutations": 0,
+      "correct_execution_rate": 0.8,
+      "false_blocking_rate": 0.2,
+      "stale_authorization_detection_rate": 1.0,
+      "fail_closed_violations": 0,
+      "action_state_consistency": 1.0,
+      "route_accuracy": 0.8461538461538461
+    },
+    {
+      "mode": "atomic_revalidate",
+      "scenarios": 39,
+      "unsafe_executions": 0,
+      "duplicate_mutations": 0,
+      "correct_execution_rate": 1.0,
+      "false_blocking_rate": 0.0,
+      "stale_authorization_detection_rate": 1.0,
+      "fail_closed_violations": 0,
+      "action_state_consistency": 1.0,
+      "route_accuracy": 1.0
+    }
+  ],
+  "limitations": [
+    "This is a deterministic simulator test, not an LLM experiment.",
+    "Atomicity holds for one in-process registry and state store; distributed commit, clock skew, partitions and crash recovery are not modeled.",
+    "Interleaving is injected at one named point between the evidence check and the mutation.",
+    "Scenarios reuse three synthetic durable-store families and assume authenticated proof cards.",
+    "Expected outcomes and thresholds were set from the design; they are not learned or tuned values."
+  ]
+}

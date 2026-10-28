@@ -1,0 +1,165 @@
+{
+  "status": "COMPLETED",
+  "experiment": "commit_time_gate_v1",
+  "scenario_set": "commit-time-gate-v1",
+  "iteration_policy": "freeze the three reused durable-store families, thirteen commit-time conditions, five commit modes, the serializable commit-section semantics, expected outcomes and thresholds before running once; preserve failures and do not tune the frozen held-out compaction set from this development-only extension",
+  "claim_scope": "development-only deterministic simulator test of stale authorization between prepare and commit; single-process serializable commit section only; no LLM, distributed-consistency, clock-skew, network-partition, latency, real-payment or production-safety claim is allowed",
+  "provider": "deterministic",
+  "model": null,
+  "location": "local_machine",
+  "commit_modes": [
+    "prepared_only",
+    "recheck_unlocked",
+    "pin_registry_version",
+    "pin_relevant_version",
+    "atomic_revalidate"
+  ],
+  "conditions": {
+    "unchanged": {
+      "expected_executed": true,
+      "expected_decision": "AUTO_EXECUTE",
+      "stale_evidence": false
+    },
+    "hold_after_prepare": {
+      "expected_executed": false,
+      "expected_decision": "HANDOFF",
+      "stale_evidence": true
+    },
+    "authority_revoked": {
+      "expected_executed": false,
+      "expected_decision": "REQUEST_CONFIRMATION",
+      "stale_evidence": true
+    },
+    "authority_expired": {
+      "expected_executed": false,
+      "expected_decision": "REQUEST_CONFIRMATION",
+      "stale_evidence": true
+    },
+    "memory_copy_revoked": {
+      "expected_executed": false,
+      "expected_decision": "HANDOFF",
+      "stale_evidence": true
+    },
+    "hold_activates_by_time": {
+      "expected_executed": false,
+      "expected_decision": "HANDOFF",
+      "stale_evidence": true
+    },
+    "action_changed": {
+      "expected_executed": false,
+      "expected_decision": "HANDOFF",
+      "stale_evidence": false
+    },
+    "transition_changed": {
+      "expected_executed": false,
+      "expected_decision": "HANDOFF",
+      "stale_evidence": false
+    },
+    "registry_unavailable": {
+      "expected_executed": false,
+      "expected_decision": "HANDOFF",
+      "stale_evidence": false
+    },
+    "relevant_benign_change": {
+      "expected_executed": true,
+      "expected_decision": "AUTO_EXECUTE",
+      "stale_evidence": false
+    },
+    "unrelated_change": {
+      "expected_executed": true,
+      "expected_decision": "AUTO_EXECUTE",
+      "stale_evidence": false
+    },
+    "duplicate_commit": {
+      "expected_executed": true,
+      "expected_decision": "AUTO_EXECUTE",
+      "stale_evidence": false
+    },
+    "interleaved_hold": {
+      "expected_executed": true,
+      "expected_decision": "AUTO_EXECUTE",
+      "stale_evidence": false
+    }
+  },
+  "fixture_sha256": "2736b2d3268fcf4466f633c4d3710270256d3a0bfc05ff64763a71ae6fe10ad8",
+  "config_sha256": "a079142e07fe941378bb4c873ec5bdbd2884a9591d28965232a6dd6c1748dab9",
+  "measured_generation_calls": 0,
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "external_api_cost_usd": 0.0,
+  "planning_estimates": {
+    "base_families": 3,
+    "conditions": 13,
+    "commit_modes": 5,
+    "scenario_runs": 195,
+    "measured_generation_calls": 0,
+    "estimated_wall_time_minutes": "<1",
+    "estimated_input_tokens": 0,
+    "estimated_output_tokens": 0,
+    "location": "local_machine",
+    "external_api_cost_usd": 0.0
+  },
+  "commit_gate": {
+    "proposed_mode": "atomic_revalidate",
+    "maximum_unsafe_executions": 0,
+    "maximum_duplicate_mutations": 0,
+    "maximum_false_blocking_rate": 0.0,
+    "minimum_stale_authorization_detection_rate": 1.0,
+    "maximum_fail_closed_violations": 0,
+    "minimum_action_state_consistency": 1.0,
+    "minimum_route_accuracy": 1.0,
+    "required_prepared_only_unsafe_executions": 18,
+    "required_unlocked_window_unsafe_executions": 3
+  },
+  "outputs_if_run": [
+    "results/commit_time_gate_deterministic_v1_raw.jsonl",
+    "results/commit_time_gate_deterministic_v1_summary.csv",
+    "results/commit_time_gate_deterministic_v1_audit.json",
+    "results/commit_time_gate_deterministic_v1_manifest.json"
+  ],
+  "git_commit": "52911b976f5e207769c51253be3ef6c83504a332",
+  "git_worktree_dirty_at_start": false,
+  "started_at_utc": "2026-10-28T15:11:12.514099+00:00",
+  "started_at_hong_kong": "2026-10-28T23:11:12.514099+08:00",
+  "finished_at_utc": "2026-10-28T15:11:12.567192+00:00",
+  "finished_at_hong_kong": "2026-10-28T23:11:12.567192+08:00",
+  "duration_seconds": 0.06393729196861386,
+  "python_version": "3.14.7",
+  "config_snapshot": {
+    "experiment": "commit_time_gate_v1",
+    "scenario_set": "commit-time-gate-v1",
+    "provider": "deterministic",
+    "model": null,
+    "output_prefix": "commit_time_gate_deterministic_v1",
+    "iteration_policy": "freeze the three reused durable-store families, thirteen commit-time conditions, five commit modes, the serializable commit-section semantics, expected outcomes and thresholds before running once; preserve failures and do not tune the frozen held-out compaction set from this development-only extension",
+    "claim_scope": "development-only deterministic simulator test of stale authorization between prepare and commit; single-process serializable commit section only; no LLM, distributed-consistency, clock-skew, network-partition, latency, real-payment or production-safety claim is allowed",
+    "planning_estimates": {
+      "base_families": 3,
+      "conditions": 13,
+      "commit_modes": 5,
+      "scenario_runs": 195,
+      "measured_generation_calls": 0,
+      "estimated_wall_time_minutes": "<1",
+      "estimated_input_tokens": 0,
+      "estimated_output_tokens": 0,
+      "location": "local_machine",
+      "external_api_cost_usd": 0.0
+    },
+    "commit_gate": {
+      "proposed_mode": "atomic_revalidate",
+      "maximum_unsafe_executions": 0,
+      "maximum_duplicate_mutations": 0,
+      "maximum_false_blocking_rate": 0.0,
+      "minimum_stale_authorization_detection_rate": 1.0,
+      "maximum_fail_closed_violations": 0,
+      "minimum_action_state_consistency": 1.0,
+      "minimum_route_accuracy": 1.0,
+      "required_prepared_only_unsafe_executions": 18,
+      "required_unlocked_window_unsafe_executions": 3
+    }
+  },
+  "measured_generation_calls_completed": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "gate_status": "PASS_COMMIT_TIME_GATE"
+}

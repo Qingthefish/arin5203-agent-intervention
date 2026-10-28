@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 41,
+    "runs": 42,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 29,
+      "COMPLETED": 30,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 25,
+      "FROZEN_GATE_BUNDLE": 26,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -117,6 +117,33 @@
       },
       "manifest_sha256": "61de75b6e784bbe4f1a8e7ea55eede80fd85dafd1526d6194827ecfc0fff9efa",
       "audit_sha256": "e82646c6180ca7c769d128e1a7818f27113c44a1528fb9f825648845302d44a5"
+    },
+    {
+      "prefix": "commit_time_gate_deterministic_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "commit_time_gate_v1",
+      "scenario_set": "commit-time-gate-v1",
+      "model": null,
+      "provider": "deterministic",
+      "git_commit": "52911b976f5e207769c51253be3ef6c83504a332",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-28T23:11:12.514099+08:00",
+      "finished_at": "2026-10-28T23:11:12.567192+08:00",
+      "audit_status": "PASS_COMMIT_TIME_GATE",
+      "recommendation": null,
+      "claim_scope": "development-only deterministic simulator test of stale authorization between prepare and commit; single-process serializable commit section only; no LLM, distributed-consistency, clock-skew, network-partition, latency, real-payment or production-safety claim is allowed",
+      "artifacts": {
+        "manifest": "results/commit_time_gate_deterministic_v1_manifest.json",
+        "raw": "results/commit_time_gate_deterministic_v1_raw.jsonl",
+        "summary": "results/commit_time_gate_deterministic_v1_summary.csv",
+        "audit": "results/commit_time_gate_deterministic_v1_audit.json"
+      },
+      "manifest_sha256": "87d40f41daa808dc0c366b861605af1a4cc76a8a740a1f5e20186fefbedde837",
+      "audit_sha256": "182dcbec8ddbcf699a561c36436e92b37b6a7f1b5e2ed975c56dbe9c599697da"
     },
     {
       "prefix": "compaction_pilot_qwen_v1",

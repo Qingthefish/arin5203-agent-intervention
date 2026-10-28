@@ -22,7 +22,7 @@
     },
     "experiment_index": {
       "path": "05_\u4ee3\u7801\u4e0e\u5b9e\u9a8c/results/index.json",
-      "sha256": "6becbdfcf89c77c92d45b05abd68c7422fb154a6d88f84a22409592e1480d699"
+      "sha256": "f0ab942de322a48c9b1039a9c8049a02955b9b63ae007a5568295ca222cbb5ef"
     }
   },
   "analysis": {
@@ -338,13 +338,13 @@
         "audit_status": "PASS_TYPED_BUDGET_SWEEP_PROTOCOL_GATE"
       }
     ],
-    "recorded_runs": 41,
-    "runs_with_call_counts": 29,
+    "recorded_runs": 42,
+    "runs_with_call_counts": 30,
     "measured_calls": 2093,
     "recorded_tokens": 2067846,
     "external_api_cost_usd": 0.0,
     "failed_or_aborted": 10,
-    "frozen_gate_bundles": 25
+    "frozen_gate_bundles": 26
   },
   "benchmark_design": {
     "development_bases": 9,
