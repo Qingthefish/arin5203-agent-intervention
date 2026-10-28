@@ -2,6 +2,12 @@
 
 This directory turns the frozen held-out experiment into a presentation that is useful to Agent developers. It does not add a new model run or reinterpret the test set.
 
+Current priority: a correct, short Milestone and a legible replay. The existing
+Final working draft is parked; the team will hand-build its slides later.
+No official per-team project-sharing duration or demo rule was found in the
+27 Oct course-site, Canvas and mailbox check. The syllabus lists project
+sharing in Week 13; the timing plan below is internal, not an instructor rule.
+
 ## One-sentence story
 
 Building an Agent from 0 to 1 is increasingly easy; keeping it reliable from 1 to 100 is harder because context compaction can silently change the evidence available before a tool changes external state.
@@ -34,7 +40,7 @@ The project is a controlled comparison along five independent axes. Keeping thes
 
 | Axis held or changed | Comparison | Developer question answered |
 | --- | --- | --- |
-| Memory strategy | recent window, neutral summary, task-aware summary, generic pinning, U-Fold-lite, typed proof; full history is an unbudgeted ceiling | Which representations retain action proof under the same raw-token budget? |
+| Memory strategy | recent window, neutral summary, task-aware summary, generic pinning, U-Fold-lite, typed proof; full history is an unbudgeted reference | Which representations retain action proof under the same raw-token budget? |
 | Evidence perturbation | complete history, one critical fact removed, equal-size nearby noise removed | Did the missing fact cause the route change, or is the Agent merely reacting to shorter text? |
 | Decision layer | direct router versus the same memory plus deterministic proof audit | Does the audit repair mistakes without spoiling already-correct autonomy? |
 | Token pressure | 384, 256, and 192 raw tokens on the frozen development set | Which methods fail first as memory becomes tighter, and what proof disappears? |
@@ -85,13 +91,17 @@ No official final-presentation duration has been verified in the local course re
 The replay is presenter-controlled and deterministic. It does not require audience interaction or a live model call.
 
 The interface follows the same progressive-disclosure rule as the talk. Its
-default Story Mode opens on the hotel active-hold failure and shows only the
-request, the missing fact, the resulting route, the external state diff, and
-the durable-source lesson. **Evidence Suite** keeps the full seven-strategy by
-three-sibling matrix for aggregate comparison, while **Trace Inspector** keeps
-exact memory, proof cards, obligations, tokens, and citation details for Q&A.
-The dense table is therefore evidence behind the story, not the first screen
-the audience must decode.
+default Story Mode opens on the hotel active-hold failure with three columns:
+**task → deliberately removed fact → released route and simulated state diff**.
+The proof-source toggle labels memory-only frozen output separately from the
+registry's deterministic what-if. The source comparison is initially collapsed;
+case, condition, strategy, matrix, exact trace, metrics and JSON export live
+under **Explore cases, strategies and evidence**. **Evidence Suite** and
+**Trace Inspector** remain available there and through deep links. The detailed
+evidence is not deleted; it no longer competes with the first example.
+
+[Default story preview](demo-story-preview.png) is a UI screenshot, not an
+additional experiment figure or a new model result.
 
 ## Core figures
 
@@ -142,11 +152,17 @@ Recommended sequence:
 
 1. Open the default `held-y6` Story Mode: the active hold disappeared before compaction, so the typed system still Executes and the hotel state diff is marked harmful.
 2. Turn on the durable registry overlay and show that the same validator now Handoffs after re-reading the authoritative hold.
-3. Switch to Evidence Suite to show that the story is one cell in a 7-strategy × 3-sibling regression matrix, not a handpicked animation.
+3. Expand **Explore cases, strategies and evidence**, then switch to Evidence Suite to show that the story is one cell in a 7-strategy × 3-sibling regression matrix, not a handpicked animation.
 4. If time permits, use `held-t8` in Trace Inspector: Direct wants to Execute, evidence audit changes the route to Handoff, and the exact source-linked delegation gap is visible.
 5. End on the playbook rule: **a compactor can preserve evidence it receives; it cannot recover evidence that never entered its active context.**
 
 The demo is a replay of frozen traces, not a staged live-model generation. That makes the classroom presentation deterministic while keeping every screen traceable to the formal artifact. The adjacent command-line Crash Test Kit turns the same design into a CI interface: a JSON proof contract produces matched siblings and JSON/JUnit reports, so the product takeaway is “write memory regression tests before shipping a mutating Agent,” not “watch our website.”
+
+Before presenting, check the default hotel memory-only route and the registry
+what-if, then open a non-default Suite/Inspector deep link. The final route and
+state diff must always use the selected proof source. A matching direct/audit
+route is agreement, not independent proof of safety. Source notes must retain
+the deliberate **pre-compaction** deletion and simulated-outcome boundary.
 
 ## Claims safe to say
 

@@ -65,9 +65,21 @@ function pct(value) {
   return `${Math.round(value * 100)}%`;
 }
 
+function selectedOutcome(run) {
+  const source = state.registry ? run.durable_overlay : run;
+  return {
+    decision: source.decision,
+    label: source.decision_label,
+    result: source.result,
+    state: source.state,
+    proofSource: state.registry ? "registry" : "memory",
+    sourceLabel: state.registry ? "Registry · deterministic what-if" : "Memory only · frozen trace",
+  };
+}
+
 function renderControls() {
   document.querySelector("#family-tabs").innerHTML = state.payload.families.map(item => `
-    <button class="${item.family_id === state.family ? "active" : ""}" data-family="${esc(item.family_id)}">
+    <button type="button" class="${item.family_id === state.family ? "active" : ""}" data-family="${esc(item.family_id)}">
       ${esc(item.label)}
     </button>`).join("");
 
@@ -78,12 +90,12 @@ function renderControls() {
     </select>`;
 
   document.querySelector("#registry-toggle").innerHTML = `
-    <span>Proof source</span>
-    <button class="${state.registry ? "" : "active"}" data-registry="off">Memory only</button>
-    <button class="${state.registry ? "active" : ""}" data-registry="on">+ durable registry</button>`;
+    <span>Compare proof sources</span>
+    <button type="button" class="${state.registry ? "" : "active"}" aria-pressed="${!state.registry}" data-registry="off">Memory only <small>frozen trace</small></button>
+    <button type="button" class="${state.registry ? "active" : ""}" aria-pressed="${state.registry}" data-registry="on">+ durable registry <small>deterministic what-if</small></button>`;
 
   document.querySelector("#condition-strip").innerHTML = state.payload.conditions.map(item => `
-    <button class="${item.id === state.condition ? "active" : ""}" data-condition="${esc(item.id)}">
+    <button type="button" class="${item.id === state.condition ? "active" : ""}" data-condition="${esc(item.id)}">
       <strong>${esc(item.label)}</strong><span>${esc(item.short)}</span>
     </button>`).join("");
 
@@ -132,7 +144,7 @@ function cardRows(run, compact = false) {
 
 function stateRows(run) {
   if (run.state.state_diff.length === 0) {
-    return `<div class="no-change">No external mutation applied.</div>`;
+    return `<div class="no-change">No simulated change applied.</div>`;
   }
   return run.state.state_diff.map(item => `
     <div class="diff-row">
@@ -146,90 +158,75 @@ function stateRows(run) {
 function renderStory(run, family) {
   const directDecision = run.direct.decision;
   const overlay = run.durable_overlay;
-  const finalDecision = state.registry ? overlay.decision : run.decision;
-  const finalState = state.registry ? overlay.state : run.state;
-  const finalLabel = state.registry ? overlay.decision_label : run.decision_label;
-  const finalSummary = state.registry ? overlay.decision_summary : run.decision_summary;
-  const routeCorrect = finalDecision === run.expected_decision;
+  const outcome = selectedOutcome(run);
+  const routeCorrect = outcome.decision === run.expected_decision;
   const changedByAudit = directDecision !== run.decision;
   const changedByRegistry = run.decision !== overlay.decision;
-  const verdictText = routeCorrect ? "Safe route matches the oracle" : "Known failure boundary";
+  const verdictText = routeCorrect ? "Matches the authored oracle" : "Differs from the authored oracle";
+  const conditionTitle = run.condition === "remove_action_critical"
+    ? "Critical fact removed"
+    : run.condition === "remove_matched_noise" ? "Matched noise removed" : "Complete evidence";
   const conditionCopy = run.condition === "remove_action_critical"
-    ? `Compaction can no longer see the ${family.critical_fact}.`
+    ? "The experimenter deliberately removes this event before compaction."
     : run.condition === "remove_matched_noise"
-      ? `Only equal-size irrelevant text disappeared; the ${family.critical_fact} remains visible.`
-      : `Complete history still contains the ${family.critical_fact}.`;
-  const outcomeTitle = finalState.harmful_mutation
-    ? "A harmful change goes through"
-    : finalState.mutation_applied
-      ? "The verified change goes through"
-      : "The tool call is paused";
-  const routeVerb = finalDecision === "AUTO_EXECUTE" ? "executes" : finalDecision === "REQUEST_CONFIRMATION" ? "asks once" : "hands off";
+      ? "The experimenter removes matched-size irrelevant text; this fact remains in the input."
+      : "This fact remains in the input to the memory strategy.";
+  const outcomeTitle = outcome.state.harmful_mutation
+    ? "Harmful simulated change"
+    : outcome.state.mutation_applied ? "Simulated change applied" : "No simulated change";
+  const sourceNote = state.registry
+    ? changedByRegistry
+      ? "The declared registry supplies additional proof; the frozen memory result stays unchanged."
+      : "The declared registry returns the same route. This is a deterministic what-if."
+    : "Replay of the frozen memory-only decision.";
   document.querySelector("#story-view").innerHTML = `
-    <div class="story-opening">
+    <div class="story-summary">
       <article class="story-request">
-        <span class="panel-label">A familiar agent request</span>
+        <span class="panel-label">01 · Task</span>
         <p class="request-text">“${esc(family.request)}”</p>
-        <p class="story-rule"><strong>Control rule:</strong> ${esc(family.risk)}</p>
       </article>
-      <article class="story-result ${finalState.harmful_mutation ? "danger" : ""}">
-        <span class="panel-label">The next tool call</span>
-        <div class="story-route ${routeClass(finalDecision)}">
-          <strong>${esc(finalLabel)}</strong><span>The agent ${esc(routeVerb)}</span>
+      <article class="story-evidence ${run.condition === "remove_action_critical" ? "missing" : ""}">
+        <span class="panel-label">02 · Experimental input</span>
+        <h2>${esc(conditionTitle)}</h2>
+        <p class="critical-fact">${esc(family.critical_fact)}</p>
+        ${run.family_id === "held-y6" ? "<p>This hold blocks the hotel purchase.</p>" : ""}
+        <p>${esc(conditionCopy)}</p>
+      </article>
+      <article class="story-result ${outcome.state.harmful_mutation ? "danger" : ""}" data-proof-source="${outcome.proofSource}" data-decision="${esc(outcome.decision)}">
+        <span class="panel-label">03 · ${esc(outcome.sourceLabel)}</span>
+        <div class="story-route ${routeClass(outcome.decision)}">
+          <strong>${esc(outcome.label)}</strong>
         </div>
-        <p>${esc(outcomeTitle)}.</p>
+        <p class="outcome-title">${esc(outcomeTitle)}</p>
+        <div class="state-diff">${stateRows({state: outcome.state})}</div>
         <div class="story-verdict ${routeCorrect ? "pass" : "fail"}">${esc(verdictText)}</div>
       </article>
     </div>
-    <div class="story-causal">
-      <article class="causal-step">
-        <span class="step-number">01</span>
-        <div>
-          <span class="panel-label">Memory changes</span>
-          <h3>${esc(run.condition_label)}</h3>
-          <p>${esc(conditionCopy)}</p>
-        </div>
-      </article>
-      <span class="causal-arrow">→</span>
-      <article class="causal-step">
-        <span class="step-number">02</span>
-        <div>
-          <span class="panel-label">Evidence is checked</span>
-          <div class="compact-route">
-            <span>${esc(decisionLabels[directDecision])}</span>
-            <b>${changedByAudit ? "corrected to" : "verified as"}</b>
-            <strong>${esc(run.decision_label)}</strong>
+    <p class="story-source-note">${esc(sourceNote)}</p>
+    <details class="story-details">
+      <summary>Compare the sources and trace this decision</summary>
+      <div class="story-detail-content">
+        <div class="source-comparison">
+          <div class="source-route ${state.registry ? "" : "emphasized"}">
+            <small>Memory only · frozen trace</small><strong class="${routeClass(run.decision)}">${esc(run.decision_label)}</strong>
+            <em>${changedByAudit ? `Direct ${esc(decisionLabels[directDecision])} → audit ${esc(run.decision_label)}` : "Direct router and audit return the same route"}</em>
           </div>
-          <p>${esc(run.method_label)} · ${esc(run.retained_card_ids.length)}/${esc(run.visible_card_ids.length)} visible proof cards retained</p>
+          <span>→</span>
+          <div class="source-route ${state.registry ? "emphasized" : ""}">
+            <small>Registry · deterministic what-if</small><strong class="${routeClass(overlay.decision)}">${esc(overlay.decision_label)}</strong>
+            <em>${overlay.new_card_ids.length ? `adds ${esc(overlay.new_card_kinds.join(", "))}` : "No additional cards returned"}</em>
+          </div>
         </div>
-      </article>
-      <span class="causal-arrow">→</span>
-      <article class="causal-step ${finalState.harmful_mutation ? "danger" : ""}">
-        <span class="step-number">03</span>
-        <div>
-          <span class="panel-label">External state reveals the cost</span>
-          <h3>${esc(outcomeTitle)}</h3>
-        <div class="state-diff">${stateRows({state: finalState})}</div>
+        <div class="decision-chain">
+          <span>Direct router: ${esc(decisionLabels[directDecision])}</span>
+          <span>→ Memory audit: ${esc(run.decision_label)}</span>
+          ${state.registry ? `<strong>→ Registry what-if: ${esc(outcome.label)}</strong>` : ""}
         </div>
-      </article>
-    </div>
-    <div class="story-lesson">
-      <div>
-        <span class="panel-label">The production lesson</span>
-        <h2>Conversation memory is a cache—not the source of truth.</h2>
-        <p>${state.registry && changedByRegistry ? "At the action boundary, the durable registry restores authoritative proof and prevents the mutation." : "A post-compaction audit can verify retained evidence, but it cannot recreate a hold that never reached active context."}</p>
+        <p>${esc(run.method_label)} · ${esc(run.retained_card_ids.length)}/${esc(run.visible_card_ids.length)} visible proof cards retained.</p>
+        <p><strong>Scenario rule:</strong> ${esc(family.risk)}</p>
+        <p><strong>Design takeaway:</strong> check authoritative proof at the action boundary. An audit cannot recreate evidence absent from its input.</p>
       </div>
-      <div class="source-comparison">
-        <div class="source-route">
-          <small>Memory only</small><strong class="${routeClass(run.decision)}">${esc(run.decision_label)}</strong>
-        </div>
-        <span>→</span>
-        <div class="source-route emphasized">
-          <small>+ durable registry</small><strong class="${routeClass(overlay.decision)}">${esc(overlay.decision_label)}</strong>
-          <em>${overlay.new_card_ids.length ? `recovers ${esc(family.critical_fact)}` : "revalidates current proof"}</em>
-        </div>
-      </div>
-    </div>`;
+    </details>`;
 }
 
 function renderTraceStamp() {
@@ -257,16 +254,16 @@ function renderDebug(run) {
   }).join("");
   document.querySelector("#debug-view").innerHTML = `
     <div class="debug-head">
-      <span class="panel-label">Frozen runtime inspection</span>
+      <span class="panel-label">Frozen memory-only inspection</span>
       <h2>${esc(run.action.operation)} → ${esc(run.action.target_id)}</h2>
       <p>${esc(run.case_id)} · ${esc(run.method_label)} · ${esc(run.exact_raw_tokens)} raw tokens</p>
-      <p class="overlay-note">${state.registry ? esc(run.durable_overlay.label) : "Frozen memory-only trace"}</p>
+      <p class="overlay-note">${state.registry ? `Selected registry what-if: ${esc(run.durable_overlay.decision_label)}. The obligations, cards and memory below remain the frozen memory-only trace.` : "Obligations, cards and memory from the frozen trace."}</p>
     </div>
     <div class="debug-grid">
       <aside class="obligations">
-        <span class="panel-label">Proof obligations</span>
+        <span class="panel-label">Memory-only obligations</span>
         ${obligations}
-        <div class="obligation"><span>Final route</span><span class="status ${routeClass(run.decision)}">${esc(run.decision_label.toUpperCase())}</span></div>
+        <div class="obligation"><span>Frozen memory route</span><span class="status ${routeClass(run.decision)}">${esc(run.decision_label.toUpperCase())}</span></div>
         <div class="obligation"><span>Route correct</span><span class="status ${run.route_correct ? "" : "blocked"}">${run.route_correct ? "YES" : "NO"}</span></div>
         <div class="obligation" title="Fraction of parsed citations selecting visible proof-card sources; not semantic entailment or complete authorization."><span>Proof-source selection</span><span class="status">${esc(pct(run.direct.proof_citation_precision))}</span></div>
       </aside>
@@ -316,7 +313,7 @@ function renderSuite() {
   document.querySelector("#suite-view").innerHTML = `
     <div class="suite-head">
       <div>
-        <span class="panel-label">Matched memory regression suite · frozen replay</span>
+        <span class="panel-label">Frozen memory-only matrix</span>
         <h2>${esc(family.label)}: change one fact, inspect the next action</h2>
         <p>${esc(family.risk)}</p>
       </div>
@@ -334,9 +331,9 @@ function renderSuite() {
     </div>
     <div class="suite-boundary">
       <div>
-        <span class="panel-label">Selected architecture check</span>
+        <span class="panel-label">Selected deterministic registry what-if</span>
         <strong>${esc(selected.method_label)} · ${esc(selected.condition_label)}</strong>
-        <p>Memory says <b>${esc(selected.decision_label)}</b>. The durable registry says <b>${esc(registry.decision_label)}</b>${registry.new_card_ids.length ? ` after recovering ${esc(registry.new_card_ids.join(", "))}` : " with no new decisive proof"}.</p>
+        <p>The frozen memory route is <b>${esc(selected.decision_label)}</b>. The registry what-if returns <b>${esc(registry.decision_label)}</b>${registry.new_card_ids.length ? ` after adding ${esc(registry.new_card_ids.join(", "))}` : " with no additional cards"}. The matrix above is unchanged.</p>
       </div>
       <div class="boundary-flow">
         <span class="route-chip ${routeClass(selected.decision)}"><small>Memory</small><strong>${esc(selected.decision_label)}</strong></span>
@@ -352,6 +349,8 @@ function exportCurrentRun() {
     exported_at: new Date().toISOString(),
     evidence_source: "typed_exact_budget_heldout_qwen_v1",
     architecture_overlay: "durable_proof_store_deterministic_v1",
+    selected_proof_source: state.registry ? "registry" : "memory",
+    selected_outcome: selectedOutcome(run),
     family: activeFamily(),
     run,
   };
@@ -387,6 +386,7 @@ function syncDeepLink() {
 
 function render() {
   document.body.dataset.mode = state.mode;
+  if (state.mode !== "story") document.querySelector("#advanced-controls").open = true;
   renderControls();
   const run = activeRun();
   const family = activeFamily();

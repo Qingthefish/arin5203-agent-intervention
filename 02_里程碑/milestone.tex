@@ -4,6 +4,7 @@
 \makeatletter
 \def\input@path{{../CVPR2026_模板源码/官方源码/}}
 \makeatother
+\usepackage[T1]{fontenc}
 % Use the locally preserved official CVPR style when available. The fallback
 % keeps this single source compilable in editors that cannot import folders.
 \IfFileExists{cvpr.sty}{%
@@ -84,7 +85,8 @@ removed, and (iii) a word-count-matched, same-role noise event removed. This yie
 60 contexts. Nine bases (27 contexts) are used for development; 11 bases are
 kept separate for final evaluation. Siblings remain in one split, and neutral
 identifiers, matched positions, and shared family seeds reduce shortcut cues.
-Gold routes, proof requirements, and oracle-only facts never enter a prompt.
+Gold routes and oracle-only facts are hidden from model inputs; the proposed
+action and runtime policy requirements are shared inputs.
 
 The matched design distinguishes loss of meaning from loss of text. If both
 deletions change the decision, a method may simply be sensitive to shorter
@@ -103,7 +105,7 @@ response~\cite{cuadron2025saber}.
 \section{Technical Approach}
 
 Figure~\ref{fig:pipeline} shows the current pipeline. Full history is an
-unbudgeted ceiling. Budgeted baselines are a recent window, neutral and
+unbudgeted reference. Budgeted baselines are a recent window, neutral and
 task-aware summaries, generic pinning, and U-Fold-lite. Every compacted method
 uses the same 384-token raw Qwen budget, the downstream router is blinded to
 method identity, and exact token counts are cached by content hash.
@@ -118,9 +120,10 @@ method identity, and exact token counts are cached by content hash.
   $\downarrow$\\[-3pt]
   \textsc{Execute}\quad|\quad\textsc{Confirm}\quad|\quad\textsc{Handoff}\\[-1pt]
   $\downarrow$\\[-3pt]
-  State simulator $\rightarrow$ independent outcome oracle
+  Authored outcome flag; later simulated state diff
   \end{minipage}}
-  \caption{Compaction is evaluated through its downstream action consequence.}
+  \caption{Route scoring uses an authored outcome flag; replay illustrates a
+  declared simulated consequence.}
   \label{fig:pipeline}
 \end{figure}
 
@@ -194,9 +197,11 @@ checkpoint.
 
 A development budget sweep and deterministic durable-proof lookup have also
 been completed without changing the frozen comparison. The latter addresses
-blockers missing \emph{before} compaction. Their outcomes are reserved for the
-final report. An optional development-only free-text extraction diagnostic
-would test upstream card creation, not revise held-out methods.
+blockers missing \emph{before} compaction. A separate frozen development-only
+free-text extraction diagnostic released only Handoff, withholding every
+eligible Execute. It does not establish reliable upstream card creation.
+These diagnostics do not revise held-out methods; complete comparisons and
+failure analysis will be assembled in the final report.
 
 Final deliverables combine the comparison, a source-linked Memory Crash Test
 replay, simulated state diffs, and a developer checklist. The small synthetic,

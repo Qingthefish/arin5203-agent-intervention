@@ -4,49 +4,48 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Agent Memory Crash Test</title>
-    <link rel="stylesheet" href="/styles.css?v=20261021b" />
+    <link rel="stylesheet" href="/styles.css?v=20261027a" />
   </head>
   <body>
     <div class="noise"></div>
     <main class="shell">
       <header class="hero">
         <div>
-          <p class="kicker">ARIN 5203 · frozen trace replay + deterministic architecture overlay</p>
-          <h1>Building an agent is easy.<br /><span>Teaching it what not to forget</span> is not.</h1>
-          <p class="lede">
-            When an agent compresses its working history, one missing fact can
-            change its next tool decision. Trace the evidence, then inspect the
-            simulated state change.
-          </p>
-        </div>
-        <div class="trace-stamp" id="trace-stamp" aria-live="polite">
-          Loading immutable trace…
+          <p class="kicker">ARIN 5203 · Agent Memory Crash Test</p>
+          <h1>One missing fact. <span>A different action.</span></h1>
+          <p class="lede">A synthetic task, a deliberate evidence deletion, and its simulated consequence.</p>
         </div>
       </header>
 
-      <section class="control-bar" aria-label="Demo controls">
-        <div class="domain-tabs" id="family-tabs"></div>
-        <label class="method-picker" id="method-picker"></label>
+      <section class="primary-controls" aria-label="Proof source and exploration">
         <div class="registry-toggle" id="registry-toggle" role="group" aria-label="Proof source"></div>
-        <div class="mode-toggle" role="group" aria-label="View mode">
-          <button class="active" data-mode="story">Story mode</button>
-          <button data-mode="suite">Evidence suite</button>
-          <button data-mode="debug">Trace inspector</button>
-        </div>
-        <button class="export-button" id="export-run" type="button">Export current JSON</button>
       </section>
 
-      <section class="condition-strip" id="condition-strip" aria-label="Memory condition"></section>
+      <details class="advanced-controls" id="advanced-controls">
+        <summary>Explore cases, strategies and evidence</summary>
+        <div class="control-bar" aria-label="Advanced demo controls">
+          <div class="mode-toggle" role="group" aria-label="View mode">
+            <button class="active" data-mode="story" type="button">Story mode</button>
+            <button data-mode="suite" type="button">Evidence suite</button>
+            <button data-mode="debug" type="button">Trace inspector</button>
+          </div>
+          <div class="domain-tabs" id="family-tabs" aria-label="Case"></div>
+          <label class="method-picker" id="method-picker"></label>
+          <section class="condition-strip" id="condition-strip" aria-label="Memory condition"></section>
+          <button class="export-button" id="export-run" type="button">Export current JSON</button>
+          <div class="trace-stamp" id="trace-stamp" aria-live="polite">Loading immutable trace…</div>
+        </div>
+      </details>
 
       <section id="story-view" class="view"></section>
       <section id="suite-view" class="view hidden"></section>
       <section id="debug-view" class="view hidden"></section>
 
       <footer>
-        <p><strong>The API knows what is old. Your application knows what is critical.</strong></p>
-        <p>The memory-only decision comes from the frozen one-shot held-out artifact. The registry switch is a labeled deterministic what-if; neither path makes a live model call.</p>
+        <p>Synthetic replay · no live model call or booking.</p>
+        <p>Memory-only results are frozen. Registry results are deterministic what-ifs.</p>
       </footer>
     </main>
-    <script src="/app.js?v=20261021b" defer></script>
+    <script src="/app.js?v=20261027a" defer></script>
   </body>
 </html>

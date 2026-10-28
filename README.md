@@ -13,18 +13,18 @@ Building an Agent from 0 to 1 is increasingly accessible. Keeping it reliable ov
 
 These are primary responsibilities; scenario review, implementation and final conclusions are shared. Team experience motivates synthetic cases, not claims about company production systems.
 
-## Current Snapshot — 2026-10-23
+## Current Snapshot — 2026-10-28
 
 | Workstream | Status | Evidence or entry point |
 | --- | --- | --- |
 | Proposal | Submitted; 92/100. No attributable instructor explanation for the deduction was found. | [Proposal files](01_提案/) |
 | Core evaluation | Development protocol frozen; one-shot held-out evaluation complete. | [Held-out audit](05_代码与实验/results/typed_exact_budget_heldout_qwen_v1_audit.json) |
 | Additional evidence | Development budget sweep and deterministic durable-store test complete. | [Experiment index](05_代码与实验/results/index.json) |
-| Milestone | Two-page progress snapshot prepared; submission entry must be checked before submitting. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
-| Presentation | Replay and seven evidence figures available; claim/metric interpretation reviewed. Team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
+| Milestone | Two-page progress snapshot; wording and completed-work status corrected. Due 6 Nov, 23:59; no submission item was visible in the student's Canvas list on 27 Oct. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
+| Presentation | Low-density three-step replay; case/strategy matrix and trace details remain expandable. Seven evidence figures are available; team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
 | Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
-| Final report | Seven-page working draft assembled; team review, live template alignment and sharing preference remain open. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
+| Final report | Existing seven-page working draft is parked while Milestone takes priority; not submission-ready. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
 
 Exact calls, timings, tokens and scores live in manifests, summaries and audits. Historical pilots, failed gates and design changes are recorded in [项目复盘.md](项目复盘.md); the homepage is a current map, not a second experiment diary.
 
@@ -53,7 +53,11 @@ The [related-work review](05_代码与实验/docs/related-work.md) distinguishes
 
 ## Next Work and Stopping Rule
 
-The core experimental question is answered at course-project scale. The remaining required work is to turn that evidence into a clear Final report and the team's hand-made slides. The 2026-10-23 review corrects interpretation, not frozen scores or method selection; its source-existence recount is explicitly post-hoc.
+The core experimental question is answered at course-project scale. The current
+priority is Milestone submission readiness and a lower-density replay, not
+further Final drafting or model runs. The existing Final draft is parked at the
+team's request. The 2026-10-23 review corrects interpretation, not frozen scores
+or method selection; its source-existence recount is explicitly post-hoc.
 
 The optional **development-only natural-language extraction diagnostic** has
 completed once on four existing families, both variants and all siblings.
@@ -63,13 +67,31 @@ also limits interpreting every canonical mismatch as a model error. This does
 not change the main held-out result or establish that schema-constrained
 extraction cannot work. No automatic tuning run or expansion follows.
 
-Next: review the report's evidence and limitations with the team, confirm the
-live template/report-sharing requirements, and build the hand-made slides around
-one trace, one fair comparison, one boundary and three developer decisions.
+Next: team-review the short Milestone and use one replay trace to make the
+request, missing fact, released route and simulated consequence legible. Full
+method matrices and trace details belong behind the story. Final and hand-made
+slides can resume later, after the current checkpoint; no PPT is generated here.
 An actual single-workflow compactor adapter remains optional engineering work,
 not a prerequisite for presenting the bounded research result.
 
 Further experiments need a concrete unanswered question that could change a design decision or claim. Extra model calls, models or charts alone are not a reason to run them.
+
+### Milestone submission checklist
+
+- The [live project page](https://cqf.io/ARIN5203/project.html), checked on
+  27 Oct, still requires 2–3 pages in the provided template, all three names,
+  and one submitting member. Its template link currently opens CVPR 2026,
+  despite the old `cvpr2022` URL slug.
+- The student's [Canvas assignment list](https://canvas.ust.hk/courses/71916/assignments)
+  had no Milestone item; Gmail/Outlook searches and Canvas announcements did
+  not reveal a new project submission notice. Recheck the live item before
+  submission for allowed files, deadline/time zone and any attachment rules.
+- Prepare the report PDF; do not upload it to Proposal or an Assignment item.
+  No extra GitHub/ZIP/demo requirement is stated in the Milestone section.
+  If the correct item remains unavailable near the deadline, contact the TA
+  for a submission route; no message or submission has been sent automatically.
+- The syllabus lists project sharing in Week 13, without a per-team duration
+  or demo rule. Any internal timing plan remains provisional.
 
 Final is ready when:
 
@@ -100,7 +122,7 @@ Open `http://127.0.0.1:8765` for the model-free frozen-trace replay. The [techni
 - [05_代码与实验/README.md](05_代码与实验/README.md) — technical interfaces and reproduction.
 - [results/index.json](05_代码与实验/results/index.json) — generated artifact discovery; manifests/audits own exact results.
 - `01_提案/`, `02_里程碑/`, `03_最终报告/`, `04_项目展示/` — course deliverables, working report and presentation evidence.
-- `CVPR2026_模板源码/` — locally retained vendor template; exact alignment with the current course-linked template remains to be checked. Its README is not project documentation.
+- `CVPR2026_模板源码/` — locally retained vendor template; the course link currently opens a CVPR 2026 template (checked 27 Oct). Its README is not project documentation.
 
 The [course repository](https://github.com/Qingthefish/arin5203-agent-intervention) contains the research archive and latest development. The [standalone toolkit](https://github.com/Qingthefish/agent-memory-crash-test) publishes reviewed, versioned package snapshots; it does not automatically inherit every experimental extension.
 

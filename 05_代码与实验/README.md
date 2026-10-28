@@ -239,6 +239,11 @@ python3 scripts/index_experiment_artifacts.py --check
 python3 scripts/audit_dataset.py --scenario-set research_v3 --strict
 ```
 
+Five optional frontend regression tests use Node.js's built-in VM to run the
+actual demo script without a browser library. They are skipped if Node.js is
+absent; the Python-only CLI and replay server do not require Node.js. Browser
+visual checks remain separate from these rendering/interaction checks.
+
 Preview the frozen comparison and optional extension without making model calls:
 
 ```bash
@@ -260,9 +265,12 @@ For the model-free demo:
 python3 scripts/serve_memory_crash_test.py --port 8765
 ```
 
-Open `http://127.0.0.1:8765`. Story Mode presents one familiar case and simulated
-state diff; Evidence Suite expands to the seven-strategy/three-condition matrix;
-Trace Inspector exposes exact memory and provenance. The three curated travel
+Open `http://127.0.0.1:8765`. Story Mode presents one familiar case in three
+steps: task, deliberately removed evidence, and released route/simulated diff.
+Expand **Explore cases, strategies and evidence** for other cases, conditions,
+strategies, JSON export, Evidence Suite's seven-strategy/three-condition matrix,
+and Trace Inspector's exact memory and provenance. Query links preserve these
+selections, and non-Story deep links open the advanced controls. The three curated travel
 families replay immutable held-out records. A labeled durable-registry overlay
 shows a deterministic architecture alternative while preserving the original
 hidden-hold failure. Neither path contacts a model or a real booking service.
