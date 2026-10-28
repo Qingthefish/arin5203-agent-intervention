@@ -10,4 +10,5 @@
 # Preserve them without renormalizing historical experiment artifacts.
 05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_summary.csv -text whitespace=cr-at-eol
 05_代码与实验/results/human_intervention_deterministic_v1_summary.csv -text whitespace=cr-at-eol
+05_代码与实验/results/evidence_grounding_deterministic_v1_summary.csv -text whitespace=cr-at-eol
 

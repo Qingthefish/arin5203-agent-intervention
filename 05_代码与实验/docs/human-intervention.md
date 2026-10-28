@@ -21,7 +21,7 @@ missing, an applicable `REPAIR_CHANNEL` card names a responder, and that
 responder is listed in `ProofPolicy.confirmable_authority_actors`. Every other
 missing obligation, or any applicable hold, routes to `HANDOFF`.
 
-Nothing at run time consumes that decision. `intervention.resolve_after_confirmation`
+Before this module, nothing at run time consumed that decision. `intervention.resolve_after_confirmation`
 is an evaluator-side counterfactual. It reads the private oracle requirements and
 builds a perfectly valid approval, so it never checks a real reply. `hitl_causal.py`
 studies prompts with oracle follow-up states. `durable_proof_store.py` supplies
@@ -235,10 +235,11 @@ From `05_代码与实验/`:
 
 ```bash
 python3 -m unittest tests.test_human_intervention_workflow -v
-python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_eval.json
+python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v2.json
 ```
 
-The second command prints the plan only. The v1 prefix exists and is never
-overwritten. A new run needs new versions, a new `output_prefix`, `--run
+The second command prints the current acceptance plan only. The original v1
+config and prefix remain archived; its code is preserved in contributor commit
+`c0e0cad`. A new formal run needs a new `output_prefix`, `--run
 --acknowledge-experiment-plan`, and `--allow-dirty-worktree` only when
 uncommitted changes must be recorded.

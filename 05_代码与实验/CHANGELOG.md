@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased — 2026-10-28
+## Unreleased — 2026-10-29
 
 - Added a deterministic two-phase prepare/commit freshness gate that binds the approved action, transition, policy and evidence versions, then revalidates them immediately before the simulated mutation.
 - Added serializable commit-section semantics and fail-closed handling for new holds, authority revocation or expiry, changed parameters, unavailable registries and duplicate commit attempts.
 - Added a development-only configuration, plan-only deterministic runner, five comparison modes and thirteen conditions; one-shot versioned deterministic acceptance is complete in the course archive.
 - Integration acceptance detaches nested JSON transitions, prepared tokens and ledger views, preserves valid queued holds after an invalid registry write, and rejects path-like artifact prefixes.
+- Integrated the team's scripted human-confirmation lifecycle and optional English field-grounding checker, preserving contributor commits, original results and known failures.
+- Reject malformed reply decisions before recording approval; pin current NL-v2 acceptance inputs separately from archived NL-v1 scores. These course modules are not a new standalone-toolkit release.
 
 ## 0.1.1 — 2026-10-21
 

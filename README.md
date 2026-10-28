@@ -13,17 +13,23 @@ Building an Agent from 0 to 1 is increasingly accessible. Keeping it reliable ov
 
 These are primary responsibilities; scenario review, implementation and final conclusions are shared. Team experience motivates synthetic cases, not claims about company production systems.
 
-## Current Snapshot — 2026-10-28
+Teammate `HelloWorld2333666` contributed the commit-time, human-intervention and
+field-grounding extensions. Their commits and original result bundles are kept;
+integration fixes and acceptance checks are recorded separately.
+
+## Current Snapshot — 2026-10-29
 
 | Workstream | Status | Evidence or entry point |
 | --- | --- | --- |
 | Proposal | Submitted; 92/100. No attributable instructor explanation for the deduction was found. | [Proposal files](01_提案/) |
 | Core evaluation | Development protocol frozen; one-shot held-out evaluation complete. | [Held-out audit](05_代码与实验/results/typed_exact_budget_heldout_qwen_v1_audit.json) |
 | Additional evidence | Development budget sweep and deterministic durable-store test complete. | [Experiment index](05_代码与实验/results/index.json) |
-| Milestone | Two-page progress snapshot; wording and completed-work status corrected. Due 6 Nov, 23:59; no submission item was visible in the student's Canvas list on 28 Oct. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
+| Milestone | Two-page report checked against live requirements and visually reviewed; ready for team review, with no content change needed this round. Due 6 Nov, 23:59; no submission item was visible in the student's Canvas list on 29 Oct. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | Presentation | Low-density three-step replay; case/strategy matrix and trace details remain expandable. Seven evidence figures are available; team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
 | Commit-time gate | Group-contributed prepare/commit gate hardened and checked; versioned deterministic development acceptance passes under in-process simulation assumptions. | [Audit](05_代码与实验/results/commit_time_gate_deterministic_v1_audit.json), [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
+| Confirmation lifecycle | Integrated with strict reply-decision validation, channel-bound responder fixtures, action binding, expiry, revalidation and execute-once simulation. | [Technical notes](05_代码与实验/docs/human-intervention.md) |
+| Field grounding | Integrated optional English cue-based checker; failures and intervention costs remain visible. No general semantic-verification or authentication claim. | [Technical notes and archived failures](05_代码与实验/docs/evidence-grounding.md) |
 | Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
 | Final report | Existing seven-page working draft is parked while Milestone takes priority; not submission-ready. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
 
@@ -42,10 +48,10 @@ The benchmark contains 20 synthetic base families and 60 matched contexts: nine 
 
 | Layer | What is established | What remains outside the claim |
 | --- | --- | --- |
-| Evidence creation | Main evaluation starts from source-linked typed records. | Reliable free-text extraction and real signature verification. PR #1 targets the first gap. |
+| Evidence creation | Main evaluation starts from source-linked typed records. Optional extraction and lexical field-grounding modules expose upstream failures. | Reliable arbitrary free-text extraction, general semantic entailment and real signature verification. |
 | Memory and audit | Retained source IDs permit the deterministic audit to rehydrate canonical records. The fixed budget applies to active memory. | Total external storage, lookup overhead and a fully self-contained compressed-memory system. |
 | Action outcome | Main frozen scores use an authored unsafe-if-executed flag plus the released route. The later replay/toolkit applies a declared simulated transition to show the state diff. | Independent live-domain outcome validation, real bookings, transfers or production deployments. |
-| Human intervention | Route semantics distinguish a repairable answer from a required handoff. | A deployed human workflow, user study or measured production intervention burden. |
+| Human intervention | Route semantics distinguish a repairable answer from a required handoff; a scripted workflow now tests bound replies, expiry and simulated execution. | A deployed human workflow, real identity verification, a user study or measured production intervention burden. |
 | Generalization | Frozen methods were evaluated once on separately authored synthetic families. | Broad model/domain generalization or production safety certification. |
 
 The engineering takeaway is to treat conversational memory as a cache and validate authoritative action proof at the tool boundary. A passing test does not replace an authorization service.
@@ -55,8 +61,9 @@ The [related-work review](05_代码与实验/docs/related-work.md) distinguishes
 ## Next Work and Stopping Rule
 
 The core experimental question is answered at course-project scale. The current
-priority is Milestone submission readiness and acceptance of the existing
-runtime-gate contributions, not further Final drafting or model runs. The existing Final draft is parked at the
+priority is team review and Milestone submission readiness. The three existing
+runtime extensions are integrated and checked as bounded research modules.
+The existing Final draft is parked at the
 team's request. The 2026-10-23 review corrects interpretation, not frozen scores
 or method selection; its source-existence recount is explicitly post-hoc.
 
@@ -68,31 +75,37 @@ also limits interpreting every canonical mismatch as a model error. This does
 not change the main held-out result or establish that schema-constrained
 extraction cannot work. No automatic tuning run or expansion follows.
 
-Next: review the human-intervention and field-grounding candidates against their declared trust
-boundaries. The user confirmed the contributing account is their own or a team
-member's. The latter two branches are not yet mainline functionality or accepted
-experiment evidence. Team-review the short Milestone in parallel. Final and
-hand-made slides can resume later; no PPT is generated here.
+The integration preserves the contributor's v1 artifacts and failures. Human
+workflow v1.1 and the NL-v2 grounding compatibility path have separate acceptance
+plans and unit checks; no new formal result bundle was generated. The frozen
+main comparison is unchanged. These modules are available together, but have
+not been demonstrated as one authenticated, atomic end-to-end tool workflow.
+
+Next: team-review the short Milestone and familiar travel replay, then submit
+through the correct Canvas item when it becomes available. Final and hand-made
+slides can resume later. The next optional engineering decision is whether a
+single combined adapter adds a useful demonstration beyond separate modules;
+it is not a reason to launch another broad model sweep.
 An actual single-workflow compactor adapter remains optional engineering work,
 not a prerequisite for presenting the bounded research result.
 
 | Engineering extension | Current state | Acceptance question |
 | --- | --- | --- |
 | Commit-time freshness | Integrated and deterministically checked; not yet a live-tool or distributed guarantee. | Do holds/revocations, changed arguments and retries remain correct at the simulated mutation boundary? |
-| [Human intervention](https://github.com/Qingthefish/arin5203-agent-intervention/tree/feat/closed-loop-human-intervention) | Team candidate branch; not merged or accepted as mainline evidence. | Can only the named responder repair a bound gap, without replay, stale permission or duplicate execution? |
-| [Field grounding](https://github.com/Qingthefish/arin5203-agent-intervention/tree/feat/evidence-grounding-verification) | Team candidate branch; not merged or accepted as mainline evidence. | Does source text support each field within the declared profile, without confusing textual support with authentication? |
+| [Human intervention](05_代码与实验/docs/human-intervention.md) | Integrated; unit acceptance includes the scripted matrix and malformed-reply regression. | Can only the named responder repair a bound gap, without replay, stale permission or duplicate execution? |
+| [Field grounding](05_代码与实验/docs/evidence-grounding.md) | Integrated; current NL-v2 fixture compatibility checked, v1 failure evidence preserved. | Does source text support each field within the declared profile, without confusing textual support with authentication? |
 
 Further experiments need a concrete unanswered question that could change a design decision or claim. Extra model calls, models or charts alone are not a reason to run them.
 
 ### Milestone submission checklist
 
 - The [live project page](https://cqf.io/ARIN5203/project.html), checked on
-  28 Oct, still requires 2–3 pages in the provided template, all three names,
+  29 Oct, still requires 2–3 pages in the provided template, all three names,
   and one submitting member. Its template link currently opens CVPR 2026,
   despite the old `cvpr2022` URL slug.
 - The student's [Canvas assignment list](https://canvas.ust.hk/courses/71916/assignments)
-  had no Milestone item on 28 Oct; Gmail/Outlook searches and Canvas announcements did
-  not reveal a new project submission notice. Recheck the live item before
+  had no Milestone item on 29 Oct; the earlier Gmail/Outlook and announcement
+  checks had found no new submission notice. Recheck the live item before
   submission for allowed files, deadline/time zone and any attachment rules.
 - Prepare the report PDF; do not upload it to Proposal or an Assignment item.
   No extra GitHub/ZIP/demo requirement is stated in the Milestone section.

@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 43,
+    "runs": 44,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 31,
+      "COMPLETED": 32,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 27,
+      "FROZEN_GATE_BUNDLE": 28,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -198,6 +198,33 @@
       },
       "manifest_sha256": "9ac5c567d268b997b190c497c7d274b251bdaaf03612684ba400d56ffa830f6e",
       "audit_sha256": "82861b9338ea53a7ecc74b2de789762867d1bf67253d315fc7d3376b734fc49c"
+    },
+    {
+      "prefix": "evidence_grounding_deterministic_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "evidence_grounding_eval_v1",
+      "scenario_set": "evidence-grounding-eval-v1",
+      "model": null,
+      "provider": "deterministic",
+      "git_commit": "80ab8091bfede458a519cd3f09d6d81a6b8273c2",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-22T23:43:56.325310+08:00",
+      "finished_at": "2026-10-22T23:43:59.799026+08:00",
+      "audit_status": "PASS",
+      "recommendation": "REPORT_AS_DEVELOPMENT_SCALE_GROUNDING_EVIDENCE_WITH_LIMITATIONS",
+      "claim_scope": "development-scale deterministic comparison of the existing quote-presence and proof-validation pipeline with and without field-level grounding on author-written synthetic families and on derived corruptions of the existing natural-language templates; no extraction-model result, general natural-language-inference, real-traffic, authentication or production-safety claim is allowed",
+      "artifacts": {
+        "manifest": "results/evidence_grounding_deterministic_v1_manifest.json",
+        "raw": "results/evidence_grounding_deterministic_v1_raw.jsonl",
+        "summary": "results/evidence_grounding_deterministic_v1_summary.csv",
+        "audit": "results/evidence_grounding_deterministic_v1_audit.json"
+      },
+      "manifest_sha256": "79e9047a2f691f1edf8f38997a067f381e0dbc3decb2daf21510608fcead2653",
+      "audit_sha256": "e86b625df2c7787e2d2bd6966ffd2ebc6fb15f91870a89746938bfa6e530913d"
     },
     {
       "prefix": "expanded_baselines",

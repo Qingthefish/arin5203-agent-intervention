@@ -104,8 +104,10 @@ memory budget.
 
 This evaluates retention and validation under a declared card-creation
 assumption. It does not establish reliable card extraction from arbitrary prose,
-real signature verification or a deployed human workflow. Confirm/Handoff are
-route semantics here; an authenticated follow-up must be evaluated separately.
+real signature verification or a deployed human workflow. Confirm/Handoff in
+the main frozen evaluation are route semantics. The optional human-intervention
+module separately tests a scripted follow-up lifecycle under a channel-directory
+trust fixture; it does not establish real authentication.
 
 Gold decisions and oracle conclusions stay outside model-visible inputs. State
 diffs in the replay/toolkit come from a declared simulated transition, not a live
@@ -140,6 +142,7 @@ full history is an unbudgeted reference.
 - `src/platform_agent_eval/durable_proof_store.py` — point-in-time lookup and collision-safe merging for proof cards stored outside conversational memory.
 - `src/platform_agent_eval/commit_time_gate.py` — prepare/commit gate that re-reads a versioned registry at the commit instant and applies the simulated transition inside one serializable commit section.
 - `src/platform_agent_eval/human_intervention_workflow.py` and `human_intervention_scenarios.py` — closed-loop handling of `REQUEST_CONFIRMATION`: bound requests, channel-authenticated responses, revalidation with the unchanged validator, idempotent simulated execution, and the protocol scenario matrix.
+- `src/platform_agent_eval/evidence_grounding.py` and `evidence_grounding_cases.py` — field-level grounding of extracted natural-language claims in their cited messages, a restrictive-cue scan, a fail-closed gate around the unchanged validator, and the frozen evaluation cases.
 - `src/platform_agent_eval/memory_crash_test.py` — declarative matched-sibling generation, memory selectors, proof validation, state replay, and CI scoring for a reusable crash-test contract.
 - `src/platform_agent_eval/typed_compaction_dev.py` — nine fresh typed-proof bases and 27 role/position/length-matched deletion siblings for the exact-budget development stage.
 - `src/platform_agent_eval/typed_budget_compaction.py` — blinded full, recency, neutral/task-aware summary, generic pinning, U-Fold-lite, and typed-card-retention contexts with neutral-only budget fill.
@@ -304,6 +307,36 @@ and result bundle describe the contributor's pre-integration implementation;
 v1.1 adds malformed-decision rejection and is checked with a separate v2 plan
 and unit acceptance. No new formal run is implied by the plan file.
 
+## Field-Level Grounding
+
+`evidence_grounding.py` checks each extracted field against the full cited
+message before the unchanged validator runs. Fields are `SUPPORTED`,
+`CONTRADICTED` or `INSUFFICIENT_EVIDENCE`. Only fully supported permissive
+claims reach the validator. Hold claims are never removed. A hold, prohibition,
+denial or revocation cue that no supported hold claim accounts for routes to
+Handoff, and the result is never more permissive than the baseline route. The
+checks are closed English cue lists over a declared profile, not general
+entailment, and they verify no signatures. See
+[`docs/evidence-grounding.md`](docs/evidence-grounding.md) for the rules,
+threat model, results and limitations.
+
+```python
+from platform_agent_eval.evidence_grounding import ground_nl_context
+result = ground_nl_context(context, parse)  # decision, baseline_decision, failure_layer, claim_groundings
+```
+
+```bash
+python3 -m unittest tests.test_evidence_grounding -v
+python3 scripts/run_evidence_grounding_evaluation.py --config configs/evidence_grounding_acceptance_v2.json
+```
+
+The evaluation runner is deterministic and plan-only without `--run` and
+`--acknowledge-experiment-plan`. It refuses to run if the verifier or case
+module differs from the hashes frozen in the config. The current acceptance
+plan also pins the NL-v2 context version and content hash. The archived v1
+result used NL-v1 inputs; changing those inputs must not silently reuse its
+plan or be presented as reproducing its scores. No new formal v2 run was made.
+
 ## Reproduction
 
 Use Python 3.12 or newer from this directory. The public deterministic CLI is
@@ -380,6 +413,7 @@ after adding artifacts. Do not edit it manually.
 | Commit-time freshness | `commit_time_gate_deterministic_v1` | Model-free development acceptance over authored schedules; in-process atomicity only, no live-tool or distributed guarantee. |
 | Natural-language extraction | `nl_extraction_dev_diagnostic_qwen_v1` | Development-only JSON-mode interface diagnostic; uniform Handoff and contract failures, not end-to-end readiness. |
 | Confirmation lifecycle | `human_intervention_deterministic_v1` | Deterministic protocol evaluation with scripted responders; full workflow vs stop-at-confirm, naive resume and single-check ablations. No LLM, user-study or real-identity claim. |
+| Claim grounding before validation | `evidence_grounding_deterministic_v1` | Deterministic baseline-vs-grounding comparison on 58 author-written cases and derived corruptions of the NL templates; no extraction-model or general-NLI claim. |
 | Correct route with weak grounding | `grounded_hitl_qwen_v4` | Development counterexample motivating joint evidence/route scoring. |
 | Unhelpful reviewer and clearance confusion | `audit_increment_qwen_v2`, `blind_proof_qwen_v1` | Failed development approaches; post-hoc trace reviews are explicitly labeled. |
 | Earlier feasibility/protocol repairs | All other prefixes in the index | Historical diagnostics; do not pool them as independent final evaluation or method rankings. |
