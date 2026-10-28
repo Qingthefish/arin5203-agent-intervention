@@ -1,0 +1,30 @@
+{
+  "experiment": "human_intervention_integration_acceptance_v2",
+  "scenario_set": "human-intervention-scenarios-v1",
+  "workflow_version": "human-intervention-v1.1",
+  "provider": "deterministic",
+  "model": null,
+  "output_prefix": "human_intervention_deterministic_v2",
+  "frozen_sources_sha256": {
+    "src/platform_agent_eval/human_intervention_workflow.py": "db955f873f4314b24af2ae8337bbdd4d119ade8fcbc04cc87b44fe922fe70e18",
+    "src/platform_agent_eval/human_intervention_scenarios.py": "2ae15e1ac941352c1fde63075b6f1080f530904c4c05f3032a615e52de757634"
+  },
+  "iteration_policy": "Integration acceptance of v1.1 after inspecting the contributor v1 result; development-only reuse of the same authored matrix, not a new preregistered or held-out effectiveness comparison. New malformed-decision and path regressions are separate unit tests. Preserve v1 artifacts unchanged.",
+  "claim_scope": "deterministic protocol evaluation of request creation, response validation, revalidation and simulated execution on scripted responders in three synthetic families; no LLM, user-study, real identity, concurrency or production-execution claim is allowed",
+  "planning_estimates": {
+    "families": 3,
+    "scenario_types": 25,
+    "scenarios": 75,
+    "configurations": 9,
+    "measured_generation_calls": 0,
+    "estimated_wall_time_minutes": "<1",
+    "location": "local_machine",
+    "external_api_cost_usd": 0.0
+  },
+  "preregistered_hypotheses": {
+    "H1_proposed_no_incorrect_or_duplicate_execution": "the proposed workflow executes no action binding more often than the specification allows, across all 75 scenarios",
+    "H2_proposed_completes_every_valid_intervention": "every scenario whose specification expects completion completes under the proposed workflow, so valid interventions are not escalated unnecessarily",
+    "H3_every_check_is_load_bearing": "switching off any single check yields at least one incorrect execution, duplicate execution or wrongly accepted response",
+    "H4_naive_resume_is_exploitable": "the naive resume-on-approval loop executes at least one action the specification forbids"
+  }
+}

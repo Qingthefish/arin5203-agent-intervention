@@ -1,0 +1,96 @@
+{
+  "status": "COMPLETED",
+  "experiment": "human_intervention_protocol_v1",
+  "scenario_set": "human-intervention-scenarios-v1",
+  "workflow_version": "human-intervention-v1",
+  "iteration_policy": "develop the workflow against the payment-family unit tests only, freeze the workflow and the scenario matrix with these hypotheses before the first evaluation run, run once, and preserve every mismatch; any later change needs new versions and a new output prefix",
+  "claim_scope": "deterministic protocol evaluation of request creation, response validation, revalidation and simulated execution on scripted responders in three synthetic families; no LLM, user-study, real identity, concurrency or production-execution claim is allowed",
+  "provider": "deterministic",
+  "model": null,
+  "location": "local_machine",
+  "families": 3,
+  "scenario_types": 25,
+  "scenarios": 75,
+  "configurations": 9,
+  "configuration_names": [
+    "stop_at_confirm",
+    "naive_resume",
+    "proposed",
+    "ablate_channel_authentication",
+    "ablate_responder_authority",
+    "ablate_action_binding",
+    "ablate_time_enforcement",
+    "ablate_revalidation",
+    "ablate_deduplication"
+  ],
+  "scenario_set_sha256": "954ab4dbc55f155cf761d48970a32609935d2d9cda9986b414a91ce52f9be377",
+  "config_sha256": "358943e5a21d968fdb57d1e3bda13028e8d1ba126a8f52cd7104403066904026",
+  "frozen_sources_sha256": {
+    "src/platform_agent_eval/human_intervention_workflow.py": "eaf8334806dc3d35bf784053e06c9b036bb9cb1168e5849b71ade4fc0dec7f48",
+    "src/platform_agent_eval/human_intervention_scenarios.py": "2ae15e1ac941352c1fde63075b6f1080f530904c4c05f3032a615e52de757634"
+  },
+  "measured_generation_calls": 0,
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "external_api_cost_usd": 0.0,
+  "preregistered_hypotheses": {
+    "H1_proposed_no_incorrect_or_duplicate_execution": "the proposed workflow executes no action binding more often than the specification allows, across all 75 scenarios",
+    "H2_proposed_completes_every_valid_intervention": "every scenario whose specification expects completion completes under the proposed workflow, so valid interventions are not escalated unnecessarily",
+    "H3_every_check_is_load_bearing": "switching off any single check yields at least one incorrect execution, duplicate execution or wrongly accepted response",
+    "H4_naive_resume_is_exploitable": "the naive resume-on-approval loop executes at least one action the specification forbids"
+  },
+  "outputs_if_run": [
+    "results/human_intervention_deterministic_v1_raw.jsonl",
+    "results/human_intervention_deterministic_v1_summary.csv",
+    "results/human_intervention_deterministic_v1_audit.json",
+    "results/human_intervention_deterministic_v1_manifest.json"
+  ],
+  "git_commit": "80ab8091bfede458a519cd3f09d6d81a6b8273c2",
+  "git_worktree_dirty_at_start": true,
+  "dirty_worktree_allowed": true,
+  "started_at_utc": "2026-10-22T16:18:09.235771+00:00",
+  "started_at_hong_kong": "2026-10-23T00:18:09.235771+08:00",
+  "finished_at_utc": "2026-10-22T16:18:09.643305+00:00",
+  "finished_at_hong_kong": "2026-10-23T00:18:09.643305+08:00",
+  "duration_seconds": 0.4086561440000196,
+  "python_version": "3.13.16",
+  "config_snapshot": {
+    "experiment": "human_intervention_protocol_v1",
+    "scenario_set": "human-intervention-scenarios-v1",
+    "workflow_version": "human-intervention-v1",
+    "provider": "deterministic",
+    "model": null,
+    "output_prefix": "human_intervention_deterministic_v1",
+    "frozen_sources_sha256": {
+      "src/platform_agent_eval/human_intervention_workflow.py": "eaf8334806dc3d35bf784053e06c9b036bb9cb1168e5849b71ade4fc0dec7f48",
+      "src/platform_agent_eval/human_intervention_scenarios.py": "2ae15e1ac941352c1fde63075b6f1080f530904c4c05f3032a615e52de757634"
+    },
+    "iteration_policy": "develop the workflow against the payment-family unit tests only, freeze the workflow and the scenario matrix with these hypotheses before the first evaluation run, run once, and preserve every mismatch; any later change needs new versions and a new output prefix",
+    "claim_scope": "deterministic protocol evaluation of request creation, response validation, revalidation and simulated execution on scripted responders in three synthetic families; no LLM, user-study, real identity, concurrency or production-execution claim is allowed",
+    "planning_estimates": {
+      "families": 3,
+      "scenario_types": 25,
+      "scenarios": 75,
+      "configurations": 9,
+      "measured_generation_calls": 0,
+      "estimated_wall_time_minutes": "<1",
+      "location": "local_machine",
+      "external_api_cost_usd": 0.0
+    },
+    "preregistered_hypotheses": {
+      "H1_proposed_no_incorrect_or_duplicate_execution": "the proposed workflow executes no action binding more often than the specification allows, across all 75 scenarios",
+      "H2_proposed_completes_every_valid_intervention": "every scenario whose specification expects completion completes under the proposed workflow, so valid interventions are not escalated unnecessarily",
+      "H3_every_check_is_load_bearing": "switching off any single check yields at least one incorrect execution, duplicate execution or wrongly accepted response",
+      "H4_naive_resume_is_exploitable": "the naive resume-on-approval loop executes at least one action the specification forbids"
+    }
+  },
+  "measured_generation_calls_completed": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "artifact_sha256": {
+    "raw": "13ab138472c04a081c54d69faa225a3b1e8ac954585a10216da477f200268967",
+    "summary": "fd07682cc0c7a09a268922cc44e8315e4cc548b76799b213b078fe9ec3526eeb",
+    "audit": "1139717690db3628060b6e563b741bfb69945ab9932748513c6a80fc21e43a2e"
+  },
+  "direction_recommendation": "REPORT_AS_DETERMINISTIC_PROTOCOL_EVIDENCE_WITH_LIMITATIONS"
+}

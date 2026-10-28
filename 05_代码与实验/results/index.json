@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 42,
+    "runs": 43,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 30,
+      "COMPLETED": 31,
       "FAILED": 8,
       "MISSING": 2
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 26,
+      "FROZEN_GATE_BUNDLE": 27,
       "LEGACY_OR_INCOMPLETE_METADATA": 6
     },
     "warnings": 4
@@ -414,6 +414,33 @@
       },
       "manifest_sha256": "60a8a758450f4544552eec0979621930d4c61f42534b86f0f640b6ace9bc1ced",
       "audit_sha256": "357f54821976b93f17952c1d946027f02ff032279ac3dd3463949c6c5870b097"
+    },
+    {
+      "prefix": "human_intervention_deterministic_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "human_intervention_protocol_v1",
+      "scenario_set": "human-intervention-scenarios-v1",
+      "model": null,
+      "provider": "deterministic",
+      "git_commit": "80ab8091bfede458a519cd3f09d6d81a6b8273c2",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-10-23T00:18:09.235771+08:00",
+      "finished_at": "2026-10-23T00:18:09.643305+08:00",
+      "audit_status": "PASS",
+      "recommendation": "REPORT_AS_DETERMINISTIC_PROTOCOL_EVIDENCE_WITH_LIMITATIONS",
+      "claim_scope": "deterministic protocol evaluation of request creation, response validation, revalidation and simulated execution on scripted responders in three synthetic families; no LLM, user-study, real identity, concurrency or production-execution claim is allowed",
+      "artifacts": {
+        "manifest": "results/human_intervention_deterministic_v1_manifest.json",
+        "raw": "results/human_intervention_deterministic_v1_raw.jsonl",
+        "summary": "results/human_intervention_deterministic_v1_summary.csv",
+        "audit": "results/human_intervention_deterministic_v1_audit.json"
+      },
+      "manifest_sha256": "d1dea85e98dd386b562267ebfe43428443d70377784426a4b00621cd409d39b0",
+      "audit_sha256": "1139717690db3628060b6e563b741bfb69945ab9932748513c6a80fc21e43a2e"
     },
     {
       "prefix": "medium_pilot_qwen_k3_v1",
