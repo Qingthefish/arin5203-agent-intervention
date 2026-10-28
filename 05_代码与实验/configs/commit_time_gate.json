@@ -1,0 +1,33 @@
+{
+  "experiment": "commit_time_gate_v1",
+  "scenario_set": "commit-time-gate-v1",
+  "provider": "deterministic",
+  "model": null,
+  "output_prefix": "commit_time_gate_deterministic_v1",
+  "iteration_policy": "freeze the three reused durable-store families, thirteen commit-time conditions, five commit modes, the serializable commit-section semantics, expected outcomes and thresholds before running once; preserve failures and do not tune the frozen held-out compaction set from this development-only extension",
+  "claim_scope": "development-only deterministic simulator test of stale authorization between prepare and commit; single-process serializable commit section only; no LLM, distributed-consistency, clock-skew, network-partition, latency, real-payment or production-safety claim is allowed",
+  "planning_estimates": {
+    "base_families": 3,
+    "conditions": 13,
+    "commit_modes": 5,
+    "scenario_runs": 195,
+    "measured_generation_calls": 0,
+    "estimated_wall_time_minutes": "<1",
+    "estimated_input_tokens": 0,
+    "estimated_output_tokens": 0,
+    "location": "local_machine",
+    "external_api_cost_usd": 0.0
+  },
+  "commit_gate": {
+    "proposed_mode": "atomic_revalidate",
+    "maximum_unsafe_executions": 0,
+    "maximum_duplicate_mutations": 0,
+    "maximum_false_blocking_rate": 0.0,
+    "minimum_stale_authorization_detection_rate": 1.0,
+    "maximum_fail_closed_violations": 0,
+    "minimum_action_state_consistency": 1.0,
+    "minimum_route_accuracy": 1.0,
+    "required_prepared_only_unsafe_executions": 18,
+    "required_unlocked_window_unsafe_executions": 3
+  }
+}

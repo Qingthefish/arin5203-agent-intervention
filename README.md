@@ -20,9 +20,10 @@ These are primary responsibilities; scenario review, implementation and final co
 | Proposal | Submitted; 92/100. No attributable instructor explanation for the deduction was found. | [Proposal files](01_提案/) |
 | Core evaluation | Development protocol frozen; one-shot held-out evaluation complete. | [Held-out audit](05_代码与实验/results/typed_exact_budget_heldout_qwen_v1_audit.json) |
 | Additional evidence | Development budget sweep and deterministic durable-store test complete. | [Experiment index](05_代码与实验/results/index.json) |
-| Milestone | Two-page progress snapshot; wording and completed-work status corrected. Due 6 Nov, 23:59; no submission item was visible in the student's Canvas list on 27 Oct. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
+| Milestone | Two-page progress snapshot; wording and completed-work status corrected. Due 6 Nov, 23:59; no submission item was visible in the student's Canvas list on 28 Oct. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | Presentation | Low-density three-step replay; case/strategy matrix and trace details remain expandable. Seven evidence figures are available; team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
+| Commit-time gate | Group-contributed prepare/commit gate integrated with additional input/ledger isolation checks; formal versioned run pending. | [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
 | Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
 | Final report | Existing seven-page working draft is parked while Milestone takes priority; not submission-ready. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
 
@@ -54,8 +55,8 @@ The [related-work review](05_代码与实验/docs/related-work.md) distinguishes
 ## Next Work and Stopping Rule
 
 The core experimental question is answered at course-project scale. The current
-priority is Milestone submission readiness and a lower-density replay, not
-further Final drafting or model runs. The existing Final draft is parked at the
+priority is Milestone submission readiness and acceptance of the existing
+runtime-gate contributions, not further Final drafting or model runs. The existing Final draft is parked at the
 team's request. The 2026-10-23 review corrects interpretation, not frozen scores
 or method selection; its source-existence recount is explicitly post-hoc.
 
@@ -67,10 +68,12 @@ also limits interpreting every canonical mismatch as a model error. This does
 not change the main held-out result or establish that schema-constrained
 extraction cannot work. No automatic tuning run or expansion follows.
 
-Next: team-review the short Milestone and use one replay trace to make the
-request, missing fact, released route and simulated consequence legible. Full
-method matrices and trace details belong behind the story. Final and hand-made
-slides can resume later, after the current checkpoint; no PPT is generated here.
+Next: complete the model-free commit-time gate acceptance, then review the
+human-intervention and field-grounding candidates against their declared trust
+boundaries. The user confirmed the contributing account is their own or a team
+member's. The latter two branches are not yet mainline functionality or accepted
+experiment evidence. Team-review the short Milestone in parallel. Final and
+hand-made slides can resume later; no PPT is generated here.
 An actual single-workflow compactor adapter remains optional engineering work,
 not a prerequisite for presenting the bounded research result.
 
@@ -79,11 +82,11 @@ Further experiments need a concrete unanswered question that could change a desi
 ### Milestone submission checklist
 
 - The [live project page](https://cqf.io/ARIN5203/project.html), checked on
-  27 Oct, still requires 2–3 pages in the provided template, all three names,
+  28 Oct, still requires 2–3 pages in the provided template, all three names,
   and one submitting member. Its template link currently opens CVPR 2026,
   despite the old `cvpr2022` URL slug.
 - The student's [Canvas assignment list](https://canvas.ust.hk/courses/71916/assignments)
-  had no Milestone item; Gmail/Outlook searches and Canvas announcements did
+  had no Milestone item on 28 Oct; Gmail/Outlook searches and Canvas announcements did
   not reveal a new project submission notice. Recheck the live item before
   submission for allowed files, deadline/time zone and any attachment rules.
 - Prepare the report PDF; do not upload it to Proposal or an Assignment item.
