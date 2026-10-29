@@ -225,6 +225,11 @@ class ResponseValidationTest(unittest.TestCase):
         self.workflow.cancel(self.request.request_id)
         self.assertEqual(self.respond().reason, "REQUEST_NOT_OPEN_CANCELLED")
 
+    def test_a_cancellation_note_cannot_forge_an_unknown_execution_outcome(self):
+        self.workflow.cancel(self.request.request_id, reason="EXECUTION_OUTCOME_UNKNOWN")
+        self.assertIs(self.workflow.state_of(self.request.request_id), RequestState.CANCELLED)
+        self.assertIs(self.workflow.record_summary(self.request.request_id)["executed"], False)
+
     def test_clarification_is_not_approval(self):
         self.assertEqual(self.respond(decision=ResponseDecision.CLARIFY).reason,
                          "CLARIFICATION_REQUESTED")
@@ -362,7 +367,7 @@ _RUNNER_SPEC = importlib.util.spec_from_file_location(
 )
 runner = importlib.util.module_from_spec(_RUNNER_SPEC)
 _RUNNER_SPEC.loader.exec_module(runner)
-CONFIG = Path(__file__).resolve().parents[1] / "configs/human_intervention_acceptance_v3.json"
+CONFIG = Path(__file__).resolve().parents[1] / "configs/human_intervention_acceptance_v4.json"
 
 
 class EvaluationHarnessTest(unittest.TestCase):

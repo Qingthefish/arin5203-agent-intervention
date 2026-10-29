@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
@@ -26,7 +27,7 @@ from platform_agent_eval.guarded_action_workflow import (  # noqa: E402
     CommitBoundExecutor, GroundedEvidenceProvider, GroundingInput,
 )
 from platform_agent_eval.human_intervention_workflow import (  # noqa: E402
-    EvidenceUnavailable, InterventionWorkflow, ResponderDirectory,
+    EvidenceUnavailable, InterventionWorkflow, MutationOutcomeUnknown, ResponderDirectory,
     TrustedChannel, response_for,
 )
 from platform_agent_eval.natural_language_evidence import parse_extraction_output  # noqa: E402
@@ -50,7 +51,17 @@ POLICY = ProofPolicy(
 )
 SCENARIOS = ("already_authorized", "initial_handoff", "valid", "hold_before_commit",
              "wrong_person", "changed_arguments",
-             "expired_approval", "duplicate_execution")
+             "expired_approval", "duplicate_execution", "post_commit_error", "opaque_ack_lost")
+
+
+class _PostCommitErrorRegistry(VersionedProofRegistry):
+    """Fault fixture: the mutation completed, but section acknowledgement fails."""
+
+    @contextmanager
+    def commit_section(self):
+        with super().commit_section():
+            yield
+        raise RuntimeError("fixture acknowledgement failed after commit-section cleanup")
 
 
 def proof(card_id: str, kind: ProofCardKind, issuer: str, subject: str) -> ProofCard:
@@ -77,13 +88,16 @@ class HotelWorkflow:
     events: dict[str, str]
 
 
-def build_workflow(*, before_commit=None) -> HotelWorkflow:
+def build_workflow(*, before_commit=None, fault=None) -> HotelWorkflow:
+    if fault not in (None, "post_commit_error", "opaque_ack_lost"):
+        raise ValueError("unknown fault fixture")
     cards = (
         proof("clearance", ProofCardKind.CLEARANCE, "policy-desk", ACTION.target_id),
         proof("recovery", ProofCardKind.RECOVERY, "booking-service", ACTION.target_id),
         proof("repair", ProofCardKind.REPAIR_CHANNEL, "identity-service", "traveller-lee"),
     )
-    registry = VersionedProofRegistry(
+    registry_type = _PostCommitErrorRegistry if fault == "post_commit_error" else VersionedProofRegistry
+    registry = registry_type(
         "travel-registry", tuple(DurableProofRecord("record-" + c.card_id, c, START)
                                  for c in cards),
     )
@@ -122,10 +136,16 @@ def build_workflow(*, before_commit=None) -> HotelWorkflow:
         gate, ACTION, {"hotel": "riverside", "charged_hkd": 1800},
         before_commit=(lambda: before_commit(registry)) if before_commit else None,
     )
+    mutation_executor = executor
+    if fault == "opaque_ack_lost":
+        def mutation_executor(*args):
+            executor(*args)
+            raise RuntimeError("fixture opaque executor lost its acknowledgement")
+
     workflow = InterventionWorkflow(
         provider, ResponderDirectory((TrustedChannel("channel-lee", "traveller-lee"),
                                       TrustedChannel("channel-colleague", "colleague"))),
-        start_time=START, confirmation_issuer="confirmation-ledger", executor=executor,
+        start_time=START, confirmation_issuer="confirmation-ledger", executor=mutation_executor,
     )
     return HotelWorkflow(workflow, provider, executor, registry, gate, events)
 
@@ -133,7 +153,9 @@ def build_workflow(*, before_commit=None) -> HotelWorkflow:
 def run_scenario(scenario: str) -> dict[str, object]:
     if scenario not in SCENARIOS:
         raise ValueError("unknown hotel scenario")
-    fixture = build_workflow(before_commit=publish_hold if scenario == "hold_before_commit" else None)
+    fixture = build_workflow(
+        before_commit=publish_hold if scenario == "hold_before_commit" else None,
+        fault=scenario if scenario in {"post_commit_error", "opaque_ack_lost"} else None)
     if scenario == "already_authorized":
         fixture.registry.publish(DurableProofRecord(
             "existing-approval", proof("existing-authority", ProofCardKind.AUTHORITY,
@@ -148,10 +170,19 @@ def run_scenario(scenario: str) -> dict[str, object]:
     request = start.request
     response = None
     executions = []
+
+    def execute_once(action):
+        try:
+            return asdict(workflow.execute(request.request_id, action))
+        except MutationOutcomeUnknown as error:
+            return {"executed": None, "reason": "EXECUTION_OUTCOME_UNKNOWN",
+                    "state": workflow.state_of(request.request_id).value,
+                    "error": str(error), "receipt": None}
+
     if request is None:
         if start.decision.value == "AUTO_EXECUTE":
             current = fixture.provider(ACTION)
-            executions.append(fixture.executor(ACTION, current.policy, current.cards, START))
+            executions.append(asdict(fixture.executor(ACTION, current.policy, current.cards, START)))
     else:
         workflow.advance_to(REPLY_AT)
         response = workflow.receive(response_for(
@@ -161,9 +192,9 @@ def run_scenario(scenario: str) -> dict[str, object]:
             workflow.advance_to("2026-11-02T10:21:00+08:00")
         action = replace(ACTION, scope=(("charge_hkd", "2300"), ("hotel", "riverside"))) \
             if scenario == "changed_arguments" else ACTION
-        executions.append(workflow.execute(request.request_id, action))
+        executions.append(execute_once(action))
         if scenario == "duplicate_execution":
-            executions.append(workflow.execute(request.request_id, action))
+            executions.append(execute_once(action))
     commit = fixture.executor.last_result
     return {
         "scenario": scenario, "mode": "synthetic model-free composition example",
@@ -177,8 +208,10 @@ def run_scenario(scenario: str) -> dict[str, object]:
         },
         "confirmation_request": asdict(request) if request else None,
         "response": asdict(response) if response else None,
-        "executions": [asdict(result) for result in executions],
+        "executions": executions,
         "request_state": workflow.state_of(request.request_id).value if request else None,
+        "workflow_summary": workflow.record_summary(request.request_id) if request else None,
+        "commit_error": fixture.executor.last_error,
         "initial_reason": start.reason,
         "state_before": before, "state_after": gate.state(ACTION.target_id),
         "mutation_count": len(gate.executions()),

@@ -266,13 +266,14 @@ decision, an unlocked re-check, and two version-pinning variants. Print the
 model-free plan:
 
 ```bash
-python3 scripts/run_commit_time_gate.py --config configs/commit_time_gate.json
+python3 scripts/run_commit_time_gate.py --config configs/commit_time_gate_acceptance_v2.json
 ```
 
-A formal run needs `--run --acknowledge-experiment-plan` and a clean, committed
-worktree, and writes the versioned `commit_time_gate_deterministic_v1` prefix.
-The one-shot `commit_time_gate_deterministic_v1` bundle is now complete; do not
-rerun that prefix. Its audit passes the declared in-process development gate.
+The original one-shot `commit_time_gate_deterministic_v1` bundle is complete;
+do not rerun that prefix. Its audit covers the pre-reconciliation v1 gate.
+Current v1.1 uses a separate source-hashed v2 compatibility plan; no formal
+v2 bundle has been generated. Any future formal run still needs both run flags
+and a clean committed worktree. New error-path checks are separate unit tests.
 This tests authored schedules and expected outcomes, not a new held-out LLM
 comparison or a real concurrent payment service. The added nested-value,
 deferred-error and output-path regressions remain unit checks separate from
@@ -283,6 +284,13 @@ Read route and mutation metrics separately: the unlocked recheck matches every
 authored condition route yet still has unsafe interleaved executions. The
 condition route labels do not themselves certify the evidence state at apply;
 the commit-snapshot outcome check and version-consistency metric expose that gap.
+
+V1.1 also saves an applied `CommitResult` before section cleanup. The adapter
+can query `committed_result(prepared_id)` after a cleanup/acknowledgement error
+instead of inferring that an exception means no mutation. An operation present
+in the execution log keeps its idempotency reservation after an apply error.
+The receipt is in memory only; absence is not proof of non-execution.
+
 ## Closed-Loop Human Intervention
 
 The validator's `REQUEST_CONFIRMATION` route now has a run-time lifecycle.
@@ -297,7 +305,7 @@ trust boundaries, results and limitations.
 
 ```bash
 python3 -m unittest tests.test_human_intervention_workflow -v
-python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v3.json
+python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v4.json
 ```
 
 The evaluation runner is deterministic and plan-only without `--run` and
@@ -305,7 +313,8 @@ The evaluation runner is deterministic and plan-only without `--run` and
 module differs from the hashes frozen in the config. The original v1 config
 and result bundle describe the contributor's pre-integration implementation;
 v1.1 adds malformed-decision rejection; v1.2 permits a trusted mutation executor
-in place of the legacy ledger. Its v3 plan checks default-ledger compatibility;
+in place of the legacy ledger. V1.3 closes unknown executor outcomes and records
+reconciled-success warnings. Its v4 plan checks default-ledger compatibility;
 combined execution is covered by separate integration tests, not those original
 scores. Earlier plans remain archived. No new formal run is implied.
 
@@ -346,6 +355,8 @@ plan or be presented as reproducing its scores. No new formal v2 run was made.
 ```bash
 python3 examples/guarded_hotel_workflow.py
 python3 examples/guarded_hotel_workflow.py --scenario hold_before_commit --json
+python3 examples/guarded_hotel_workflow.py --scenario post_commit_error --json
+python3 examples/guarded_hotel_workflow.py --scenario opaque_ack_lost --json
 python3 -m unittest tests.test_guarded_action_workflow -v
 ```
 
@@ -356,6 +367,13 @@ authority gap asks the named traveller. An accepted reply still cannot override
 a new hold, changed arguments, expired approval or duplicate operation. JSON
 shows the evidence decisions, exact request binding, registry versions and
 simulated state diff.
+
+Fault fixtures also distinguish an applied operation recovered through its
+trusted receipt from an executor with no authoritative result. The former is
+completed with an audit warning. The latter raises `MutationOutcomeUnknown`,
+closes the request as Escalated and reports `executed: null` in its summary;
+automatic resume is disabled. This is execution-result uncertainty, not a
+fourth action route. Never turn that exception into a claim of non-execution.
 
 `GroundedEvidenceProvider` preserves vetoes that have no corresponding hold
 card. `CommitBoundExecutor` owns the sole mutation; the workflow cannot also use

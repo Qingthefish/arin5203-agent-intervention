@@ -58,7 +58,7 @@ from .proof_cards import (
 )
 
 
-HUMAN_INTERVENTION_VERSION = "human-intervention-v1.2"
+HUMAN_INTERVENTION_VERSION = "human-intervention-v1.3"
 
 
 class RequestState(str, Enum):
@@ -86,6 +86,10 @@ class EvidenceUnavailable(RuntimeError):
     def __init__(self, message: str = "", *, reason_code: str = "EVIDENCE_SOURCE_UNAVAILABLE") -> None:
         super().__init__(message)
         self.reason_code = reason_code
+
+
+class MutationOutcomeUnknown(RuntimeError):
+    """No authoritative mutation result is available; do not resume automatically."""
 
 
 # ---------------------------------------------------------------------------
@@ -201,6 +205,7 @@ class MutationResult:
     reason: str
     state_diff: tuple[tuple[str, str, str], ...] = ()
     decisive_card_ids: tuple[str, ...] = ()
+    warnings: tuple[str, ...] = ()
 
 
 MutationExecutor = Callable[
@@ -337,6 +342,7 @@ class _Record:
     approved_by_response: str | None = None
     receipt: ExecutionReceipt | None = None
     terminal_reason: str = ""
+    execution_unknown: bool = False
 
 
 class InterventionWorkflow:
@@ -420,7 +426,8 @@ class InterventionWorkflow:
         return {"state": record.state.value, "reason": record.terminal_reason,
                 "approved_by_response": record.approved_by_response,
                 "approval_card_id": record.approval_card.card_id if record.approval_card else None,
-                "executed": record.receipt is not None}
+                "executed": None if record.execution_unknown
+                else record.receipt is not None}
 
     # -- evidence -------------------------------------------------------------
 
@@ -630,14 +637,26 @@ class InterventionWorkflow:
         completion_reason = ("EXECUTED_AFTER_REVALIDATION" if self.checks.revalidate_evidence
                              else "EXECUTED_WITHOUT_REVALIDATION")
         if self._executor is not None:
-            dispatch = self._executor(
-                action, snapshot.policy, snapshot.cards + (record.approval_card,), self.now)
+            try:
+                dispatch = self._executor(
+                    action, snapshot.policy, snapshot.cards + (record.approval_card,), self.now)
+            except Exception as error:
+                record.execution_unknown = True
+                self._log(request_id, "EXECUTOR", "ERROR", "EXECUTION_OUTCOME_UNKNOWN",
+                          error=f"{type(error).__name__}: {error}")
+                self._close(record, RequestState.ESCALATED, "EXECUTION_OUTCOME_UNKNOWN")
+                if isinstance(error, MutationOutcomeUnknown):
+                    raise
+                raise MutationOutcomeUnknown("mutation executor returned no authoritative result") from error
             if not dispatch.executed:
                 reason = "EXECUTOR_REFUSED_" + dispatch.reason
                 self._close(record, RequestState.ESCALATED, reason)
                 return ExecutionOutcome(False, reason, record.state, validation)
             diff, decisive = dispatch.state_diff, dispatch.decisive_card_ids
             completion_reason = dispatch.reason
+            if dispatch.warnings:
+                self._log(request_id, "EXECUTOR", "WARNING", dispatch.reason,
+                          warnings="; ".join(dispatch.warnings))
         else:
             assert self._ledger is not None
             try:

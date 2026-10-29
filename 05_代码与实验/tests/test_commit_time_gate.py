@@ -45,7 +45,7 @@ from run_commit_time_gate import (
     output_paths,
 )
 
-CONFIG = ROOT / "configs" / "commit_time_gate.json"
+CONFIG = ROOT / "configs" / "commit_time_gate_acceptance_v2.json"
 
 
 def record(record_id: str, card, committed_at: str = "2026-10-19T17:00:00+08:00") -> DurableProofRecord:
@@ -267,6 +267,36 @@ class AtomicityTests(FinancialPaymentFixture):
         self.assertEqual("valid-hold", self.registry.history()[-1].record_id)
         self.assertIsInstance(failure.exception, ExceptionGroup)
 
+    def test_error_after_apply_does_not_release_the_executed_operation_binding(self) -> None:
+        from unittest.mock import patch
+        gate = self.gate
+        prepared = self.prepare(gate=gate)
+        original = gate._apply
+
+        def apply_then_error(*args, **kwargs):
+            original(*args, **kwargs)
+            raise RuntimeError("fixture lost the apply acknowledgement")
+
+        with patch.object(gate, "_apply", side_effect=apply_then_error):
+            with self.assertRaises(RuntimeError):
+                self.commit(prepared, gate=gate)
+        retry = self.prepare(gate=gate)
+        self.assertFalse(self.commit(retry, gate=gate).executed)
+        self.assertEqual(1, len(gate.executions()))
+
+    def test_committed_receipt_query_is_detached_and_does_not_invent_a_result(self) -> None:
+        self.transition = {"payload": {"amount": "100"}}
+        prepared = self.prepare()
+        self.assertIsNone(self.gate.committed_result(prepared.prepared_id))
+        result = self.commit(prepared)
+        result.execution.state_after["payload"]["amount"] = "tampered"
+        receipt = self.gate.committed_result(prepared.prepared_id)
+        self.assertEqual("100", receipt.execution.state_after["payload"]["amount"])
+        receipt.execution.state_after["payload"]["amount"] = "tampered-again"
+        self.assertEqual("100", self.gate.committed_result(
+            prepared.prepared_id).execution.state_after["payload"]["amount"])
+        self.assertIsNone(self.gate.committed_result("unknown-token"))
+
     def test_concurrent_commits_and_revocation_remain_serializable(self) -> None:
         for round_number in range(25):
             registry = VersionedProofRegistry("r", (record("auth", self.fx.authority),))
@@ -433,7 +463,7 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual("PLAN_ONLY_NO_MODEL_CALLS", plan["status"])
         self.assertEqual((0, 0.0), (plan["measured_generation_calls"], plan["external_api_cost_usd"]))
         self.assertEqual(4, len(plan["outputs_if_run"]))
-        self.assertTrue(all("commit_time_gate_deterministic_v1" in path for path in plan["outputs_if_run"]))
+        self.assertTrue(all("commit_time_gate_deterministic_v2" in path for path in plan["outputs_if_run"]))
         self.assertTrue(all(Path(path).parent == Path("results") for path in plan["outputs_if_run"]))
 
     def test_plan_rejects_wrong_estimates_or_gate_fields(self) -> None:
@@ -442,6 +472,7 @@ class RunnerTests(unittest.TestCase):
         wrong["planning_estimates"]["scenario_runs"] = 10
         with self.assertRaises(ValueError):
             build_plan(wrong)
+
         wrong = json.loads(json.dumps(config))
         wrong["commit_gate"]["unexpected"] = 1
         with self.assertRaises(ValueError):
@@ -450,6 +481,13 @@ class RunnerTests(unittest.TestCase):
         wrong["provider"] = "ollama"
         with self.assertRaises(ValueError):
             build_plan(wrong)
+
+    def test_plan_rejects_tampered_source_hashes(self) -> None:
+        config = load_config(CONFIG)
+        source = next(iter(config["frozen_sources_sha256"]))
+        config["frozen_sources_sha256"][source] = "0" * 64
+        with self.assertRaises(ValueError):
+            build_plan(config)
 
     def test_audit_passes_and_fails_on_a_threshold_violation(self) -> None:
         records, summaries = evaluate_commit_gate()

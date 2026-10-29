@@ -144,10 +144,42 @@ real tool's own idempotency key. No vendor compactor or model is called, so this
 does not establish opaque-memory integration or upstream extraction quality.
 
 The JSON trace is an example/debug output, not a new research result bundle.
-The original v1 matrices and their failures remain archived. Workflow v1.2's
-v3 acceptance plan concerns legacy-ledger compatibility; the composition is
+The original v1 matrices and their failures remain archived. Workflow v1.3's
+v4 plan concerns legacy-ledger compatibility; the composition is
 checked separately in `tests/test_guarded_action_workflow.py`. To use a wheel
 installed in a clean environment, pass `--installed-package` to the example.
+
+### Reconcile an error after the side effect
+
+An exception is a transport/control-flow observation, not proof that a tool did
+nothing. The `post_commit_error` fixture changes the booking and then fails
+section acknowledgement. The gate now saves a detached applied result before
+cleanup. `CommitBoundExecutor` queries that exact prepared ID, preserves the
+original commit-time proof and returns known success with a visible warning.
+It does not re-authorize the past mutation using later registry state.
+
+The `opaque_ack_lost` fixture instead hides a completed tool response behind an
+opaque executor exception. With no authoritative result available through the
+workflow interface, the workflow raises `MutationOutcomeUnknown`, becomes
+Escalated and exposes `executed: null` in `record_summary`. It neither fabricates
+a failed execution nor resumes automatically. Operator/debug observation of a
+changed simulated state is kept separate from the workflow's received outcome.
+
+This distinguishes known executed, known not executed and unknown execution
+status; Execute/Confirm/Handoff remain the policy routes. The gate retains a
+reservation for an operation already in its execution log even if apply raises.
+These checks are in process. The receipt map is not durable, does not survive a
+restart and is not a substitute for a real service's operation/status API.
+
+The engineering principle is established practice, checked against primary
+sources on 30 Oct. [AWS Builders' Library](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
+uses caller-provided request identifiers to separate a retry from a new intent;
+matching parameters alone cannot always do that.
+[Stripe's HTTP error guidance](https://docs.stripe.com/error-low-level#server-errors)
+notes that a server error can follow side effects and calls for reconciliation
+before starting a replacement operation. Our simulator demonstrates a bounded
+application of those principles, not a new distributed-systems guarantee or a
+test of either service.
 
 ## CI outputs
 

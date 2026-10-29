@@ -46,7 +46,7 @@ from .proof_cards import (
 )
 
 
-COMMIT_TIME_GATE_VERSION = "commit-time-gate-v1"
+COMMIT_TIME_GATE_VERSION = "commit-time-gate-v1.1"
 # Baselines first; the proposed design last. All modes share action binding,
 # single-use tokens and idempotency, so they differ only in evidence freshness.
 COMMIT_MODES = (
@@ -321,6 +321,7 @@ class CommitTimeGate:
         self._reserved: set[str] = set()      # idempotency keys in flight or executed
         self._state = deepcopy({target: dict(values) for target, values in (initial_state or {}).items()})
         self._executions: list[ExecutionRecord] = []
+        self._committed: dict[str, CommitResult] = {}
         self._sequence = 0
 
     def state(self, target_id: str) -> dict[str, object]:
@@ -330,6 +331,15 @@ class CommitTimeGate:
     def executions(self) -> tuple[ExecutionRecord, ...]:
         with self._ledger:
             return deepcopy(tuple(self._executions))
+
+    def committed_result(self, prepared_id: str) -> CommitResult | None:
+        """Query an applied result saved before commit-section cleanup.
+
+        This is an in-process receipt lookup, not durable recovery. Absence
+        does not establish that an interrupted or opaque executor did nothing.
+        """
+        with self._ledger:
+            return deepcopy(self._committed.get(prepared_id))
 
     def prepare(
         self,
@@ -418,10 +428,18 @@ class CommitTimeGate:
                     interleave()
                 execution = self._apply(prepared, mode, at, validated)
             except BaseException:
-                self._release(key)
+                # An apply acknowledgement can fail after the side effect.
+                # Never reopen an operation already present in our execution log.
+                with self._ledger:
+                    applied = any(e.prepared_id == prepared.prepared_id for e in self._executions)
+                if not applied:
+                    self._release(key)
                 raise
-        return result(True, Decision.AUTO_EXECUTE, ("EXECUTED", *(check.reason_codes if check else ())),
-                      check, execution)
+            completed = result(True, Decision.AUTO_EXECUTE,
+                               ("EXECUTED", *(check.reason_codes if check else ())), check, execution)
+            with self._ledger:
+                self._committed[prepared.prepared_id] = deepcopy(completed)
+        return completed
 
     # Phase B helpers -------------------------------------------------------
     def _admit(self, prepared: PreparedAction, action: ActionRequest,

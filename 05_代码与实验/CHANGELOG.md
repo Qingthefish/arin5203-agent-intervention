@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — 2026-10-29
+## Unreleased — 2026-10-30
 
 - Added a deterministic two-phase prepare/commit freshness gate that binds the approved action, transition, policy and evidence versions, then revalidates them immediately before the simulated mutation.
 - Added serializable commit-section semantics and fail-closed handling for new holds, authority revocation or expiry, changed parameters, unavailable registries and duplicate commit attempts.
@@ -9,6 +9,7 @@
 - Integrated the team's scripted human-confirmation lifecycle and optional English field-grounding checker, preserving contributor commits, original results and known failures.
 - Reject malformed reply decisions before recording approval; pin current NL-v2 acceptance inputs separately from archived NL-v1 scores. These course modules are not a new standalone-toolkit release.
 - Compose grounding, bound confirmation and commit-time mutation in one synthetic hotel example. Preserve card-free grounding vetoes, delegate the sole mutation to the gate, and keep one declared operation binding across retries.
+- Save applied receipts before section cleanup and retain the operation reservation after an error following mutation; reconcile known success with an audit warning, while unknown executor outcomes close the request without automatic resume.
 
 ## 0.1.1 — 2026-10-21
 

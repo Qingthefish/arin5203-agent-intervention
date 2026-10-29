@@ -58,6 +58,13 @@ Immediately before the tool call, check the proof records against the proposed a
 
 Treat this as a control-plane check, not another free-form “please review” prompt.
 
+After dispatch, distinguish the requested action from its observed outcome.
+An exception may follow a side effect. Reconcile through the same operation ID
+and a trusted receipt; if the outcome is unknown, stop automatic resume rather
+than assume nothing happened. The composed hotel example now tests these
+failure paths locally; its receipt cache is not durable recovery. See the
+[adapter and source notes](../05_代码与实验/docs/integration.md#reconcile-an-error-after-the-side-effect).
+
 ### 5. Route the gap, not just the risk score
 
 - **Execute** when all mandatory proof obligations are satisfied and no blocking condition is active.

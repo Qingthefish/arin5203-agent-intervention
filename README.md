@@ -17,7 +17,7 @@ Teammate `HelloWorld2333666` contributed the commit-time, human-intervention and
 field-grounding extensions. Their commits and original result bundles are kept;
 integration fixes and acceptance checks are recorded separately.
 
-## Current Snapshot — 2026-10-29
+## Current Snapshot — 2026-10-30
 
 | Workstream | Status | Evidence or entry point |
 | --- | --- | --- |
@@ -27,10 +27,10 @@ integration fixes and acceptance checks are recorded separately.
 | Milestone | Two-page report checked against live requirements and visually reviewed; ready for team review, with no content change needed this round. Due 6 Nov, 23:59; no submission item was visible in the student's Canvas list on 29 Oct. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | Presentation | Low-density three-step replay; case/strategy matrix and trace details remain expandable. Seven evidence figures are available; team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
-| Commit-time gate | Group-contributed prepare/commit gate hardened and checked; versioned deterministic development acceptance passes under in-process simulation assumptions. | [Audit](05_代码与实验/results/commit_time_gate_deterministic_v1_audit.json), [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
+| Commit-time gate | Integrated; original v1 deterministic evidence is preserved, with current applied-receipt and retry fixes checked separately. In-process simulation only. | [Original audit](05_代码与实验/results/commit_time_gate_deterministic_v1_audit.json), [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
 | Confirmation lifecycle | Integrated with strict reply-decision validation, channel-bound responder fixtures, action binding, expiry, revalidation and execute-once simulation. | [Technical notes](05_代码与实验/docs/human-intervention.md) |
 | Field grounding | Integrated optional English cue-based checker; failures and intervention costs remain visible. No general semantic-verification or authentication claim. | [Technical notes and archived failures](05_代码与实验/docs/evidence-grounding.md) |
-| Composed action loop | A synthetic hotel workflow now joins grounding, bound confirmation and commit-time mutation; tested from source and a clean local wheel install. | [Runnable example](05_代码与实验/examples/guarded_hotel_workflow.py), [Adapter contracts](05_代码与实验/docs/integration.md#composed-hotel-workflow) |
+| Composed action loop | Synthetic hotel workflow with grounding, confirmation and commit-time mutation; known applied receipts reconcile errors, unknown outcomes stop automatic resume. | [Runnable example](05_代码与实验/examples/guarded_hotel_workflow.py), [Outcome handling](05_代码与实验/docs/integration.md#reconcile-an-error-after-the-side-effect) |
 | Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
 | Final report | Existing seven-page working draft is parked while Milestone takes priority; not submission-ready. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
 
@@ -77,12 +77,15 @@ not change the main held-out result or establish that schema-constrained
 extraction cannot work. No automatic tuning run or expansion follows.
 
 The integration preserves the contributor's v1 artifacts and failures. Human
-workflow v1.2 and the NL-v2 grounding compatibility path have separate acceptance
+workflow v1.3 and the NL-v2 grounding compatibility path have separate acceptance
 plans and unit checks; no new formal result bundle was generated. The frozen
 main comparison is unchanged. One synthetic hotel example now composes the
 modules: preserve grounding vetoes, ask only when authority is repairable,
 and delegate the sole simulated mutation to the commit gate. Authentication
 and extraction are fixtures; this is not a real authenticated booking service.
+The latest fault checks also separate an exception from the execution outcome:
+only a trusted applied receipt establishes reconciled success, while an unknown
+outcome closes the request and is never reported as definitely unexecuted.
 
 Next: team-review the short Milestone and the composed hotel example, then submit
 through the correct Canvas item when it becomes available. Final and hand-made

@@ -1,15 +1,16 @@
 # Closed-Loop Human Intervention
 
-Module: `src/platform_agent_eval/human_intervention_workflow.py` (`human-intervention-v1.2`).
+Module: `src/platform_agent_eval/human_intervention_workflow.py` (`human-intervention-v1.3`).
 
 Integration acceptance adds strict response-decision validation before any
 approval can be recorded. A raw string, Boolean or missing decision is rejected
 rather than falling through to approval and failing during audit logging.
 The two added input/path regression tests are separate from the archived v1
 scenario matrix. The current development acceptance plan is
-`configs/human_intervention_acceptance_v3.json`; the original v1 config/results
-and v2 plan remain archived. V1.2 adds an optional trusted executor that owns
-the only mutation path. The v3 plan checks default-ledger compatibility; the
+`configs/human_intervention_acceptance_v4.json`; original results and earlier
+plans remain archived. V1.2 added a trusted executor; v1.3 closes unknown
+execution outcomes and preserves reconciled-success warnings. The v4 plan
+checks default-ledger compatibility; the
 new combined path has separate integration tests, not new v1 benchmark scores.
 
 This module asks what happens after the validator returns `REQUEST_CONFIRMATION`.
@@ -95,6 +96,14 @@ Alternatively, `executor=` receives the exact action, current policy and cards
 execution path. All protocol checks must stay enabled for an executor; its
 refusal escalates with no fallback to the ledger. A successful receipt records
 the executor's actual state diff and decisive proof IDs.
+
+**Executor errors.** A reconciled applied result completes with a visible
+`EXECUTOR / WARNING` audit entry. If the executor returns no authoritative
+result, `MutationOutcomeUnknown` propagates and the request becomes Escalated
+with `EXECUTION_OUTCOME_UNKNOWN`. Its summary reports `executed: null`, not
+false. Later replies or execute calls cannot resume it. A real backend needs
+an outcome-reconciliation process; a new approval does not settle whether the
+earlier tool already ran. Unknown execution status does not add a route.
 
 **Time.** The workflow owns a logical clock that only moves forward. Pending
 requests expire at their deadline, and confirmed approvals expire at their TTL.
@@ -243,7 +252,7 @@ From `05_代码与实验/`:
 
 ```bash
 python3 -m unittest tests.test_human_intervention_workflow -v
-python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v3.json
+python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v4.json
 ```
 
 The second command prints the current acceptance plan only. The original v1

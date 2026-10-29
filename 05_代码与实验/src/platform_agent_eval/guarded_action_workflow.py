@@ -15,12 +15,19 @@ from .commit_time_gate import CommitResult, CommitTimeGate
 from .domain import Decision
 from .evidence_grounding import GroundingGateResult, ground_extraction
 from .human_intervention_workflow import (
-    ActionBinding, EvidenceSnapshot, EvidenceUnavailable, MutationResult,
+    ActionBinding, EvidenceSnapshot, EvidenceUnavailable, MutationOutcomeUnknown, MutationResult,
 )
 from .natural_language_evidence import ExtractionParse, claims_to_cards
 from .proof_cards import (
     ActionRequest, ProofCard, ProofCardInput, ProofPolicy, validate_proof_cards,
 )
+
+
+def _error_summary(error: Exception) -> str:
+    message = f"{type(error).__name__}: {error}"
+    if isinstance(error, ExceptionGroup):
+        message += " [" + "; ".join(_error_summary(item) for item in error.exceptions) + "]"
+    return message
 
 
 @dataclass(frozen=True)
@@ -97,26 +104,44 @@ business operation and a real tool's operation key outside this simulator.
         self._transition = deepcopy(dict(transition))
         self._before_commit = before_commit
         self._last_result: CommitResult | None = None
+        self._last_error: str | None = None
 
     @property
     def last_result(self) -> CommitResult | None:
         return deepcopy(self._last_result)
+
+    @property
+    def last_error(self) -> str | None:
+        return self._last_error
 
     def __call__(
         self, action: ActionRequest, policy: ProofPolicy,
         cards: tuple[ProofCard, ...], at: str,
     ) -> MutationResult:
         self._last_result = None
+        self._last_error = None
         if ActionBinding.of(action) != self._binding:
             return MutationResult(False, "ACTION_DIFFERS_FROM_DECLARED_OPERATION")
         prepared = self._gate.prepare(
             self._action, policy, cards, self._transition, at=at)
-        if self._before_commit is not None:
-            self._before_commit()
-        result = self._gate.commit(
-            prepared, action=self._action, transition=self._transition,
-            at=at, mode="atomic_revalidate",
-        )
+        try:
+            if self._before_commit is not None:
+                self._before_commit()
+            result = self._gate.commit(
+                prepared, action=self._action, transition=self._transition,
+                at=at, mode="atomic_revalidate",
+            )
+        except Exception as error:
+            self._last_error = _error_summary(error)
+            try:
+                result = self._gate.committed_result(prepared.prepared_id)
+            except Exception as lookup_error:
+                self._last_error += "; receipt lookup: " + _error_summary(lookup_error)
+                raise MutationOutcomeUnknown("authoritative receipt lookup failed") from lookup_error
+            if result is None:
+                raise MutationOutcomeUnknown(
+                    "commit returned no authoritative receipt; automatic resume is disabled"
+                ) from error
         self._last_result = deepcopy(result)
         if not result.executed:
             validation = result.commit_check.result if result.commit_check else None
@@ -130,6 +155,8 @@ business operation and a real tool's operation key outside this simulator.
                      for key in sorted(set(before) | set(after))
                      if before.get(key) != after.get(key))
         return MutationResult(
-            True, "EXECUTED_BY_COMMIT_GATE", diff,
+            True, "EXECUTED_RECONCILED_AFTER_COMMIT_ERROR" if self._last_error
+            else "EXECUTED_BY_COMMIT_GATE", diff,
             result.commit_check.result.decisive_card_ids,
+            (self._last_error,) if self._last_error else (),
         )

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import platform
 import re
@@ -89,6 +90,13 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
         raise ValueError("commit-gate scenario-set version mismatch")
     if config.get("provider") != "deterministic" or config.get("model") is not None:
         raise ValueError("commit-time gate must be deterministic and model-free")
+    expected_sources = config.get("frozen_sources_sha256")
+    if not isinstance(expected_sources, dict) or not expected_sources:
+        raise ValueError("current acceptance plans must pin their source hashes")
+    sources = {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+               for name in expected_sources}
+    if sources != expected_sources:
+        raise ValueError("commit-gate sources changed since the acceptance plan was frozen")
     estimates = config.get("planning_estimates")
     if not isinstance(estimates, dict):
         raise ValueError("planning_estimates must be an object")
@@ -113,6 +121,7 @@ def build_plan(config: dict[str, object]) -> dict[str, object]:
                               "stale_evidence": stale}
                        for name, (executed, decision, stale) in SCENARIO_CONDITIONS.items()},
         "fixture_sha256": stable_hash(family_fixtures()),
+        "frozen_sources_sha256": sources,
         "config_sha256": stable_hash(config),
         "measured_generation_calls": 0,
         "input_tokens": 0,

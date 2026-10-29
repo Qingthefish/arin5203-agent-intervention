@@ -4,6 +4,7 @@ import sys
 import unittest
 from dataclasses import replace
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -34,6 +35,93 @@ def approve(fixture, response_id="reply-1", action=ACTION):
 
 
 class GuardedHotelIntegrationTest(unittest.TestCase):
+    def test_commit_cleanup_error_reconciles_the_applied_mutation_without_replaying(self):
+        fixture = build_workflow()
+        request = approve(fixture)
+        original_commit = fixture.gate.commit
+        existing = fixture.registry.snapshot(ACTION.operation, ACTION.target_id)[0].records[0]
+
+        def deferred_writes():
+            fixture.registry.publish(existing)  # duplicate fails during section cleanup
+            publish_hold(fixture.registry)       # a later valid write must still survive
+
+        def commit_with_cleanup_error(*args, **kwargs):
+            return original_commit(*args, **kwargs, interleave=deferred_writes)
+
+        with patch.object(fixture.gate, "commit", side_effect=commit_with_cleanup_error):
+            outcome = fixture.workflow.execute(request.request_id, ACTION)
+        self.assertTrue(outcome.executed)
+        self.assertIs(fixture.workflow.state_of(request.request_id), RequestState.COMPLETED)
+        self.assertEqual(len(fixture.gate.executions()), 1)
+        self.assertEqual(fixture.gate.state(ACTION.target_id)["charged_hkd"], 1800)
+        self.assertIsNotNone(outcome.receipt)
+        self.assertTrue(any(e.event == "EXECUTOR" and e.outcome == "WARNING"
+                            for e in fixture.workflow.audit))
+        # The receipt must use the successful commit's proof, not the later hold.
+        self.assertIs(fixture.executor.last_result.decision, Decision.AUTO_EXECUTE)
+        self.assertNotIn("new-hold", outcome.receipt.decisive_card_ids)
+        self.assertIn("hold-record", {r.record_id for r in fixture.registry.snapshot(
+            ACTION.operation, ACTION.target_id)[0].records})
+        self.assertFalse(fixture.workflow.execute(request.request_id, ACTION).executed)
+        self.assertEqual(len(fixture.gate.executions()), 1)
+
+    def test_unreconciled_error_closes_request_as_unknown_and_disables_resume(self):
+        def fail_before_commit(registry):
+            raise RuntimeError("fixture transport failed before a result was returned")
+
+        fixture = build_workflow(before_commit=fail_before_commit)
+        request = approve(fixture)
+        with self.assertRaises(RuntimeError) as failure:
+            fixture.workflow.execute(request.request_id, ACTION)
+        self.assertEqual(type(failure.exception).__name__, "MutationOutcomeUnknown")
+        self.assertIs(fixture.workflow.state_of(request.request_id), RequestState.ESCALATED)
+        self.assertIn("UNKNOWN", fixture.workflow.record_summary(request.request_id)["reason"])
+        self.assertIsNone(fixture.workflow.record_summary(request.request_id)["executed"])
+        self.assertFalse(fixture.workflow.execute(request.request_id, ACTION).executed)
+        self.assertEqual(fixture.gate.executions(), ())
+
+    def test_missing_receipt_after_a_logged_mutation_is_unknown_and_cannot_replay(self):
+        fixture = build_workflow()
+        request = approve(fixture)
+        original_apply = fixture.gate._apply
+
+        def apply_then_fail(*args, **kwargs):
+            original_apply(*args, **kwargs)
+            raise RuntimeError("fixture acknowledgement failed before receipt storage")
+
+        with patch.object(fixture.gate, "_apply", side_effect=apply_then_fail):
+            with self.assertRaises(RuntimeError) as failure:
+                fixture.workflow.execute(request.request_id, ACTION)
+        self.assertEqual(type(failure.exception).__name__, "MutationOutcomeUnknown")
+        self.assertIsNone(fixture.workflow.record_summary(request.request_id)["executed"])
+        self.assertIs(fixture.workflow.state_of(request.request_id), RequestState.ESCALATED)
+        self.assertEqual(len(fixture.gate.executions()), 1)
+
+        self.assertIsNone(fixture.executor.last_result)
+        self.assertFalse(fixture.workflow.execute(request.request_id, ACTION).executed)
+        self.assertEqual(len(fixture.gate.executions()), 1)
+
+    def test_receipt_lookup_failure_never_turns_an_applied_operation_into_false(self):
+        fixture = build_workflow()
+        request = approve(fixture)
+        original_commit = fixture.gate.commit
+
+        def commit_then_error(*args, **kwargs):
+            original_commit(*args, **kwargs)
+            raise RuntimeError("fixture result transport failed")
+
+        with patch.object(fixture.gate, "commit", side_effect=commit_then_error), \
+             patch.object(fixture.gate, "committed_result", side_effect=RuntimeError("lookup unavailable")):
+            with self.assertRaises(RuntimeError) as failure:
+                fixture.workflow.execute(request.request_id, ACTION)
+        self.assertEqual(type(failure.exception).__name__, "MutationOutcomeUnknown")
+        self.assertIsNone(fixture.workflow.record_summary(request.request_id)["executed"])
+        self.assertIn("receipt lookup", fixture.executor.last_error)
+        self.assertEqual(len(fixture.gate.executions()), 1)
+        self.assertIsNone(fixture.executor.last_result)
+        self.assertFalse(fixture.workflow.execute(request.request_id, ACTION).executed)
+        self.assertEqual(len(fixture.gate.executions()), 1)
+
     def test_existing_registry_approval_executes_without_an_unnecessary_question(self):
         row = run_scenario("already_authorized")
         self.assertEqual(row["initial_decision"], "AUTO_EXECUTE")
@@ -202,11 +290,18 @@ class AdapterBoundaryTest(unittest.TestCase):
     def test_example_emits_machine_readable_traces_without_external_services(self):
         command = [sys.executable, str(ROOT / "examples/guarded_hotel_workflow.py"), "--json"]
         rows = json.loads(subprocess.run(command, check=True, capture_output=True, text=True).stdout)
-        self.assertEqual(len(rows), 8)
+        self.assertEqual(len(rows), 10)
         rows_by_name = {row["scenario"]: row for row in rows}
         self.assertEqual(rows_by_name["valid"]["mutation_count"], 1)
         self.assertEqual(rows_by_name["hold_before_commit"]["mutation_count"], 0)
         self.assertEqual(rows_by_name["duplicate_execution"]["mutation_count"], 1)
+        self.assertTrue(rows_by_name["post_commit_error"]["executions"][0]["executed"])
+        self.assertTrue(rows_by_name["post_commit_error"]["commit_error"])
+        unknown = rows_by_name["opaque_ack_lost"]
+        self.assertIsNone(unknown["executions"][0]["executed"])
+        self.assertIsNone(unknown["workflow_summary"]["executed"])
+        self.assertEqual(unknown["mutation_count"], 1)
+        self.assertEqual(unknown["request_state"], "ESCALATED")
 
 
 if __name__ == "__main__":
