@@ -362,7 +362,7 @@ _RUNNER_SPEC = importlib.util.spec_from_file_location(
 )
 runner = importlib.util.module_from_spec(_RUNNER_SPEC)
 _RUNNER_SPEC.loader.exec_module(runner)
-CONFIG = Path(__file__).resolve().parents[1] / "configs/human_intervention_acceptance_v2.json"
+CONFIG = Path(__file__).resolve().parents[1] / "configs/human_intervention_acceptance_v3.json"
 
 
 class EvaluationHarnessTest(unittest.TestCase):

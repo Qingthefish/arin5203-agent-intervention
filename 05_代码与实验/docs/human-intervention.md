@@ -1,14 +1,16 @@
 # Closed-Loop Human Intervention
 
-Module: `src/platform_agent_eval/human_intervention_workflow.py` (`human-intervention-v1.1`).
+Module: `src/platform_agent_eval/human_intervention_workflow.py` (`human-intervention-v1.2`).
 
 Integration acceptance adds strict response-decision validation before any
 approval can be recorded. A raw string, Boolean or missing decision is rejected
 rather than falling through to approval and failing during audit logging.
 The two added input/path regression tests are separate from the archived v1
 scenario matrix. The current development acceptance plan is
-`configs/human_intervention_acceptance_v2.json`; the original v1 config and
-results remain unchanged, and do not measure the updated implementation.
+`configs/human_intervention_acceptance_v3.json`; the original v1 config/results
+and v2 plan remain archived. V1.2 adds an optional trusted executor that owns
+the only mutation path. The v3 plan checks default-ledger compatibility; the
+new combined path has separate integration tests, not new v1 benchmark scores.
 
 This module asks what happens after the validator returns `REQUEST_CONFIRMATION`.
 Can the agent obtain, check and apply a human reply without opening a new
@@ -88,6 +90,11 @@ request. It then reads evidence at the current clock, re-runs the unchanged
 validator with the approval card added, calls an optional `pre_commit_check`,
 and applies the declared transition once. A completed request returns
 `ALREADY_EXECUTED`, and the ledger refuses a second mutation of the same binding.
+Alternatively, `executor=` receives the exact action, current policy and cards
+(including the accepted approval), and the workflow clock. Use exactly one
+execution path. All protocol checks must stay enabled for an executor; its
+refusal escalates with no fallback to the ledger. A successful receipt records
+the executor's actual state diff and decisive proof IDs.
 
 **Time.** The workflow owns a logical clock that only moves forward. Pending
 requests expire at their deadline, and confirmed approvals expire at their TTL.
@@ -117,14 +124,15 @@ and denial of service.
 - **Time and ordering.** Events are processed one at a time on a logical clock.
   Real asynchronous delivery, network delay and concurrent replies are not
   modelled.
-- **Execution.** `SimulatedActionLedger` applies a declared state change. Real
-  tools need their own idempotency key and commit-time check. No Commit-Time
-  Freshness Gate was wired into this workflow. The repository now includes a
-  separate commit-time gate; `pre_commit_check` remains a check-only hook,
-  not an atomic execution adapter. Nothing here is atomic against an external system.
-- **Evidence grounding.** This module consumes typed cards and does not call
-  the optional field-grounding layer. No combined end-to-end guarantee follows
-  from testing the modules separately.
+- **Execution.** The default `SimulatedActionLedger` applies a declared state
+  change. `CommitBoundExecutor` can now replace it and delegate the sole
+  mutation to the commit-time gate. `pre_commit_check` is still only a check
+  hook. No path is atomic against a real external system; real tools need
+  their own transaction and idempotency key.
+- **Evidence grounding.** `GroundedEvidenceProvider` joins the optional lexical
+  checker to this workflow while retaining its vetoes. The composed synthetic
+  hotel case checks these boundaries together, with scripted extraction and
+  channel authentication, not real identity or general semantic inference.
 
 ## 6. Usage
 
@@ -235,11 +243,13 @@ From `05_代码与实验/`:
 
 ```bash
 python3 -m unittest tests.test_human_intervention_workflow -v
-python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v2.json
+python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v3.json
 ```
 
 The second command prints the current acceptance plan only. The original v1
 config and prefix remain archived; its code is preserved in contributor commit
 `c0e0cad`. A new formal run needs a new `output_prefix`, `--run
 --acknowledge-experiment-plan`, and `--allow-dirty-worktree` only when
-uncommitted changes must be recorded.
+uncommitted changes must be recorded. For the separate composed path, run
+`python3 examples/guarded_hotel_workflow.py` and read the
+[integration contracts](integration.md#composed-hotel-workflow).

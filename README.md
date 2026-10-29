@@ -30,6 +30,7 @@ integration fixes and acceptance checks are recorded separately.
 | Commit-time gate | Group-contributed prepare/commit gate hardened and checked; versioned deterministic development acceptance passes under in-process simulation assumptions. | [Audit](05_代码与实验/results/commit_time_gate_deterministic_v1_audit.json), [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
 | Confirmation lifecycle | Integrated with strict reply-decision validation, channel-bound responder fixtures, action binding, expiry, revalidation and execute-once simulation. | [Technical notes](05_代码与实验/docs/human-intervention.md) |
 | Field grounding | Integrated optional English cue-based checker; failures and intervention costs remain visible. No general semantic-verification or authentication claim. | [Technical notes and archived failures](05_代码与实验/docs/evidence-grounding.md) |
+| Composed action loop | A synthetic hotel workflow now joins grounding, bound confirmation and commit-time mutation; tested from source and a clean local wheel install. | [Runnable example](05_代码与实验/examples/guarded_hotel_workflow.py), [Adapter contracts](05_代码与实验/docs/integration.md#composed-hotel-workflow) |
 | Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
 | Final report | Existing seven-page working draft is parked while Milestone takes priority; not submission-ready. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
 
@@ -76,16 +77,17 @@ not change the main held-out result or establish that schema-constrained
 extraction cannot work. No automatic tuning run or expansion follows.
 
 The integration preserves the contributor's v1 artifacts and failures. Human
-workflow v1.1 and the NL-v2 grounding compatibility path have separate acceptance
+workflow v1.2 and the NL-v2 grounding compatibility path have separate acceptance
 plans and unit checks; no new formal result bundle was generated. The frozen
-main comparison is unchanged. These modules are available together, but have
-not been demonstrated as one authenticated, atomic end-to-end tool workflow.
+main comparison is unchanged. One synthetic hotel example now composes the
+modules: preserve grounding vetoes, ask only when authority is repairable,
+and delegate the sole simulated mutation to the commit gate. Authentication
+and extraction are fixtures; this is not a real authenticated booking service.
 
-Next: team-review the short Milestone and familiar travel replay, then submit
+Next: team-review the short Milestone and the composed hotel example, then submit
 through the correct Canvas item when it becomes available. Final and hand-made
-slides can resume later. The next optional engineering decision is whether a
-single combined adapter adds a useful demonstration beyond separate modules;
-it is not a reason to launch another broad model sweep.
+slides can resume later. The useful engineering handoff is now runnable code,
+trace export and explicit adapter contracts, not another broad model sweep.
 An actual single-workflow compactor adapter remains optional engineering work,
 not a prerequisite for presenting the bounded research result.
 
@@ -94,6 +96,7 @@ not a prerequisite for presenting the bounded research result.
 | Commit-time freshness | Integrated and deterministically checked; not yet a live-tool or distributed guarantee. | Do holds/revocations, changed arguments and retries remain correct at the simulated mutation boundary? |
 | [Human intervention](05_代码与实验/docs/human-intervention.md) | Integrated; unit acceptance includes the scripted matrix and malformed-reply regression. | Can only the named responder repair a bound gap, without replay, stale permission or duplicate execution? |
 | [Field grounding](05_代码与实验/docs/evidence-grounding.md) | Integrated; current NL-v2 fixture compatibility checked, v1 failure evidence preserved. | Does source text support each field within the declared profile, without confusing textual support with authentication? |
+| [Composed hotel loop](05_代码与实验/examples/guarded_hotel_workflow.py) | Source and clean-install example checks complete under the existing simulator assumptions. | Does a grounding veto survive the adapter, and can a hold introduced after confirmation still prevent the actual mutation? |
 
 Further experiments need a concrete unanswered question that could change a design decision or claim. Extra model calls, models or charts alone are not a reason to run them.
 

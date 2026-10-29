@@ -8,6 +8,7 @@
 - Integration acceptance detaches nested JSON transitions, prepared tokens and ledger views, preserves valid queued holds after an invalid registry write, and rejects path-like artifact prefixes.
 - Integrated the team's scripted human-confirmation lifecycle and optional English field-grounding checker, preserving contributor commits, original results and known failures.
 - Reject malformed reply decisions before recording approval; pin current NL-v2 acceptance inputs separately from archived NL-v1 scores. These course modules are not a new standalone-toolkit release.
+- Compose grounding, bound confirmation and commit-time mutation in one synthetic hotel example. Preserve card-free grounding vetoes, delegate the sole mutation to the gate, and keep one declared operation binding across retries.
 
 ## 0.1.1 — 2026-10-21
 

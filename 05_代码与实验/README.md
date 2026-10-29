@@ -297,15 +297,17 @@ trust boundaries, results and limitations.
 
 ```bash
 python3 -m unittest tests.test_human_intervention_workflow -v
-python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v2.json
+python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v3.json
 ```
 
 The evaluation runner is deterministic and plan-only without `--run` and
 `--acknowledge-experiment-plan`. It refuses to run if the workflow or scenario
 module differs from the hashes frozen in the config. The original v1 config
 and result bundle describe the contributor's pre-integration implementation;
-v1.1 adds malformed-decision rejection and is checked with a separate v2 plan
-and unit acceptance. No new formal run is implied by the plan file.
+v1.1 adds malformed-decision rejection; v1.2 permits a trusted mutation executor
+in place of the legacy ledger. Its v3 plan checks default-ledger compatibility;
+combined execution is covered by separate integration tests, not those original
+scores. Earlier plans remain archived. No new formal run is implied.
 
 ## Field-Level Grounding
 
@@ -338,6 +340,37 @@ result used NL-v1 inputs; changing those inputs must not silently reuse its
 plan or be presented as reproducing its scores. No new formal v2 run was made.
 
 ## Reproduction
+
+### Run one composed action workflow
+
+```bash
+python3 examples/guarded_hotel_workflow.py
+python3 examples/guarded_hotel_workflow.py --scenario hold_before_commit --json
+python3 -m unittest tests.test_guarded_action_workflow -v
+```
+
+This synthetic hotel example joins the optional field-grounding provider,
+channel-bound confirmation and the commit-time gate. Existing registry approval
+executes without asking; a grounding veto creates no confirmation; a repairable
+authority gap asks the named traveller. An accepted reply still cannot override
+a new hold, changed arguments, expired approval or duplicate operation. JSON
+shows the evidence decisions, exact request binding, registry versions and
+simulated state diff.
+
+`GroundedEvidenceProvider` preserves vetoes that have no corresponding hold
+card. `CommitBoundExecutor` owns the sole mutation; the workflow cannot also use
+the legacy ledger. A fixed declared action keeps its commit binding across
+retries even when execution-time evidence is refreshed. See
+[`docs/integration.md`](docs/integration.md#composed-hotel-workflow) for the
+adapter contracts and remaining trust boundaries. Extraction and authentication
+are scripted fixtures; no model, paid API or real booking is used. These are
+engineering acceptance checks, not additional frozen benchmark scores.
+
+To check a separately installed course build, add `--installed-package`; the
+example then does not insert the checkout's `src` directory. The standalone
+published v0.1.1 package does not automatically include this unreleased extension.
+
+### Reproduce existing research evidence
 
 Use Python 3.12 or newer from this directory. The public deterministic CLI is
 shown in the quickstart; these checks read the existing research evidence:

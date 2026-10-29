@@ -104,6 +104,51 @@ Conversation memory should be treated as a performance cache. Current authority,
 holds, revocations, and other source-of-truth state should be re-read from an
 independent service at the action boundary when the application requires it.
 
+## Composed hotel workflow
+
+The course checkout includes one model-free runtime composition:
+
+```bash
+python3 examples/guarded_hotel_workflow.py
+python3 examples/guarded_hotel_workflow.py --scenario hold_before_commit --json
+```
+
+The example deliberately supplies a real quote whose extracted claim confuses
+policy clearance with authority. Grounding excludes it. Existing approval can
+still permit Execute; otherwise an applicable repair card permits asking the
+named traveller. Handoff creates no request. A valid reply supplies authority
+for the exact hotel and charge, and the commit gate checks current records
+before making the only simulated booking mutation.
+
+| Adapter | Contract |
+| --- | --- |
+| `GroundedEvidenceProvider(source)` | The trusted source returns policy, parsed claims, visible messages and optionally authenticated structured cards. Handoff/format failures remain vetoes, even when no typed hold card exists. Admitted cards alone cannot erase that decision. |
+| `InterventionWorkflow(..., executor=...)` | Choose either the default ledger or a trusted executor. An executor requires every workflow check; refusal escalates and never falls back to a second mutation path. |
+| `CommitBoundExecutor(gate, action, transition)` | Fix one declared operation and detached transition; use `atomic_revalidate` for the mutation. Reuse this binding for retries. The receipt names the proof actually checked at commit. |
+
+The authored `hold_before_commit` schedule publishes a hold **after** workflow
+revalidation and the gate's prepare check. Prepare remains Execute, commit is
+Handoff and state is unchanged. Other schedules cover pre-existing approval,
+an initial grounding veto, valid confirmation, wrong responder, changed charge,
+expiry and retries. Integration tests also revoke recovery and interrupt registry
+availability between checks. They assert actual gate state and workflow outcome
+together, rather than inferring execution from a route label.
+
+These are development acceptance fixtures. The extraction is scripted, the
+directory and registry are trusted fixtures, the clock is logical, and mutation
+is local to one simulator. The lexical checker's published limitations remain.
+Policy is the supplied snapshot, not a live policy-service transaction. Neither
+process restart, distributed recovery nor a real tool's exactly-once delivery
+is established. A changed business operation needs a new declared adapter and a
+real tool's own idempotency key. No vendor compactor or model is called, so this
+does not establish opaque-memory integration or upstream extraction quality.
+
+The JSON trace is an example/debug output, not a new research result bundle.
+The original v1 matrices and their failures remain archived. Workflow v1.2's
+v3 acceptance plan concerns legacy-ledger compatibility; the composition is
+checked separately in `tests/test_guarded_action_workflow.py`. To use a wheel
+installed in a clean environment, pass `--installed-package` to the example.
+
 ## CI outputs
 
 The CLI writes:
@@ -123,5 +168,7 @@ compactor: independently capture all three siblings, export three validated
 snapshots in a single-case contract, and reproduce the expected red/green gate
 from a clean install. Then check that changing a tool argument invalidates an
 old approval. This would establish one real adapter, not universal production
-readiness. Opaque continuation adapters and resume/idempotency fault injection
-remain explicitly unimplemented extensions.
+readiness. Opaque continuation adapters and distributed resume/recovery remain
+unimplemented. The composed hotel example now checks in-process retries and
+confirmation-to-commit handoff, separately from this still-optional real-compactor
+adapter.

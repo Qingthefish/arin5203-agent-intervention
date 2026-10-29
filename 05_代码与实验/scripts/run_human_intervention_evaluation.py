@@ -16,8 +16,8 @@ Every configuration replays the same scripted scenarios
 
 Examples (from 05_代码与实验/):
 
-    python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v2.json
-    python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v2.json \
+    python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v3.json
+    python3 scripts/run_human_intervention_evaluation.py --config configs/human_intervention_acceptance_v3.json \
         --run --acknowledge-experiment-plan
 """
 

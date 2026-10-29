@@ -28,10 +28,11 @@ stands in for an authenticated session; it is not real identity verification.
 Time is a logical clock owned by the workflow. Callers advance it forward only.
 Response timestamps are never read, so a backdated reply cannot beat a deadline.
 
-Consistency boundary. Revalidation and the simulated mutation happen in one
-synchronous call on a single-threaded simulator, after an optional
-``pre_commit_check`` hook. This gives no atomicity guarantee against a real
-external system; a production tool would need its own commit-time check.
+Consistency boundary. The default ledger mutates in one synchronous simulator
+call, after an optional ``pre_commit_check`` hook. A trusted ``executor`` can
+replace that ledger, so the commit-time gate owns the only mutation. Custom
+execution requires all workflow checks. Neither path guarantees atomicity
+against a real external system; production tools need their own boundary.
 """
 
 from __future__ import annotations
@@ -57,7 +58,7 @@ from .proof_cards import (
 )
 
 
-HUMAN_INTERVENTION_VERSION = "human-intervention-v1.1"
+HUMAN_INTERVENTION_VERSION = "human-intervention-v1.2"
 
 
 class RequestState(str, Enum):
@@ -81,6 +82,10 @@ class ResponseDecision(str, Enum):
 
 class EvidenceUnavailable(RuntimeError):
     """Raised by an evidence provider that cannot answer; the workflow fails closed."""
+
+    def __init__(self, message: str = "", *, reason_code: str = "EVIDENCE_SOURCE_UNAVAILABLE") -> None:
+        super().__init__(message)
+        self.reason_code = reason_code
 
 
 # ---------------------------------------------------------------------------
@@ -186,6 +191,21 @@ class EvidenceSnapshot:
 
 
 EvidenceProvider = Callable[[ActionRequest], EvidenceSnapshot]
+
+
+@dataclass(frozen=True)
+class MutationResult:
+    """Outcome from the trusted mutation adapter; not a model-generated claim."""
+
+    executed: bool
+    reason: str
+    state_diff: tuple[tuple[str, str, str], ...] = ()
+    decisive_card_ids: tuple[str, ...] = ()
+
+
+MutationExecutor = Callable[
+    [ActionRequest, ProofPolicy, tuple[ProofCard, ...], str], MutationResult
+]
 
 
 @dataclass(frozen=True)
@@ -324,7 +344,7 @@ class InterventionWorkflow:
         self,
         provider: EvidenceProvider,
         directory: ResponderDirectory,
-        ledger: SimulatedActionLedger,
+        ledger: SimulatedActionLedger | None = None,
         *,
         start_time: str,
         confirmation_issuer: str,
@@ -333,10 +353,16 @@ class InterventionWorkflow:
         challenge_seed: str = "simulation-seed",
         checks: ProtocolChecks = ProtocolChecks(),
         pre_commit_check: Callable[[ActionRequest, ProofCardResult], str | None] | None = None,
+        executor: MutationExecutor | None = None,
     ) -> None:
+        if (ledger is None) == (executor is None):
+            raise ValueError("supply exactly one of ledger or executor")
+        if executor is not None and checks != ProtocolChecks():
+            raise ValueError("a mutation executor requires every workflow check enabled")
         self._provider = provider
         self._directory = directory
         self._ledger = ledger
+        self._executor = executor
         self._now = _aware(start_time)
         self._issuer = confirmation_issuer
         self._request_ttl = request_ttl
@@ -409,8 +435,8 @@ class InterventionWorkflow:
         try:
             at_now, snapshot = self._evidence(action)
         except EvidenceUnavailable as exc:
-            self._log(None, "START", "NO_REQUEST", "EVIDENCE_SOURCE_UNAVAILABLE", error=exc)
-            return StartOutcome(Decision.HANDOFF, None, None, "EVIDENCE_SOURCE_UNAVAILABLE")
+            self._log(None, "START", "NO_REQUEST", exc.reason_code, error=exc)
+            return StartOutcome(Decision.HANDOFF, None, None, exc.reason_code)
         result = validate_proof_cards(ProofCardInput(at_now, snapshot.policy, snapshot.cards))
         if result.decision is not Decision.REQUEST_CONFIRMATION:
             # Execute needs no confirmation; Handoff is never converted into one.
@@ -515,9 +541,9 @@ class InterventionWorkflow:
                 return ResponseOutcome(False, "RESPONDER_NOT_ADDRESSED", record.state)
             try:
                 at_now, snapshot = self._evidence(record.action)
-            except EvidenceUnavailable:
-                self._close(record, RequestState.ESCALATED, "EVIDENCE_SOURCE_UNAVAILABLE")
-                return ResponseOutcome(False, "EVIDENCE_SOURCE_UNAVAILABLE", record.state)
+            except EvidenceUnavailable as exc:
+                self._close(record, RequestState.ESCALATED, exc.reason_code)
+                return ResponseOutcome(False, exc.reason_code, record.state)
             if principal not in {c.subject_id for c in self._repair_cards(at_now, snapshot)}:
                 self._close(record, RequestState.ESCALATED, "RESPONDER_AUTHORITY_LAPSED")
                 return ResponseOutcome(False, "RESPONDER_AUTHORITY_LAPSED", record.state)
@@ -580,9 +606,9 @@ class InterventionWorkflow:
         if self.checks.revalidate_evidence:
             try:
                 at_now, snapshot = self._evidence(action)
-            except EvidenceUnavailable:
-                self._close(record, RequestState.ESCALATED, "EVIDENCE_SOURCE_UNAVAILABLE")
-                return ExecutionOutcome(False, "EVIDENCE_SOURCE_UNAVAILABLE", record.state)
+            except EvidenceUnavailable as exc:
+                self._close(record, RequestState.ESCALATED, exc.reason_code)
+                return ExecutionOutcome(False, exc.reason_code, record.state)
             validation = validate_proof_cards(ProofCardInput(
                 at_now, snapshot.policy, snapshot.cards + (record.approval_card,)))
             if validation.decision is not Decision.AUTO_EXECUTE:
@@ -601,15 +627,27 @@ class InterventionWorkflow:
                     return ExecutionOutcome(False, "PRE_COMMIT_CHECK_" + blocked, record.state,
                                             validation)
 
-        try:
-            diff = self._ledger.apply(record.request.action_sha256)
-        except RuntimeError:
-            self._close(record, RequestState.ESCALATED, "LEDGER_REFUSED_DUPLICATE_BINDING")
-            return ExecutionOutcome(False, "LEDGER_REFUSED_DUPLICATE_BINDING", record.state)
+        completion_reason = ("EXECUTED_AFTER_REVALIDATION" if self.checks.revalidate_evidence
+                             else "EXECUTED_WITHOUT_REVALIDATION")
+        if self._executor is not None:
+            dispatch = self._executor(
+                action, snapshot.policy, snapshot.cards + (record.approval_card,), self.now)
+            if not dispatch.executed:
+                reason = "EXECUTOR_REFUSED_" + dispatch.reason
+                self._close(record, RequestState.ESCALATED, reason)
+                return ExecutionOutcome(False, reason, record.state, validation)
+            diff, decisive = dispatch.state_diff, dispatch.decisive_card_ids
+            completion_reason = dispatch.reason
+        else:
+            assert self._ledger is not None
+            try:
+                diff = self._ledger.apply(record.request.action_sha256)
+            except RuntimeError:
+                self._close(record, RequestState.ESCALATED, "LEDGER_REFUSED_DUPLICATE_BINDING")
+                return ExecutionOutcome(False, "LEDGER_REFUSED_DUPLICATE_BINDING", record.state)
         record.receipt = ExecutionReceipt(request_id, record.request.action_sha256, self.now,
                                           diff, decisive)
-        self._close(record, RequestState.COMPLETED, "EXECUTED_AFTER_REVALIDATION"
-                    if self.checks.revalidate_evidence else "EXECUTED_WITHOUT_REVALIDATION")
+        self._close(record, RequestState.COMPLETED, completion_reason)
         return ExecutionOutcome(True, record.terminal_reason, record.state, validation,
                                 record.receipt)
 
