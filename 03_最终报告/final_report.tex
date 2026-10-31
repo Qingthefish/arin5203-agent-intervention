@@ -363,6 +363,7 @@ Artifact prefix & Evidence role \\
 \path{typed_budget_sweep_dev_qwen_v1} & Development sensitivity; replayed compactor outputs and new routes. \\
 \path{durable_proof_store_deterministic_v1} & Deterministic architecture test with authenticated-record assumptions. \\
 \path{nl_extraction_dev_diagnostic_qwen_v1} & Development-only extraction diagnostic; JSON-mode interface failure. \\
+\path{heldout_bootstrap_ci_v1} & Post-hoc family-clustered intervals derived from the frozen held-out trace; zero model calls. \\
 \bottomrule
 \end{tabular}
 \caption{Compact provenance map. Historical negative gates are identified in the
@@ -388,6 +389,13 @@ harmful Execute, unnecessary intervention, or noise-induced route change.
 Direct routing on that memory achieves 14/22 and four stable harmful Executes.
 Across all 33 contexts, the audit corrects ten typed direct errors and spoils
 none; seven direct harmful Executes become three after audit.
+Resampling the eleven held-out families with replacement (siblings kept
+together, 10{,}000 draws) gives a descriptive sense of this variability: the
+audit adds 8 correct stable typed routes (95\% interval 2--14) and removes
+4 harmful typed Executes (0--10). The harm reduction is larger for the neutral
+and task-aware summaries, 13 (6--21) and 15 (7--23), because their direct routes
+executed more often. Perfect audited scores yield degenerate intervals; with
+eleven correlated families, none of these intervals is a significance test.
 
 However, neutral summary, task-aware summary, and U-Fold-lite also achieve
 22/22 audited stable routes. Across all conditions, U-Fold-lite reaches 31/33,
