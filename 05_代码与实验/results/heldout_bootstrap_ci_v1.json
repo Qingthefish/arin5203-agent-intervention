@@ -1,0 +1,319 @@
+{
+  "source_raw": "results/typed_exact_budget_heldout_qwen_v1_raw.jsonl",
+  "source_raw_sha256": "a3616c7d266ecda937fab33f24bea48e9ac2be8ad15e0510cc2ecaeee12059d5",
+  "families": 11,
+  "resamples": 10000,
+  "seed": 5203,
+  "interval": "95% percentile, family-clustered bootstrap (siblings resampled together)",
+  "claim_scope": "descriptive uncertainty for 11 correlated synthetic families; not a significance test of method superiority",
+  "methods": {
+    "full_context_ceiling": {
+      "stable_correct_direct": {
+        "observed": 14,
+        "ci95": [
+          8.0,
+          20.0
+        ]
+      },
+      "stable_correct_audit": {
+        "observed": 22,
+        "ci95": [
+          22.0,
+          22.0
+        ]
+      },
+      "harmful_direct": {
+        "observed": 14,
+        "ci95": [
+          6.0,
+          23.0
+        ]
+      },
+      "harmful_audit": {
+        "observed": 3,
+        "ci95": [
+          0.0,
+          6.0
+        ]
+      },
+      "stable_gain": {
+        "observed": 8,
+        "ci95": [
+          2.0,
+          14.0
+        ]
+      },
+      "harm_reduction": {
+        "observed": 11,
+        "ci95": [
+          3.0,
+          20.0
+        ]
+      }
+    },
+    "recent_window": {
+      "stable_correct_direct": {
+        "observed": 6,
+        "ci95": [
+          0.0,
+          12.0
+        ]
+      },
+      "stable_correct_audit": {
+        "observed": 6,
+        "ci95": [
+          0.0,
+          12.0
+        ]
+      },
+      "harmful_direct": {
+        "observed": 0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "harmful_audit": {
+        "observed": 0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "stable_gain": {
+        "observed": 0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "harm_reduction": {
+        "observed": 0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "neutral_summary": {
+      "stable_correct_direct": {
+        "observed": 11,
+        "ci95": [
+          5.0,
+          17.0
+        ]
+      },
+      "stable_correct_audit": {
+        "observed": 22,
+        "ci95": [
+          22.0,
+          22.0
+        ]
+      },
+      "harmful_direct": {
+        "observed": 16,
+        "ci95": [
+          7.0,
+          25.0
+        ]
+      },
+      "harmful_audit": {
+        "observed": 3,
+        "ci95": [
+          0.0,
+          6.0
+        ]
+      },
+      "stable_gain": {
+        "observed": 11,
+        "ci95": [
+          5.0,
+          17.0
+        ]
+      },
+      "harm_reduction": {
+        "observed": 13,
+        "ci95": [
+          6.0,
+          21.0
+        ]
+      }
+    },
+    "task_aware_summary": {
+      "stable_correct_direct": {
+        "observed": 10,
+        "ci95": [
+          4.0,
+          16.0
+        ]
+      },
+      "stable_correct_audit": {
+        "observed": 22,
+        "ci95": [
+          22.0,
+          22.0
+        ]
+      },
+      "harmful_direct": {
+        "observed": 18,
+        "ci95": [
+          9.0,
+          27.0
+        ]
+      },
+      "harmful_audit": {
+        "observed": 3,
+        "ci95": [
+          0.0,
+          6.0
+        ]
+      },
+      "stable_gain": {
+        "observed": 12,
+        "ci95": [
+          6.0,
+          18.0
+        ]
+      },
+      "harm_reduction": {
+        "observed": 15,
+        "ci95": [
+          7.0,
+          23.0
+        ]
+      }
+    },
+    "generic_pinning": {
+      "stable_correct_direct": {
+        "observed": 10,
+        "ci95": [
+          4.0,
+          16.0
+        ]
+      },
+      "stable_correct_audit": {
+        "observed": 6,
+        "ci95": [
+          0.0,
+          12.0
+        ]
+      },
+      "harmful_direct": {
+        "observed": 18,
+        "ci95": [
+          9.0,
+          27.0
+        ]
+      },
+      "harmful_audit": {
+        "observed": 0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "stable_gain": {
+        "observed": -4,
+        "ci95": [
+          -14.0,
+          6.049999999999272
+        ]
+      },
+      "harm_reduction": {
+        "observed": 18,
+        "ci95": [
+          9.0,
+          27.0
+        ]
+      }
+    },
+    "ufold_lite": {
+      "stable_correct_direct": {
+        "observed": 14,
+        "ci95": [
+          8.0,
+          20.0
+        ]
+      },
+      "stable_correct_audit": {
+        "observed": 22,
+        "ci95": [
+          22.0,
+          22.0
+        ]
+      },
+      "harmful_direct": {
+        "observed": 14,
+        "ci95": [
+          6.0,
+          23.0
+        ]
+      },
+      "harmful_audit": {
+        "observed": 2,
+        "ci95": [
+          0.0,
+          5.0
+        ]
+      },
+      "stable_gain": {
+        "observed": 8,
+        "ci95": [
+          2.0,
+          14.0
+        ]
+      },
+      "harm_reduction": {
+        "observed": 12,
+        "ci95": [
+          4.0,
+          21.0
+        ]
+      }
+    },
+    "typed_card_retention": {
+      "stable_correct_direct": {
+        "observed": 14,
+        "ci95": [
+          8.0,
+          20.0
+        ]
+      },
+      "stable_correct_audit": {
+        "observed": 22,
+        "ci95": [
+          22.0,
+          22.0
+        ]
+      },
+      "harmful_direct": {
+        "observed": 7,
+        "ci95": [
+          1.0,
+          14.0
+        ]
+      },
+      "harmful_audit": {
+        "observed": 3,
+        "ci95": [
+          0.0,
+          6.0
+        ]
+      },
+      "stable_gain": {
+        "observed": 8,
+        "ci95": [
+          2.0,
+          14.0
+        ]
+      },
+      "harm_reduction": {
+        "observed": 4,
+        "ci95": [
+          0.0,
+          10.0
+        ]
+      }
+    }
+  }
+}
