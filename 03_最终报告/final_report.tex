@@ -8,6 +8,9 @@
 \usepackage{microtype}
 \usepackage{amsmath}
 \usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \usepackage[breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
 \def\paperID{}
@@ -218,21 +221,27 @@ to recover an unseen fact.
 
 \begin{figure}[t]
 \centering
-\fbox{\begin{minipage}{0.93\columnwidth}
-\centering\small
-Proposed action + runtime policy (shared input)\\[3pt]
-Source-linked records (authentication assumed)\\
-$\downarrow$\\
-Active memory: six strategies, at most 384 raw tokens\\
-$\downarrow$\\
-Direct model route \quad / \quad deterministic proof audit\\[2pt]
-Retained IDs $\rightarrow$ canonical records outside memory budget\\
-$\downarrow$\\
-Execute \quad / \quad Confirm \quad / \quad Handoff\\[2pt]
-Frozen outcome flag; later declared state-diff replay
-\end{minipage}}
-\caption{The budget applies to active memory, not to the complete information
-system. The audit reconstructs canonical cards through retained sources.}
+\begin{tikzpicture}[
+  font=\scriptsize, node distance=3.2mm,
+  box/.style={draw, rounded corners=2pt, align=center, inner sep=2.5pt, minimum height=5mm},
+  arr/.style={-{Stealth[length=1.6mm]}, thick}]
+\node[box, text width=0.88\columnwidth] (sib) {\textbf{Matched siblings} of one action family\\
+complete evidence \;$\mid$\; critical event removed \;$\mid$\; equal-word noise removed};
+\node[box, below=of sib, text width=0.88\columnwidth] (mem) {\textbf{Active memory} under a 384-token budget: recent window,
+neutral / task-aware summary, generic pinning, U-Fold-lite, typed proof (full history: unbudgeted reference)};
+\node[box, anchor=north west, text width=0.40\columnwidth] (dir) at ([yshift=-3.2mm]mem.south west) {\textbf{Direct route}\\model reads memory, picks route};
+\node[box, anchor=north east, text width=0.40\columnwidth] (aud) at ([yshift=-3.2mm]mem.south east) {\textbf{Proof audit}\\retained IDs $\rightarrow$ canonical cards $\rightarrow$ fixed rules};
+\node[box, anchor=north west, text width=0.88\columnwidth] (route) at ([yshift=-3.2mm]dir.south west) {\textsc{Execute} \;/\; \textsc{Confirm} \;/\; \textsc{Handoff}\\
+scored against the authored label and unsafe-if-executed flag};
+\draw[arr] (sib) -- (mem);
+\draw[arr] (mem.south -| dir.north) -- (dir.north);
+\draw[arr] (mem.south -| aud.north) -- (aud.north);
+\draw[arr] (dir.south) -- (dir.south |- route.north);
+\draw[arr] (aud.south) -- (aud.south |- route.north);
+\end{tikzpicture}
+\caption{Evaluation pipeline. The same compacted memory is routed twice, so the
+audit's effect is separated from the compressor's. The budget applies to active
+memory only; canonical records are looked up outside it.}
 \label{fig:architecture}
 \end{figure}
 
@@ -362,7 +371,18 @@ text; they are not pooled with held-out samples.}
 \end{table*}
 
 \subsection{Main comparison: safety and autonomy together}
-Table~\ref{tab:main} shows why a single success percentage is insufficient.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/heldout_direct_vs_audit.pdf}
+\caption{Held-out routing per memory strategy. Blue: the model's direct route;
+orange: the same memory after the deterministic proof audit. Bars show frozen
+counts; whiskers are family-clustered 95\% bootstrap intervals over the eleven
+held-out families (no whisker when every resample gives the same count).
+$^*$Full history is an unbudgeted reference.}
+\label{fig:heldout}
+\end{figure}
+
+Table~\ref{tab:main} and Figure~\ref{fig:heldout} show why a single success percentage is insufficient.
 Typed memory plus audit achieves 22/22 correct stable routes, with no stable
 harmful Execute, unnecessary intervention, or noise-induced route change.
 Direct routing on that memory achieves 14/22 and four stable harmful Executes.
