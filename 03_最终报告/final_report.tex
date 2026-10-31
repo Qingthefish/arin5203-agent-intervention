@@ -19,11 +19,11 @@
 \title{Do AI Platform Agents Know What They Must Not Forget?\\
 \large Compaction-Aware Intervention Before State-Changing Operations}
 \author{Qingcheng Yu \quad Siu Kwun Yeung \quad Qingyin Guo\\
-Hong Kong University of Science and Technology}
+The Hong Kong University of Science and Technology}
 \date{}
 \begin{document}
 \maketitle
-\noindent\textbf{Working draft -- 23 October 2026.}
+\noindent\textbf{Working draft -- 31 October 2026.}
 This manuscript is not submission-ready. Live template requirements, team
 review, report-sharing preference, and final references require confirmation
 before submission.
@@ -36,8 +36,8 @@ state-changing operations. Twenty synthetic scenario families yield 60 matched
 contexts: complete evidence, one critical deletion, and one word-matched noise
 deletion. Six compressed strategies share a 384-token active-memory budget;
 full history provides an unbudgeted reference. We compare direct model routing
-with a deterministic audit that rehydrates canonical proof cards through
-retained source identifiers. On eleven held-out families, typed proof memory
+with a deterministic audit that looks up the full proof record for every
+source the compacted memory still cites. On eleven held-out families, typed proof memory
 and several strong summaries all achieve 22/22 audited stable routes. Across
 all 33 contexts, U-Fold-lite achieves 31/33 versus typed memory's 30/33. Typed
 memory has perfect measured proof-source selection, but this metric does not
@@ -59,6 +59,10 @@ review. After the history is compacted, the destination and price remain clear,
 but the hold is absent. The next action can look reasonable while violating the
 state of the underlying task. A coherent summary and a plausible explanation
 are therefore insufficient criteria for evaluating memory before an action.
+Compaction itself is unavoidable: self-attention cost grows quadratically
+with sequence length and context windows are finite, so a long-running agent
+must decide what its next step can still see. Our question is what that
+decision does to the evidence behind a state-changing tool call.
 
 The practical question is what evidence must remain available at a tool
 boundary. Authorization has an actor, operation, target, scope, and validity
