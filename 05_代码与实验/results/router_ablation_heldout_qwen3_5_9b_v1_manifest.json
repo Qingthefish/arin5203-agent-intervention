@@ -1,0 +1,20 @@
+{
+  "ablation": "router-ablation-v1",
+  "split": "heldout",
+  "frozen_source": "results/typed_exact_budget_heldout_qwen_v1_raw.jsonl",
+  "frozen_source_sha256": "a3616c7d266ecda937fab33f24bea48e9ac2be8ad15e0510cc2ecaeee12059d5",
+  "frozen_model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "model": "qwen3.5:9b",
+  "temperature": 0.0,
+  "seed": 5203,
+  "max_tokens": 192,
+  "templates": {
+    "direct": "typed-compaction-direct-router-v1",
+    "checklist": "obligation-checklist-router-v1",
+    "rehydrated": "rehydrated-direct-router-v1"
+  },
+  "started_at": "2026-11-05T14:36:26.053409+00:00",
+  "python": "3.13.16",
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "claim_scope": "post-hoc router ablation on frozen compacted memories; no compaction, label, or threshold is changed"
+}
