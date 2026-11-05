@@ -29,6 +29,8 @@
   \setlength{\evensidemargin}{-0.1875in}
 }
 \usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \usepackage[breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
 
@@ -39,7 +41,8 @@
 \title{Do AI Platform Agents Know What They Must Not Forget?\\
 \large Compaction-Aware Intervention Before State-Changing Operations}
 \author{Qingcheng Yu \quad Siu Kwun Yeung \quad Qingyin Guo\\
-Hong Kong University of Science and Technology}
+The Hong Kong University of Science and Technology}
+
 \date{}
 
 \begin{document}
@@ -95,8 +98,10 @@ deletion does not, the result supports an evidence-specific causal effect.
 
 We evaluate route accuracy, harmful Execute, unnecessary intervention, safe
 autonomy, decisive-proof retention, proof-source citation precision, and
-noise invariance. Harmful Execute combines an authored unsafe flag with the
-released route; a later replay illustrates the declared simulated state diff.
+noise invariance. A harmful Execute is an Execute route on a context whose hand-written label
+marks execution as unsafe; a later replay only illustrates the simulated
+state change.
+
 Stateful tool evaluation follows the
 motivation of $\tau$-bench and ToolSandbox~\cite{yao2024tau,lu2025toolsandbox};
 SABER motivates checking mutating steps rather than judging only the final
@@ -112,24 +117,39 @@ method identity, and exact token counts are cached by content hash.
 
 \begin{figure}[t]
   \centering
-  \fbox{\begin{minipage}{0.94\columnwidth}
-  \centering\small
-  Long trace $\rightarrow$ memory strategy under a fixed budget\\[-1pt]
-  $\downarrow$\\[-3pt]
-  Typed proof audit: authority, scope, expiry, blockers, recovery\\[-1pt]
-  $\downarrow$\\[-3pt]
-  \textsc{Execute}\quad|\quad\textsc{Confirm}\quad|\quad\textsc{Handoff}\\[-1pt]
-  $\downarrow$\\[-3pt]
-  Authored outcome flag; later simulated state diff
-  \end{minipage}}
-  \caption{Route scoring uses an authored outcome flag; replay illustrates a
-  declared simulated consequence.}
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    box/.style={draw, rounded corners=2pt, align=center, inner sep=2.5pt, minimum height=5mm},
+    arr/.style={-{Stealth[length=1.6mm]}, thick}]
+  \node[box, text width=0.88\columnwidth] (sib) {\textbf{Matched siblings} of one action family\\
+  complete evidence \;$\mid$\; critical event removed \;$\mid$\; equal-word noise removed};
+  \node[box, anchor=north, text width=0.88\columnwidth] (mem) at ([yshift=-3.2mm]sib.south)
+  {\textbf{Active memory} under a 384-token budget: recent window, neutral / task-aware
+  summary, generic pinning, U-Fold-lite, typed proof (full history: unbudgeted reference)};
+  \node[box, anchor=north west, text width=0.40\columnwidth] (dir) at ([yshift=-3.2mm]mem.south west)
+  {\textbf{Direct route}\\model reads memory, picks route};
+  \node[box, anchor=north east, text width=0.40\columnwidth] (aud) at ([yshift=-3.2mm]mem.south east)
+  {\textbf{Proof audit}\\authority, scope, expiry, holds, recovery};
+  \node[box, anchor=north west, text width=0.88\columnwidth] (route) at ([yshift=-3.2mm]dir.south west)
+  {\textsc{Execute} \;/\; \textsc{Confirm} \;/\; \textsc{Handoff}\\
+  scored against hand-written labels};
+  \draw[arr] (sib) -- (mem);
+  \draw[arr] (mem.south -| dir.north) -- (dir.north);
+  \draw[arr] (mem.south -| aud.north) -- (aud.north);
+  \draw[arr] (dir.south) -- (dir.south |- route.north);
+  \draw[arr] (aud.south) -- (aud.south |- route.north);
+  \end{tikzpicture}
+  \caption{Evaluation pipeline. The same compacted memory is routed twice, so
+  the audit's effect is separated from the compressor's. Routes are scored
+  against hand-written labels; the replay only illustrates a simulated state
+  change.}
+
   \label{fig:pipeline}
 \end{figure}
 
 Canonical source-linked proof cards are assumed to exist before compaction.
-Memory retains compact records or citations; the audit rehydrates canonical
-cards through retained source IDs and checks issuer, subject, target, scope,
+Memory keeps compact records or source IDs; for every source ID that survives,
+the audit looks up the full card and checks its issuer, subject, target, scope,
 and validity. The 384-token budget covers active memory; external storage and
 lookup are not budgeted. This comparison tests retention and validation;
 reliable free-text extraction remains separate. Confirm denotes a gap one
@@ -137,8 +157,9 @@ authenticated answer can repair; an ordinary requester cannot resolve Handoff.
 
 The same compacted memory is scored twice: first by a direct language-model
 router, and then by the typed deterministic audit. This isolates the audit's
-incremental value from the compressor. Budget, output format, provenance,
-strategy-label blinding, and neutral-fill integrity are hard protocol gates.
+incremental value from the compressor. Every run must stay within budget,
+return valid output, cite only visible sources, and hide the strategy's name
+from the router; a run that breaks any of these rules is rejected.
 
 \section{Intermediate Results}
 
@@ -160,23 +181,33 @@ The repaired exact-budget development run contains nine new bases and 27
 matched contexts. Local Qwen3.5-9B completed 270 measured generations in 82.9
 minutes with zero external API cost. All 189 scored records passed the fixed
 budget, blinding, format, fill, and source-integrity contracts. Table~\ref{tab:dev}
-reports only the 18 stable complete and matched-noise contexts used for method
-selection.
+reports the 18 stable complete and matched-noise contexts used for method
+selection. With the audit, every strategy's harmful Executes fall to zero, but
+strategies that lose positive proof (recent window, generic pinning) also lose
+all safe autonomy.
+
 
 \begin{table}[h]
   \centering
   \scriptsize
   \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{@{}lcc@{}}
+  \begin{tabular}{@{}lcccc@{}}
     \toprule
-    Development method & Routes & H / U \\
+     & \multicolumn{2}{c}{Correct /18} & \multicolumn{2}{c}{Harmful} \\
+    Memory strategy & Direct & Audit & Direct & Audit \\
     \midrule
-    Direct on typed memory & 14/18 & 4 / 0 \\
-    Typed memory + proof audit & \textbf{18/18} & \textbf{0 / 0} \\
+    Full history$^*$ & 11 & 18 & 7 & 0 \\
+    Recent window & 6 & 6 & 0 & 0 \\
+    Neutral summary & 8 & 18 & 10 & 0 \\
+    Task-aware summary & 6 & 18 & 11 & 0 \\
+    Generic pinning & 6 & 6 & 12 & 0 \\
+    U-Fold-lite & 10 & 17 & 8 & 0 \\
+    Typed proof & 14 & \textbf{18} & 4 & \textbf{0} \\
     \bottomrule
   \end{tabular}
-  \caption{Frozen development result on stable matched contexts. The last
-  column reports harmful Executes (H) / unnecessary interventions (U).}
+  \caption{Frozen development result on the 18 stable (complete and
+  matched-noise) contexts. Each memory is routed directly by the model and
+  again by the proof audit. $^*$Unbudgeted reference.}
   \label{tab:dev}
 \end{table}
 
@@ -191,9 +222,14 @@ summary.
 
 The method, prompts, budget, validator, thresholds, and metrics were frozen
 before a one-shot 11-base / 33-context held-out run. Its new actions, actors,
-targets, and identifiers remain separate from development. Full comparisons
-and trace-level analysis will appear in the final report, not retune this
-checkpoint.
+targets, and identifiers remain separate from development. In that run, typed
+memory with the audit routed all 22 stable held-out contexts correctly, while
+direct routing on the same memory made four harmful Executes. Neutral and
+task-aware summaries and U-Fold-lite also reached 22/22 after the audit, and
+the three hidden-hold deletions still produced harmful Executes for typed
+memory and both summaries. The full per-method comparison and trace analysis
+will appear in the final report; no method is retuned on these results.
+
 
 A development budget sweep and deterministic durable-proof lookup have also
 been completed without changing the frozen comparison. The latter addresses
