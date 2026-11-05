@@ -98,8 +98,10 @@ deletion does not, the result supports an evidence-specific causal effect.
 
 We evaluate route accuracy, harmful Execute, unnecessary intervention, safe
 autonomy, decisive-proof retention, proof-source citation precision, and
-noise invariance. Harmful Execute combines an authored unsafe flag with the
-released route; a later replay illustrates the declared simulated state diff.
+noise invariance. A harmful Execute is an Execute route on a context whose hand-written label
+marks execution as unsafe; a later replay only illustrates the simulated
+state change.
+
 Stateful tool evaluation follows the
 motivation of $\tau$-bench and ToolSandbox~\cite{yao2024tau,lu2025toolsandbox};
 SABER motivates checking mutating steps rather than judging only the final
@@ -146,8 +148,8 @@ method identity, and exact token counts are cached by content hash.
 \end{figure}
 
 Canonical source-linked proof cards are assumed to exist before compaction.
-Memory retains compact records or citations; the audit rehydrates canonical
-cards through retained source IDs and checks issuer, subject, target, scope,
+Memory keeps compact records or source IDs; for every source ID that survives,
+the audit looks up the full card and checks its issuer, subject, target, scope,
 and validity. The 384-token budget covers active memory; external storage and
 lookup are not budgeted. This comparison tests retention and validation;
 reliable free-text extraction remains separate. Confirm denotes a gap one
@@ -155,8 +157,9 @@ authenticated answer can repair; an ordinary requester cannot resolve Handoff.
 
 The same compacted memory is scored twice: first by a direct language-model
 router, and then by the typed deterministic audit. This isolates the audit's
-incremental value from the compressor. Budget, output format, provenance,
-strategy-label blinding, and neutral-fill integrity are hard protocol gates.
+incremental value from the compressor. Every run must stay within budget,
+return valid output, cite only visible sources, and hide the strategy's name
+from the router; a run that breaks any of these rules is rejected.
 
 \section{Intermediate Results}
 
