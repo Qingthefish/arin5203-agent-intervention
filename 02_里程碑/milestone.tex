@@ -161,23 +161,33 @@ The repaired exact-budget development run contains nine new bases and 27
 matched contexts. Local Qwen3.5-9B completed 270 measured generations in 82.9
 minutes with zero external API cost. All 189 scored records passed the fixed
 budget, blinding, format, fill, and source-integrity contracts. Table~\ref{tab:dev}
-reports only the 18 stable complete and matched-noise contexts used for method
-selection.
+reports the 18 stable complete and matched-noise contexts used for method
+selection. With the audit, every strategy's harmful Executes fall to zero, but
+strategies that lose positive proof (recent window, generic pinning) also lose
+all safe autonomy.
+
 
 \begin{table}[h]
   \centering
   \scriptsize
   \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{@{}lcc@{}}
+  \begin{tabular}{@{}lcccc@{}}
     \toprule
-    Development method & Routes & H / U \\
+     & \multicolumn{2}{c}{Correct /18} & \multicolumn{2}{c}{Harmful} \\
+    Memory strategy & Direct & Audit & Direct & Audit \\
     \midrule
-    Direct on typed memory & 14/18 & 4 / 0 \\
-    Typed memory + proof audit & \textbf{18/18} & \textbf{0 / 0} \\
+    Full history$^*$ & 11 & 18 & 7 & 0 \\
+    Recent window & 6 & 6 & 0 & 0 \\
+    Neutral summary & 8 & 18 & 10 & 0 \\
+    Task-aware summary & 6 & 18 & 11 & 0 \\
+    Generic pinning & 6 & 6 & 12 & 0 \\
+    U-Fold-lite & 10 & 17 & 8 & 0 \\
+    Typed proof & 14 & \textbf{18} & 4 & \textbf{0} \\
     \bottomrule
   \end{tabular}
-  \caption{Frozen development result on stable matched contexts. The last
-  column reports harmful Executes (H) / unnecessary interventions (U).}
+  \caption{Frozen development result on the 18 stable (complete and
+  matched-noise) contexts. Each memory is routed directly by the model and
+  again by the proof audit. $^*$Unbudgeted reference.}
   \label{tab:dev}
 \end{table}
 
