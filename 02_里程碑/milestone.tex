@@ -29,6 +29,8 @@
   \setlength{\evensidemargin}{-0.1875in}
 }
 \usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \usepackage[breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
 
@@ -113,18 +115,33 @@ method identity, and exact token counts are cached by content hash.
 
 \begin{figure}[t]
   \centering
-  \fbox{\begin{minipage}{0.94\columnwidth}
-  \centering\small
-  Long trace $\rightarrow$ memory strategy under a fixed budget\\[-1pt]
-  $\downarrow$\\[-3pt]
-  Typed proof audit: authority, scope, expiry, blockers, recovery\\[-1pt]
-  $\downarrow$\\[-3pt]
-  \textsc{Execute}\quad|\quad\textsc{Confirm}\quad|\quad\textsc{Handoff}\\[-1pt]
-  $\downarrow$\\[-3pt]
-  Authored outcome flag; later simulated state diff
-  \end{minipage}}
-  \caption{Route scoring uses an authored outcome flag; replay illustrates a
-  declared simulated consequence.}
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    box/.style={draw, rounded corners=2pt, align=center, inner sep=2.5pt, minimum height=5mm},
+    arr/.style={-{Stealth[length=1.6mm]}, thick}]
+  \node[box, text width=0.88\columnwidth] (sib) {\textbf{Matched siblings} of one action family\\
+  complete evidence \;$\mid$\; critical event removed \;$\mid$\; equal-word noise removed};
+  \node[box, anchor=north, text width=0.88\columnwidth] (mem) at ([yshift=-3.2mm]sib.south)
+  {\textbf{Active memory} under a 384-token budget: recent window, neutral / task-aware
+  summary, generic pinning, U-Fold-lite, typed proof (full history: unbudgeted reference)};
+  \node[box, anchor=north west, text width=0.40\columnwidth] (dir) at ([yshift=-3.2mm]mem.south west)
+  {\textbf{Direct route}\\model reads memory, picks route};
+  \node[box, anchor=north east, text width=0.40\columnwidth] (aud) at ([yshift=-3.2mm]mem.south east)
+  {\textbf{Proof audit}\\authority, scope, expiry, holds, recovery};
+  \node[box, anchor=north west, text width=0.88\columnwidth] (route) at ([yshift=-3.2mm]dir.south west)
+  {\textsc{Execute} \;/\; \textsc{Confirm} \;/\; \textsc{Handoff}\\
+  scored against hand-written labels};
+  \draw[arr] (sib) -- (mem);
+  \draw[arr] (mem.south -| dir.north) -- (dir.north);
+  \draw[arr] (mem.south -| aud.north) -- (aud.north);
+  \draw[arr] (dir.south) -- (dir.south |- route.north);
+  \draw[arr] (aud.south) -- (aud.south |- route.north);
+  \end{tikzpicture}
+  \caption{Evaluation pipeline. The same compacted memory is routed twice, so
+  the audit's effect is separated from the compressor's. Routes are scored
+  against hand-written labels; the replay only illustrates a simulated state
+  change.}
+
   \label{fig:pipeline}
 \end{figure}
 
