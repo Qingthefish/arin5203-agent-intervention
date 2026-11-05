@@ -1,0 +1,775 @@
+{
+  "analysis": "paired-route-analysis-v1",
+  "model_calls": 0,
+  "claim_scope": "post-hoc analysis of frozen traces; tests treat the 9 development and 11 held-out synthetic families as the sampling unit and cannot establish production safety. The hold re-read replay assumes an authenticated live hold registry and is a deterministic design check, not a model result.",
+  "splits": {
+    "development": {
+      "records": 189,
+      "paired_tests": {
+        "correct": {
+          "full_context_ceiling": {
+            "audit_better": 13,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.000244140625,
+            "family_sign_flip_p": 0.015625,
+            "families": 9,
+            "mcnemar_holm_p": 0.001220703125,
+            "family_sign_flip_holm_p": 0.078125
+          },
+          "recent_window": {
+            "audit_better": 0,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 1.0,
+            "family_sign_flip_p": 1.0,
+            "families": 9,
+            "mcnemar_holm_p": 1.0,
+            "family_sign_flip_holm_p": 1.0
+          },
+          "neutral_summary": {
+            "audit_better": 15,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 6.103515625e-05,
+            "family_sign_flip_p": 0.00390625,
+            "families": 9,
+            "mcnemar_holm_p": 0.0003662109375,
+            "family_sign_flip_holm_p": 0.02734375
+          },
+          "task_aware_summary": {
+            "audit_better": 18,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 7.62939453125e-06,
+            "family_sign_flip_p": 0.00390625,
+            "families": 9,
+            "mcnemar_holm_p": 5.340576171875e-05,
+            "family_sign_flip_holm_p": 0.02734375
+          },
+          "generic_pinning": {
+            "audit_better": 13,
+            "audit_worse": 6,
+            "mcnemar_exact_p": 0.1670684814453125,
+            "family_sign_flip_p": 0.3515625,
+            "families": 9,
+            "mcnemar_holm_p": 0.334136962890625,
+            "family_sign_flip_holm_p": 0.703125
+          },
+          "ufold_lite": {
+            "audit_better": 14,
+            "audit_worse": 1,
+            "mcnemar_exact_p": 0.0009765625,
+            "family_sign_flip_p": 0.03125,
+            "families": 9,
+            "mcnemar_holm_p": 0.00390625,
+            "family_sign_flip_holm_p": 0.125
+          },
+          "typed_card_retention": {
+            "audit_better": 8,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.0078125,
+            "family_sign_flip_p": 0.0625,
+            "families": 9,
+            "mcnemar_holm_p": 0.0234375,
+            "family_sign_flip_holm_p": 0.1875
+          }
+        },
+        "harmful": {
+          "full_context_ceiling": {
+            "audit_better": 10,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.001953125,
+            "family_sign_flip_p": 0.125,
+            "families": 9,
+            "mcnemar_holm_p": 0.005859375,
+            "family_sign_flip_holm_p": 0.5
+          },
+          "recent_window": {
+            "audit_better": 0,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 1.0,
+            "family_sign_flip_p": 1.0,
+            "families": 9,
+            "mcnemar_holm_p": 1.0,
+            "family_sign_flip_holm_p": 1.0
+          },
+          "neutral_summary": {
+            "audit_better": 11,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.0009765625,
+            "family_sign_flip_p": 0.03125,
+            "families": 9,
+            "mcnemar_holm_p": 0.0048828125,
+            "family_sign_flip_holm_p": 0.21875
+          },
+          "task_aware_summary": {
+            "audit_better": 14,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.0001220703125,
+            "family_sign_flip_p": 0.03125,
+            "families": 9,
+            "mcnemar_holm_p": 0.000732421875,
+            "family_sign_flip_holm_p": 0.21875
+          },
+          "generic_pinning": {
+            "audit_better": 18,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 7.62939453125e-06,
+            "family_sign_flip_p": 0.03125,
+            "families": 9,
+            "mcnemar_holm_p": 5.340576171875e-05,
+            "family_sign_flip_holm_p": 0.21875
+          },
+          "ufold_lite": {
+            "audit_better": 11,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.0009765625,
+            "family_sign_flip_p": 0.125,
+            "families": 9,
+            "mcnemar_holm_p": 0.0048828125,
+            "family_sign_flip_holm_p": 0.5
+          },
+          "typed_card_retention": {
+            "audit_better": 6,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.03125,
+            "family_sign_flip_p": 0.25,
+            "families": 9,
+            "mcnemar_holm_p": 0.0625,
+            "family_sign_flip_holm_p": 0.5
+          }
+        }
+      },
+      "direct_failure_taxonomy": {
+        "direct_errors": 118,
+        "too_permissive": 103,
+        "too_cautious": 15,
+        "executes_with_active_hold_in_memory": 15,
+        "by_kind_condition_critical": [
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "ACTIVE_HOLD",
+            "count": 18
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 17
+          },
+          {
+            "type": "too_permissive",
+            "condition": "full_evidence",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 16
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_matched_noise",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 15
+          },
+          {
+            "type": "too_permissive",
+            "condition": "full_evidence",
+            "critical_kind": "ACTIVE_HOLD",
+            "count": 11
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "AUTHORITY",
+            "count": 10
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_matched_noise",
+            "critical_kind": "ACTIVE_HOLD",
+            "count": 10
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "DELEGATION",
+            "count": 6
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 4
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 3
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "AUTHORITY",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_action_critical",
+            "critical_kind": "AUTHORITY",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "AUTHORITY",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "DELEGATION",
+            "count": 1
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "DELEGATION",
+            "count": 1
+          }
+        ]
+      },
+      "card_recall_vs_audit": {
+        "full_context_ceiling": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 18,
+          "stable_correct_direct": 11,
+          "stable_correct_audit": 18
+        },
+        "recent_window": {
+          "mean_visible_card_recall": 0.0,
+          "stable_contexts": 18,
+          "stable_correct_direct": 6,
+          "stable_correct_audit": 6
+        },
+        "neutral_summary": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 18,
+          "stable_correct_direct": 8,
+          "stable_correct_audit": 18
+        },
+        "task_aware_summary": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 18,
+          "stable_correct_direct": 6,
+          "stable_correct_audit": 18
+        },
+        "generic_pinning": {
+          "mean_visible_card_recall": 0.652,
+          "stable_contexts": 18,
+          "stable_correct_direct": 6,
+          "stable_correct_audit": 6
+        },
+        "ufold_lite": {
+          "mean_visible_card_recall": 0.972,
+          "stable_contexts": 18,
+          "stable_correct_direct": 10,
+          "stable_correct_audit": 17
+        },
+        "typed_card_retention": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 18,
+          "stable_correct_direct": 14,
+          "stable_correct_audit": 18
+        }
+      },
+      "hold_reread_replay": {
+        "audit_decisions_reproduced": "189/189",
+        "by_method": {
+          "full_context_ceiling": {
+            "contexts": 27,
+            "audit_correct": 24,
+            "reread_correct": 27,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          },
+          "recent_window": {
+            "contexts": 27,
+            "audit_correct": 13,
+            "reread_correct": 13,
+            "audit_harmful": 0,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 14,
+            "reread_unnecessary_intervention": 14,
+            "route_changes": 0
+          },
+          "neutral_summary": {
+            "contexts": 27,
+            "audit_correct": 24,
+            "reread_correct": 27,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          },
+          "task_aware_summary": {
+            "contexts": 27,
+            "audit_correct": 24,
+            "reread_correct": 27,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          },
+          "generic_pinning": {
+            "contexts": 27,
+            "audit_correct": 13,
+            "reread_correct": 13,
+            "audit_harmful": 0,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 14,
+            "reread_unnecessary_intervention": 14,
+            "route_changes": 0
+          },
+          "ufold_lite": {
+            "contexts": 27,
+            "audit_correct": 23,
+            "reread_correct": 26,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 1,
+            "reread_unnecessary_intervention": 1,
+            "route_changes": 3
+          },
+          "typed_card_retention": {
+            "contexts": 27,
+            "audit_correct": 24,
+            "reread_correct": 27,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          }
+        }
+      },
+      "source_raw": "results/typed_exact_budget_dev_qwen_v6_raw.jsonl",
+      "source_raw_sha256": "2a6c73a403e0142d3b8a2e2ceebb1ca517db7491337eda46f6bade6251924b31"
+    },
+    "heldout": {
+      "records": 231,
+      "paired_tests": {
+        "correct": {
+          "full_context_ceiling": {
+            "audit_better": 16,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 3.0517578125e-05,
+            "family_sign_flip_p": 0.00390625,
+            "families": 11,
+            "mcnemar_holm_p": 0.0001220703125,
+            "family_sign_flip_holm_p": 0.015625
+          },
+          "recent_window": {
+            "audit_better": 0,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 1.0,
+            "family_sign_flip_p": 1.0,
+            "families": 11,
+            "mcnemar_holm_p": 1.0,
+            "family_sign_flip_holm_p": 1.0
+          },
+          "neutral_summary": {
+            "audit_better": 18,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 7.62939453125e-06,
+            "family_sign_flip_p": 0.0009765625,
+            "families": 11,
+            "mcnemar_holm_p": 4.57763671875e-05,
+            "family_sign_flip_holm_p": 0.0068359375
+          },
+          "task_aware_summary": {
+            "audit_better": 19,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 3.814697265625e-06,
+            "family_sign_flip_p": 0.001953125,
+            "families": 11,
+            "mcnemar_holm_p": 2.6702880859375e-05,
+            "family_sign_flip_holm_p": 0.01171875
+          },
+          "generic_pinning": {
+            "audit_better": 15,
+            "audit_worse": 10,
+            "mcnemar_exact_p": 0.42435622215270996,
+            "family_sign_flip_p": 0.5458984375,
+            "families": 11,
+            "mcnemar_holm_p": 0.8487124443054199,
+            "family_sign_flip_holm_p": 1.0
+          },
+          "ufold_lite": {
+            "audit_better": 17,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 1.52587890625e-05,
+            "family_sign_flip_p": 0.001953125,
+            "families": 11,
+            "mcnemar_holm_p": 7.62939453125e-05,
+            "family_sign_flip_holm_p": 0.01171875
+          },
+          "typed_card_retention": {
+            "audit_better": 10,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.001953125,
+            "family_sign_flip_p": 0.03125,
+            "families": 11,
+            "mcnemar_holm_p": 0.005859375,
+            "family_sign_flip_holm_p": 0.09375
+          }
+        },
+        "harmful": {
+          "full_context_ceiling": {
+            "audit_better": 11,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.0009765625,
+            "family_sign_flip_p": 0.125,
+            "families": 11,
+            "mcnemar_holm_p": 0.0029296875,
+            "family_sign_flip_holm_p": 0.375
+          },
+          "recent_window": {
+            "audit_better": 0,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 1.0,
+            "family_sign_flip_p": 1.0,
+            "families": 11,
+            "mcnemar_holm_p": 1.0,
+            "family_sign_flip_holm_p": 1.0
+          },
+          "neutral_summary": {
+            "audit_better": 13,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.000244140625,
+            "family_sign_flip_p": 0.03125,
+            "families": 11,
+            "mcnemar_holm_p": 0.001220703125,
+            "family_sign_flip_holm_p": 0.21875
+          },
+          "task_aware_summary": {
+            "audit_better": 15,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 6.103515625e-05,
+            "family_sign_flip_p": 0.03125,
+            "families": 11,
+            "mcnemar_holm_p": 0.0003662109375,
+            "family_sign_flip_holm_p": 0.21875
+          },
+          "generic_pinning": {
+            "audit_better": 18,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 7.62939453125e-06,
+            "family_sign_flip_p": 0.03125,
+            "families": 11,
+            "mcnemar_holm_p": 5.340576171875e-05,
+            "family_sign_flip_holm_p": 0.21875
+          },
+          "ufold_lite": {
+            "audit_better": 12,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.00048828125,
+            "family_sign_flip_p": 0.0625,
+            "families": 11,
+            "mcnemar_holm_p": 0.001953125,
+            "family_sign_flip_holm_p": 0.25
+          },
+          "typed_card_retention": {
+            "audit_better": 4,
+            "audit_worse": 0,
+            "mcnemar_exact_p": 0.125,
+            "family_sign_flip_p": 0.5,
+            "families": 11,
+            "mcnemar_holm_p": 0.25,
+            "family_sign_flip_holm_p": 1.0
+          }
+        }
+      },
+      "direct_failure_taxonomy": {
+        "direct_errors": 135,
+        "too_permissive": 113,
+        "too_cautious": 22,
+        "executes_with_active_hold_in_memory": 17,
+        "by_kind_condition_critical": [
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "ACTIVE_HOLD",
+            "count": 18
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_matched_noise",
+            "critical_kind": "ACTIVE_HOLD",
+            "count": 12
+          },
+          {
+            "type": "too_permissive",
+            "condition": "full_evidence",
+            "critical_kind": "ACTIVE_HOLD",
+            "count": 11
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "CLEARANCE",
+            "count": 11
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "AUTHORITY",
+            "count": 10
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "RECOVERY",
+            "count": 9
+          },
+          {
+            "type": "too_permissive",
+            "condition": "full_evidence",
+            "critical_kind": "RECOVERY",
+            "count": 6
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "DELEGATION",
+            "count": 6
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_matched_noise",
+            "critical_kind": "RECOVERY",
+            "count": 6
+          },
+          {
+            "type": "too_permissive",
+            "condition": "full_evidence",
+            "critical_kind": "CLEARANCE",
+            "count": 5
+          },
+          {
+            "type": "too_permissive",
+            "condition": "full_evidence",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 5
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_matched_noise",
+            "critical_kind": "CLEARANCE",
+            "count": 5
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_matched_noise",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 5
+          },
+          {
+            "type": "too_permissive",
+            "condition": "remove_action_critical",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 4
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "RECOVERY",
+            "count": 3
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "RECOVERY",
+            "count": 3
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "AUTHORITY",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "CLEARANCE",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_action_critical",
+            "critical_kind": "AUTHORITY",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "AUTHORITY",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "CLEARANCE",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "REPAIR_CHANNEL",
+            "count": 2
+          },
+          {
+            "type": "too_cautious",
+            "condition": "full_evidence",
+            "critical_kind": "DELEGATION",
+            "count": 1
+          },
+          {
+            "type": "too_cautious",
+            "condition": "remove_matched_noise",
+            "critical_kind": "DELEGATION",
+            "count": 1
+          }
+        ]
+      },
+      "card_recall_vs_audit": {
+        "full_context_ceiling": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 22,
+          "stable_correct_direct": 14,
+          "stable_correct_audit": 22
+        },
+        "recent_window": {
+          "mean_visible_card_recall": 0.0,
+          "stable_contexts": 22,
+          "stable_correct_direct": 6,
+          "stable_correct_audit": 6
+        },
+        "neutral_summary": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 22,
+          "stable_correct_direct": 11,
+          "stable_correct_audit": 22
+        },
+        "task_aware_summary": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 22,
+          "stable_correct_direct": 10,
+          "stable_correct_audit": 22
+        },
+        "generic_pinning": {
+          "mean_visible_card_recall": 0.67,
+          "stable_contexts": 22,
+          "stable_correct_direct": 10,
+          "stable_correct_audit": 6
+        },
+        "ufold_lite": {
+          "mean_visible_card_recall": 0.99,
+          "stable_contexts": 22,
+          "stable_correct_direct": 14,
+          "stable_correct_audit": 22
+        },
+        "typed_card_retention": {
+          "mean_visible_card_recall": 1.0,
+          "stable_contexts": 22,
+          "stable_correct_direct": 14,
+          "stable_correct_audit": 22
+        }
+      },
+      "hold_reread_replay": {
+        "audit_decisions_reproduced": "231/231",
+        "by_method": {
+          "full_context_ceiling": {
+            "contexts": 33,
+            "audit_correct": 30,
+            "reread_correct": 33,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          },
+          "recent_window": {
+            "contexts": 33,
+            "audit_correct": 15,
+            "reread_correct": 15,
+            "audit_harmful": 0,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 18,
+            "reread_unnecessary_intervention": 18,
+            "route_changes": 0
+          },
+          "neutral_summary": {
+            "contexts": 33,
+            "audit_correct": 30,
+            "reread_correct": 33,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          },
+          "task_aware_summary": {
+            "contexts": 33,
+            "audit_correct": 30,
+            "reread_correct": 33,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          },
+          "generic_pinning": {
+            "contexts": 33,
+            "audit_correct": 15,
+            "reread_correct": 15,
+            "audit_harmful": 0,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 18,
+            "reread_unnecessary_intervention": 18,
+            "route_changes": 0
+          },
+          "ufold_lite": {
+            "contexts": 33,
+            "audit_correct": 31,
+            "reread_correct": 33,
+            "audit_harmful": 2,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 2
+          },
+          "typed_card_retention": {
+            "contexts": 33,
+            "audit_correct": 30,
+            "reread_correct": 33,
+            "audit_harmful": 3,
+            "reread_harmful": 0,
+            "audit_unnecessary_intervention": 0,
+            "reread_unnecessary_intervention": 0,
+            "route_changes": 3
+          }
+        }
+      },
+      "source_raw": "results/typed_exact_budget_heldout_qwen_v1_raw.jsonl",
+      "source_raw_sha256": "a3616c7d266ecda937fab33f24bea48e9ac2be8ad15e0510cc2ecaeee12059d5"
+    }
+  }
+}
