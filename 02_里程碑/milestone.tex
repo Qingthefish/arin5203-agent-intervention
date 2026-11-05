@@ -89,7 +89,9 @@ removed, and (iii) a word-count-matched, same-role noise event removed. This yie
 kept separate for final evaluation. Siblings remain in one split, and neutral
 identifiers, matched positions, and shared family seeds reduce shortcut cues.
 Gold routes and oracle-only facts are hidden from model inputs; the proposed
-action and runtime policy requirements are shared inputs.
+action and runtime policy requirements are shared inputs. Gold routes are
+fixed in each family specification before any run, separately from the audit
+code, so the direct router is scored against exactly the same labels.
 
 The matched design distinguishes loss of meaning from loss of text. If both
 deletions change the decision, a method may simply be sensitive to shorter
@@ -184,30 +186,33 @@ budget, blinding, format, fill, and source-integrity contracts. Table~\ref{tab:d
 reports the 18 stable complete and matched-noise contexts used for method
 selection. With the audit, every strategy's harmful Executes fall to zero, but
 strategies that lose positive proof (recent window, generic pinning) also lose
-all safe autonomy.
+all safe autonomy: the audit is only as good as the card recall of the memory
+it reads.
 
 
 \begin{table}[h]
   \centering
   \scriptsize
   \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{@{}lcccc@{}}
+  \begin{tabular}{@{}lccccc@{}}
     \toprule
-     & \multicolumn{2}{c}{Correct /18} & \multicolumn{2}{c}{Harmful} \\
-    Memory strategy & Direct & Audit & Direct & Audit \\
+     & \multicolumn{2}{c}{Correct /18} & \multicolumn{2}{c}{Harmful} & Card \\
+    Memory strategy & Direct & Audit & Direct & Audit & recall \\
     \midrule
-    Full history$^*$ & 11 & 18 & 7 & 0 \\
-    Recent window & 6 & 6 & 0 & 0 \\
-    Neutral summary & 8 & 18 & 10 & 0 \\
-    Task-aware summary & 6 & 18 & 11 & 0 \\
-    Generic pinning & 6 & 6 & 12 & 0 \\
-    U-Fold-lite & 10 & 17 & 8 & 0 \\
-    Typed proof & 14 & \textbf{18} & 4 & \textbf{0} \\
+    Full history$^*$ & 11 & 18 & 7 & 0 & 1.00 \\
+    Recent window & 6 & 6 & 0 & 0 & 0.00 \\
+    Neutral summary & 8 & 18 & 10 & 0 & 1.00 \\
+    Task-aware summary & 6 & 18 & 11 & 0 & 1.00 \\
+    Generic pinning & 6 & 6 & 12 & 0 & 0.65 \\
+    U-Fold-lite & 10 & 17 & 8 & 0 & 0.97 \\
+    Typed proof & 14 & \textbf{18} & 4 & \textbf{0} & 1.00 \\
     \bottomrule
   \end{tabular}
   \caption{Frozen development result on the 18 stable (complete and
   matched-noise) contexts. Each memory is routed directly by the model and
-  again by the proof audit. $^*$Unbudgeted reference.}
+  again by the proof audit. Card recall is the mean share of visible proof
+  cards whose source IDs survive compaction (all 27 contexts).
+  $^*$Unbudgeted reference.}
   \label{tab:dev}
 \end{table}
 
@@ -230,6 +235,28 @@ the three hidden-hold deletions still produced harmful Executes for typed
 memory and both summaries. The full per-method comparison and trace analysis
 will appear in the final report; no method is retuned on these results.
 
+\paragraph{Post-hoc analyses of the frozen traces (no model calls).}
+\emph{Paired tests.} Because each memory is routed twice, we compare direct and
+audited routes as paired outcomes. On held-out typed memory the audit fixed 10
+routes and broke none (exact McNemar $p{=}0.002$; exact family-clustered
+sign-flip $p{=}0.031$, $0.094$ after Holm correction over seven strategies).
+For neutral and task-aware summaries and U-Fold-lite it fixed 17--19 routes and
+broke none (family-level Holm $p{\le}0.017$). Harm reductions are significant
+per context ($p{\le}0.002$ for the summaries) but not at the family level:
+only 6 of the 11 held-out families are unsafe to execute, so no family-level
+test can fall below $2/2^6{\approx}0.031$ before correction. More unsafe families,
+not more siblings, are needed.
+\emph{Failure taxonomy.} 113 of 135 held-out direct-route errors were too
+permissive; in 17 of them an active hold was present in memory and the model
+still chose Execute.
+\emph{Hold re-read.} All residual audited harmful Executes come from hidden-hold
+deletions, which no strategy (including full history) can see. Replaying the
+audit with a re-read of the live hold registry before commit reproduces all 420
+frozen audit decisions and then removes every residual harmful Execute
+(33/33 for full history, both summaries, U-Fold-lite, and typed memory) without
+adding an intervention. This is a design check that assumes an authenticated
+hold registry, not a model result.
+
 
 A development budget sweep and deterministic durable-proof lookup have also
 been completed without changing the frozen comparison. The latter addresses
@@ -239,8 +266,13 @@ eligible Execute. It does not establish reliable upstream card creation.
 These diagnostics do not revise held-out methods; complete comparisons and
 failure analysis will be assembled in the final report.
 
-Final deliverables combine the comparison, a source-linked Memory Crash Test
-replay, simulated state diffs, and a developer checklist. The small synthetic,
+Next, a 2$\times$2 router ablation on the frozen memories separates the two parts
+of the audit: an obligation checklist filled by the model but decided by the
+frozen rule, and a model route that also sees the rehydrated cards. We will also
+add temperature-sampled repeats, a blind relabel of a subset by a team member who
+did not write the audit, and a safety--autonomy plot. Final deliverables combine
+the comparison, a source-linked Memory Crash Test replay, simulated state diffs,
+and a developer checklist. The small synthetic,
 risk-enriched benchmark uses one local model and one generation per context;
 it cannot certify production safety. The design rule is to separate chat
 memory from action proof, validate exact tool arguments, and re-read current
