@@ -222,9 +222,14 @@ summary.
 
 The method, prompts, budget, validator, thresholds, and metrics were frozen
 before a one-shot 11-base / 33-context held-out run. Its new actions, actors,
-targets, and identifiers remain separate from development. Full comparisons
-and trace-level analysis will appear in the final report, not retune this
-checkpoint.
+targets, and identifiers remain separate from development. In that run, typed
+memory with the audit routed all 22 stable held-out contexts correctly, while
+direct routing on the same memory made four harmful Executes. Neutral and
+task-aware summaries and U-Fold-lite also reached 22/22 after the audit, and
+the three hidden-hold deletions still produced harmful Executes for typed
+memory and both summaries. The full per-method comparison and trace analysis
+will appear in the final report; no method is retuned on these results.
+
 
 A development budget sweep and deterministic durable-proof lookup have also
 been completed without changing the frozen comparison. The latter addresses
