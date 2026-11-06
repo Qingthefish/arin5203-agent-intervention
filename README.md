@@ -17,14 +17,19 @@ Teammate `HelloWorld2333666` contributed the commit-time, human-intervention and
 field-grounding extensions. Their commits and original result bundles are kept;
 integration fixes and acceptance checks are recorded separately.
 
-## Current Snapshot — 2026-10-30
+Teammate `qingyg086` contributed report figures and bootstrap intervals, paired
+trace analysis, a post-hoc router ablation and Milestone revisions. PRs #2–#6
+are merged; the original frozen methods, data and scores are unchanged.
+
+## Current Snapshot — 2026-11-06
 
 | Workstream | Status | Evidence or entry point |
 | --- | --- | --- |
 | Proposal | Submitted; 92/100. No attributable instructor explanation for the deduction was found. | [Proposal files](01_提案/) |
 | Core evaluation | Development protocol frozen; one-shot held-out evaluation complete. | [Held-out audit](05_代码与实验/results/typed_exact_budget_heldout_qwen_v1_audit.json) |
-| Additional evidence | Development budget sweep and deterministic durable-store test complete. | [Experiment index](05_代码与实验/results/index.json) |
-| Milestone | Two-page report checked against live requirements and visually reviewed; ready for team review, with no content change needed this round. Due 6 Nov, 23:59; no submission item was visible in the student's Canvas list on 29 Oct. | [PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
+| Additional evidence | Budget sweep and durable-store test complete; teammate post-hoc paired/bootstrap analyses and router ablation are archived separately. The ablation uses a different model build and is not another untouched test. | [Experiment index](05_代码与实验/results/index.json), [Ablation summary](05_代码与实验/results/router_ablation_heldout_qwen3_5_9b_v1_summary.json) |
+| Milestone | Canvas receipt verified: Qingcheng submitted the valid two-page checkpoint on 6 Nov at 15:33, before the 23:59 deadline. The repository now contains a newer three-page revision with teammate additions; it is not the file in that verified submission. | [Canvas item](https://canvas.ust.hk/courses/71916/assignments/461590), [Newer repository PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
+| AI paper/model sharing | Separate from the course-project presentation: this team is scheduled for 16 Nov, 10 minutes, on one or two related papers/models; 5% of the course grade. Title and slides URL were blank in the schedule checked on 6 Nov. | [Schedule, row 19](https://docs.google.com/spreadsheets/d/1dGBKnn5RbBlhXROIEPmw-c7BQL4mejrDl5gUnpB1UDo/edit#gid=0&range=A19:F19); instructor email dated 30 Oct |
 | Presentation | Low-density three-step replay; case/strategy matrix and trace details remain expandable. Seven evidence figures are available; team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
 | Commit-time gate | Integrated; original v1 deterministic evidence is preserved, with current applied-receipt and retry fixes checked separately. In-process simulation only. | [Original audit](05_代码与实验/results/commit_time_gate_deterministic_v1_audit.json), [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
@@ -32,7 +37,7 @@ integration fixes and acceptance checks are recorded separately.
 | Field grounding | Integrated optional English cue-based checker; failures and intervention costs remain visible. No general semantic-verification or authentication claim. | [Technical notes and archived failures](05_代码与实验/docs/evidence-grounding.md) |
 | Composed action loop | Synthetic hotel workflow with grounding, confirmation and commit-time mutation; known applied receipts reconcile errors, unknown outcomes stop automatic resume. | [Runnable example](05_代码与实验/examples/guarded_hotel_workflow.py), [Outcome handling](05_代码与实验/docs/integration.md#reconcile-an-error-after-the-side-effect) |
 | Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
-| Final report | Existing seven-page working draft is parked while Milestone takes priority; not submission-ready. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
+| Final report | Working draft now includes teammate figures and bootstrap analysis; further assembly and team review remain. Not submission-ready; due 5 Dec, 23:59. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
 
 Exact calls, timings, tokens and scores live in manifests, summaries and audits. Historical pilots, failed gates and design changes are recorded in [项目复盘.md](项目复盘.md); the homepage is a current map, not a second experiment diary.
 
@@ -61,12 +66,15 @@ The [related-work review](05_代码与实验/docs/related-work.md) distinguishes
 
 ## Next Work and Stopping Rule
 
-The core experimental question is answered at course-project scale. The current
-priority is team review and Milestone submission readiness. The three existing
-runtime extensions are integrated and checked as bounded research modules.
-The existing Final draft is parked at the
-team's request. The 2026-10-23 review corrects interpretation, not frozen scores
-or method selection; its source-existence recount is explicitly post-hoc.
+The core experimental question is answered at course-project scale. The
+Milestone submission receipt is verified. The immediate course task is the
+separate AI paper/model sharing on 16 Nov: select one or two related papers,
+prepare the team's hand-made slides, and fill the title and accessible slides
+URL in the schedule before presenting. The three runtime extensions are
+integrated and checked as bounded research modules. Final-report assembly and
+course-project slides resume separately. The 2026-10-23 review corrects
+interpretation, not frozen scores or method selection; its source-existence
+recount is explicitly post-hoc.
 
 The optional **development-only natural-language extraction diagnostic** has
 completed once on four existing families, both variants and all siblings.
@@ -87,12 +95,17 @@ The latest fault checks also separate an exception from the execution outcome:
 only a trusted applied receipt establishes reconciled success, while an unknown
 outcome closes the request and is never reported as definitely unexecuted.
 
-Next: team-review the short Milestone and the composed hotel example, then submit
-through the correct Canvas item when it becomes available. Final and hand-made
-slides can resume later. The useful engineering handoff is now runnable code,
-trace export and explicit adapter contracts, not another broad model sweep.
-An actual single-workflow compactor adapter remains optional engineering work,
-not a prerequisite for presenting the bounded research result.
+The newer three-page Milestone is available if the team chooses to replace the
+already valid two-page submission; no resubmission was performed by the agent.
+Post-hoc ablation raw records, memory hashes, original direct-prompt hashes and
+reported counts were checked; the new model build remains explicitly distinct
+from the frozen run. Its legacy manifest lacks standard completion/usage
+metadata and an audit bundle, so the index must not promote it to a frozen
+gate result or silently include it in old manifest-based call totals. Before
+any further ablation launch, bring its runner into the existing plan-only,
+dual-explicit-flag and artifact conventions. No new run is needed for today's
+submission. The useful engineering handoff is runnable code, trace export and
+explicit adapter contracts. A live compactor adapter remains optional.
 
 | Engineering extension | Current state | Acceptance question |
 | --- | --- | --- |
@@ -106,19 +119,23 @@ Further experiments need a concrete unanswered question that could change a desi
 ### Milestone submission checklist
 
 - The [live project page](https://cqf.io/ARIN5203/project.html), checked on
-  29 Oct, still requires 2–3 pages in the provided template, all three names,
-  and one submitting member. Its template link currently opens CVPR 2026,
-  despite the old `cvpr2022` URL slug.
-- The student's [Canvas assignment list](https://canvas.ust.hk/courses/71916/assignments)
-  had no Milestone item on 29 Oct; the earlier Gmail/Outlook and announcement
-  checks had found no new submission notice. Recheck the live item before
-  submission for allowed files, deadline/time zone and any attachment rules.
-- Prepare the report PDF; do not upload it to Proposal or an Assignment item.
-  No extra GitHub/ZIP/demo requirement is stated in the Milestone section.
-  If the correct item remains unavailable near the deadline, contact the TA
-  for a submission route; no message or submission has been sent automatically.
-- The syllabus lists project sharing in Week 13, without a per-team duration
-  or demo rule. Any internal timing plan remains provisional.
+  6 Nov, requires 2–3 pages in the provided template, all three names, and one
+  submitting member. A report PDF is sufficient; no extra GitHub/ZIP/demo
+  requirement appears in the Milestone section or Canvas item.
+- Canvas assignment 461590 shows a successful 6 Nov 15:33 submission, the report
+  attachment and all three team members. The downloaded attachment is the
+  two-page checkpoint at commit `22c03c2`, with SHA-256
+  `67ab06e7b17aa12839da4a296672450f0044c37ace6cceaa78cfd7eb57a65ba1`.
+  It meets the page/author requirements. The newer repository PDF has three
+  pages and additional results; do not describe it as already submitted.
+- The deadline is 6 Nov at 23:59 Hong Kong time. The upload window ends on
+  10 Nov at 23:59; that later closing time is not the ordinary deadline.
+- The instructor's 30 Oct email schedules AI paper/model sharing on 9, 16 and
+  23 Nov, with this team listed on 16 Nov. It asks for the presentation title
+  and an online slides URL before presenting; a USB/downloadable backup is
+  requested. Sharing presentation parts among members is suggested, not
+  required. This is separate from the syllabus's Week 13 course-project
+  sharing, whose per-team duration and demo requirements remain unconfirmed.
 
 Final is ready when:
 

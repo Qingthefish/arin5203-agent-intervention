@@ -3,20 +3,20 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 44,
+    "runs": 45,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
       "COMPLETED": 32,
       "FAILED": 8,
-      "MISSING": 2
+      "MISSING": 3
     },
     "evidence_tiers": {
       "FAILED_OR_ABORTED": 10,
       "FROZEN_GATE_BUNDLE": 28,
-      "LEGACY_OR_INCOMPLETE_METADATA": 6
+      "LEGACY_OR_INCOMPLETE_METADATA": 7
     },
-    "warnings": 4
+    "warnings": 5
   },
   "warnings": [
     {
@@ -34,6 +34,10 @@
     {
       "prefix": "pipeline_pilot_qwen_k3",
       "code": "COMPLETED_WITHOUT_RAW_TRACE"
+    },
+    {
+      "prefix": "router_ablation_heldout_qwen3_5_9b_v1",
+      "code": "MISSING_MANIFEST_STATUS"
     }
   ],
   "runs": [
@@ -765,6 +769,33 @@
       },
       "manifest_sha256": "5449565e49d4ee3f0412d96efadf498495370b2f1d97765b0c781fd94a27856a",
       "audit_sha256": "67585c03fb982bfa5298449d62587d87f7e9be68de3fb9f3e26bfeaa91e20941"
+    },
+    {
+      "prefix": "router_ablation_heldout_qwen3_5_9b_v1",
+      "status": "MISSING",
+      "evidence_tier": "LEGACY_OR_INCOMPLETE_METADATA",
+      "experiment": null,
+      "scenario_set": null,
+      "model": "qwen3.5:9b",
+      "provider": null,
+      "git_commit": null,
+      "measured_generation_calls": null,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "external_api_cost_usd": null,
+      "started_at": null,
+      "finished_at": null,
+      "audit_status": null,
+      "recommendation": null,
+      "claim_scope": "post-hoc router ablation on frozen compacted memories; no compaction, label, or threshold is changed",
+      "artifacts": {
+        "manifest": "results/router_ablation_heldout_qwen3_5_9b_v1_manifest.json",
+        "raw": "results/router_ablation_heldout_qwen3_5_9b_v1_raw.jsonl",
+        "summary": null,
+        "audit": null
+      },
+      "manifest_sha256": "84e58ab051dcd1c624bc95de3d48b6d35bf8458bfe0c2e196d741741d91d511d",
+      "audit_sha256": null
     },
     {
       "prefix": "scratch_matched_qwen_v1",
