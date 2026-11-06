@@ -1,4 +1,4 @@
-% ARIN 5203 Project Milestone -- two-page progress snapshot
+% ARIN 5203 Project Milestone -- three-page progress snapshot
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 \makeatletter
@@ -216,15 +216,13 @@ it reads.
   \label{tab:dev}
 \end{table}
 
-The audit corrected visible-proof mistakes without changing any matched-noise
-sibling route and retained all eligible autonomous executions. However, strong
-summaries also reached 18/18 after valid citations rehydrated canonical proof
-records. The current evidence therefore supports the audit interface and the
-causal protocol, not a claim that typed memory universally outperforms every
+Typed proof with the audit reached 18/18 stable routes and retained all
+eligible autonomous executions in that subset. Strong summaries also reached
+18/18 after valid citations rehydrated canonical proof records. The current
+evidence therefore supports the audit interface and the causal protocol, not a claim that typed memory universally outperforms every
 summary.
 
-\section{Final-Stage Plan and Limitations}
-
+\paragraph{Frozen held-out evaluation.}
 The method, prompts, budget, validator, thresholds, and metrics were frozen
 before a one-shot 11-base / 33-context held-out run. Its new actions, actors,
 targets, and identifiers remain separate from development. In that run, typed
@@ -236,26 +234,26 @@ memory and both summaries. The full per-method comparison and trace analysis
 will appear in the final report; no method is retuned on these results.
 
 \paragraph{Post-hoc analyses of the frozen traces (no model calls).}
-\emph{Paired tests.} Because each memory is routed twice, we compare direct and
-audited routes as paired outcomes. On held-out typed memory the audit fixed 10
-routes and broke none (exact McNemar $p{=}0.002$; exact family-clustered
-sign-flip $p{=}0.031$, $0.094$ after Holm correction over seven strategies).
-For neutral and task-aware summaries and U-Fold-lite it fixed 17--19 routes and
-broke none (family-level Holm $p{\le}0.017$). Harm reductions are significant
-per context ($p{\le}0.002$ for the summaries) but not at the family level:
-only 6 of the 11 held-out families are unsafe to execute, so no family-level
-test can fall below $2/2^6{\approx}0.031$ before correction. More unsafe families,
-not more siblings, are needed.
+\emph{Paired tests.} On held-out typed memory the audit fixed 10 routes and
+broke none. To account for related siblings, an exact family-clustered sign-flip
+test gives $p{=}0.031$, or $0.094$ after Holm correction over seven strategies.
+Neutral and task-aware summaries and U-Fold-lite gained 17--19 correct routes
+with none lost (family-level Holm $p{\le}0.017$). Harm reductions did not reach
+family-level significance. Only six held-out families are unsafe to execute,
+limiting the resolution of this two-sided sign-flip test; additional independent
+families would be needed for stronger evidence.
 \emph{Failure taxonomy.} 113 of 135 held-out direct-route errors were too
 permissive; in 17 of them an active hold was present in memory and the model
 still chose Execute.
 \emph{Hold re-read.} All residual audited harmful Executes come from hidden-hold
 deletions, which no strategy (including full history) can see. Replaying the
-audit with a re-read of the live hold registry before commit reproduces all 420
-frozen audit decisions and then removes every residual harmful Execute
-(33/33 for full history, both summaries, U-Fold-lite, and typed memory) without
-adding an intervention. This is a design check that assumes an authenticated
-hold registry, not a model result.
+audit first reproduces all 420 frozen decisions across development and held-out
+contexts. Adding a simulated pre-commit hold-registry lookup then removes every
+residual harmful Execute (33/33 held-out routes correct for full history, both
+summaries, U-Fold-lite, and typed memory) without increasing unnecessary
+interventions. Necessary Handoffs replace harmful Executes. This deterministic
+design check assumes an authenticated hold registry; it is not a live-system
+or new model result.
 
 
 A development budget sweep and deterministic durable-proof lookup have also
@@ -266,20 +264,24 @@ eligible Execute. It does not establish reliable upstream card creation.
 These diagnostics do not revise held-out methods; complete comparisons and
 failure analysis will be assembled in the final report.
 
-\paragraph{2$\times$2 router ablation (new model calls).}
-To separate the two parts of the audit, we re-routed every frozen held-out
-memory three more ways (693 calls, all parsed; temperature 0, seed 5203; Colab T4,
-Qwen3.5-9B build \texttt{56671c2ab}, which differs from the frozen build):
-\emph{direct} re-run on the new build as the baseline; \emph{checklist}, where
-the model fills each obligation status from memory and the frozen rule decides;
-and \emph{rehydrated}, where the model also sees the rehydrated canonical cards
-but decides itself (Table~\ref{tab:ablation}). The new build moved at most two
-stable direct routes per strategy. Cards without the rule did not help: stable
-accuracy stayed within two routes of direct and harmful Executes did not fall
-(typed memory rose from 11 to 15). The rule without the cards cut harmful
-Executes (neutral summary 17$\to$8, generic pinning 18$\to$4) but not errors,
-because the model's status extraction is noisy. Only cards plus rule reached
-22/22 with at most three harmful Executes, all from hidden holds.
+\paragraph{Post-hoc 2$\times$2 router ablation (new model calls).}
+We re-routed every frozen held-out memory three more ways (693 calls, all
+parsed; temperature 0, seed 5203; Colab T4, Qwen3.5-9B build
+\texttt{56671c2ab}, which differs from the frozen build): \emph{direct}
+re-run as the same-build baseline; \emph{checklist}, where the model fills
+obligation statuses from memory and the frozen rule decides; and
+\emph{rehydrated}, where the model sees canonical cards but decides itself
+(Table~\ref{tab:ablation}). The audit column is deterministic and unchanged.
+Relative to the new direct baseline, rehydration raised full-history stable
+accuracy from 12/22 to 15/22 and reduced harmful Executes from 16 to 13, but
+raised typed-memory harm from 11 to 15. Checklist routing reduced harm for
+several strategies and improved full-history stable accuracy to 16/22, while
+neutral-summary stable accuracy fell from 10/22 to 8/22. Thus both effects
+depend on the memory strategy. Cards plus deterministic validation reached
+22/22 stable routes for five strategies; recent window and generic pinning
+remained at 6/22. All residual audited harmful Executes came from hidden holds.
+Errors in model-extracted obligation statuses are a hypothesis for follow-up
+analysis, not an established cause of every checklist failure.
 
 \begin{table}[h]
   \centering
@@ -305,15 +307,24 @@ because the model's status extraction is noisy. Only cards plus rule reached
   \label{tab:ablation}
 \end{table}
 
-Next, we will
-add temperature-sampled repeats, a blind relabel of a subset by a team member who
-did not write the audit, and a safety--autonomy plot. Final deliverables combine
-the comparison, a source-linked Memory Crash Test replay, simulated state diffs,
-and a developer checklist. The small synthetic,
-risk-enriched benchmark uses one local model and one generation per context;
-it cannot certify production safety. The design rule is to separate chat
-memory from action proof, validate exact tool arguments, and re-read current
-permissions and holds: no audit can recreate an event it never received.
+\section{Final-Stage Plan and Limitations}
+
+Before the final report, we will prioritize a blind review of a label subset
+by a team member who did not implement the audit, classify obligation-status
+errors in the existing ablation traces, and produce a safety--autonomy plot.
+Additional temperature-sampled repeats are optional, subject to a specific
+unanswered question. These analyses will not retune the frozen held-out
+methods. Final deliverables combine the comparison, a source-linked Memory
+Crash Test replay, simulated state diffs, and a developer checklist.
+
+The small synthetic, risk-enriched benchmark uses one model family and one
+generation per context and router variant. Labels and audit rules reflect the
+same authored policies, so separate implementations do not establish independent
+label validity. Canonical cards and their trust are assumed; external lookups
+are outside the memory budget. These results cannot certify production safety.
+The design lesson is to validate action-specific proof at the tool boundary and
+re-read current permissions and holds: an audit cannot recover an event absent
+from every source it can access.
 
 {
 \footnotesize
