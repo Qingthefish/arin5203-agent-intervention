@@ -28,7 +28,7 @@ are merged; the original frozen methods, data and scores are unchanged.
 | Proposal | Submitted; 92/100. No attributable instructor explanation for the deduction was found. | [Proposal files](01_提案/) |
 | Core evaluation | Development protocol frozen; one-shot held-out evaluation complete. | [Held-out audit](05_代码与实验/results/typed_exact_budget_heldout_qwen_v1_audit.json) |
 | Additional evidence | Budget sweep and durable-store test complete; teammate post-hoc paired/bootstrap analyses and router ablation are archived separately. The ablation uses a different model build and is not another untouched test. | [Experiment index](05_代码与实验/results/index.json), [Ablation summary](05_代码与实验/results/router_ablation_heldout_qwen3_5_9b_v1_summary.json) |
-| Milestone | Canvas receipt verified: Qingcheng submitted the valid two-page checkpoint on 6 Nov at 15:33, before the 23:59 deadline. The repository now contains a newer three-page revision with teammate additions; it is not the file in that verified submission. | [Canvas item](https://canvas.ust.hk/courses/71916/assignments/461590), [Newer repository PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
+| Milestone | Latest Canvas receipt verified: Qingcheng submitted the three-page revision on 6 Nov at 17:50, before the 23:59 deadline. The downloaded submitted attachment is byte-identical to the repository PDF and includes the teammate additions. | [Canvas item](https://canvas.ust.hk/courses/71916/assignments/461590), [Submitted PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
 | AI paper/model sharing | Separate from the course-project presentation: this team is scheduled for 16 Nov, 10 minutes, on one or two related papers/models; 5% of the course grade. Title and slides URL were blank in the schedule checked on 6 Nov. | [Schedule, row 19](https://docs.google.com/spreadsheets/d/1dGBKnn5RbBlhXROIEPmw-c7BQL4mejrDl5gUnpB1UDo/edit#gid=0&range=A19:F19); instructor email dated 30 Oct |
 | Presentation | Low-density three-step replay; case/strategy matrix and trace details remain expandable. Seven evidence figures are available; team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
@@ -95,8 +95,9 @@ The latest fault checks also separate an exception from the execution outcome:
 only a trusted applied receipt establishes reconciled success, while an unknown
 outcome closes the request and is never reported as definitely unexecuted.
 
-The newer three-page Milestone is available if the team chooses to replace the
-already valid two-page submission; no resubmission was performed by the agent.
+The latest submitted Milestone and the repository's three-page PDF now match
+byte for byte. The earlier two-page submission has been superseded by the
+user's 17:50 resubmission; all members should use this same repository PDF.
 Post-hoc ablation raw records, memory hashes, original direct-prompt hashes and
 reported counts were checked; the new model build remains explicitly distinct
 from the frozen run. Its legacy manifest lacks standard completion/usage
@@ -122,12 +123,14 @@ Further experiments need a concrete unanswered question that could change a desi
   6 Nov, requires 2–3 pages in the provided template, all three names, and one
   submitting member. A report PDF is sufficient; no extra GitHub/ZIP/demo
   requirement appears in the Milestone section or Canvas item.
-- Canvas assignment 461590 shows a successful 6 Nov 15:33 submission, the report
-  attachment and all three team members. The downloaded attachment is the
-  two-page checkpoint at commit `22c03c2`, with SHA-256
-  `67ab06e7b17aa12839da4a296672450f0044c37ace6cceaa78cfd7eb57a65ba1`.
-  It meets the page/author requirements. The newer repository PDF has three
-  pages and additional results; do not describe it as already submitted.
+- Canvas assignment 461590 shows a successful 6 Nov 17:50 submission, the report
+  attachment and all three team members. The downloaded attachment
+  `Project_Milestone_Yu_Yeung_Guo-1.pdf` is byte-identical to the repository PDF:
+  three pages, 47,660 bytes, SHA-256
+  `f1e202c84a20ba082f2af5e9eac0d1f6d775708b5648838ff050ca2a7c5f9f3a`.
+  Its page count, authors, required sections and visible layout were checked.
+  The `-1` filename suffix does not indicate different content. Use the
+  repository PDF as the shared team submission file.
 - The deadline is 6 Nov at 23:59 Hong Kong time. The upload window ends on
   10 Nov at 23:59; that later closing time is not the ordinary deadline.
 - The instructor's 30 Oct email schedules AI paper/model sharing on 9, 16 and
