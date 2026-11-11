@@ -279,7 +279,11 @@ python3 scripts/run_nl_extraction_v3.py --phase validation --model qwen3.5:9b \
 ```
 
 A real run additionally needs `--run --acknowledge-experiment-plan` and team
-approval. `qwen3.5:9b` must be present locally; record its digest, because a
+approval. Schema decoding depends on the backend. The Homebrew Ollama 0.40.13
+MLX runner lacks `libollama_xgrammar` and rejects schema `format` with HTTP 501.
+The attempt `nl_extraction_v3_validation_qwen3_8_27b_v1` therefore FAILED with
+0/30 generations; that prefix is consumed. Confirm the server log does not
+report "Structured output is unavailable" before freezing a new versioned plan. `qwen3.5:9b` must be present locally; record its digest, because a
 re-pulled build may differ from the frozen run's `6488c96f`.
 
 ## Memory x Verification Factorial

@@ -755,8 +755,10 @@ schema-constrained decoding, aligned subject and authentication conventions,
 and a pre-registered primary pipeline (v3 parser, grounding, and the
 conservative hold rule) is frozen as a
 plan for the five development families never sent to an extraction model, with
-the eleven held-out rewrites refused until validation completes. That run has
-not been executed and no result from it is reported here.
+the eleven held-out rewrites refused until validation completes. One attempt
+on a local 27B model failed before any generation: its inference backend
+lacked structured-output support (HTTP 501, 0/30 calls). The failed bundle is
+preserved, and no validation result is reported here.
 
 \section{Limitations and Developer Implications}
 The benchmark is small, synthetic, risk-enriched, and evaluated with one local

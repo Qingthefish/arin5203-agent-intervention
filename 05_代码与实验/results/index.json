@@ -3,16 +3,16 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 47,
+    "runs": 48,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
       "COMPLETED": 34,
-      "FAILED": 8,
+      "FAILED": 9,
       "MISSING": 3
     },
     "evidence_tiers": {
-      "FAILED_OR_ABORTED": 10,
+      "FAILED_OR_ABORTED": 11,
       "FROZEN_GATE_BUNDLE": 30,
       "LEGACY_OR_INCOMPLETE_METADATA": 7
     },
@@ -634,6 +634,33 @@
       },
       "manifest_sha256": "0eacbd040a01c4d65fb5a9426e9de938333b95f9ee3059dd775c70aac164417c",
       "audit_sha256": "c8f13227efa91531470f235cad31e0877fb2a46c59ad45c8ef278d1c22011eb6"
+    },
+    {
+      "prefix": "nl_extraction_v3_validation_qwen3_8_27b_v1",
+      "status": "FAILED",
+      "evidence_tier": "FAILED_OR_ABORTED",
+      "experiment": "natural-language-evidence-extraction-v3",
+      "scenario_set": "nl-evidence-v2",
+      "model": "qwen3.8:27b",
+      "provider": "ollama",
+      "git_commit": "7790d6725bdc2518933d132b1923cf5b8b4de6c1",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-11-11T14:35:39.147023+00:00",
+      "finished_at": "2026-11-11T14:35:45.686701+00:00",
+      "audit_status": "FAIL",
+      "recommendation": null,
+      "claim_scope": "Derived synthetic NL rewrites of existing families; validation selects nothing automatically. Not independent of the main held-out bases and not a compactor comparison.",
+      "artifacts": {
+        "manifest": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_manifest.json",
+        "raw": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_raw.jsonl",
+        "summary": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_summary.csv",
+        "audit": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_audit.json"
+      },
+      "manifest_sha256": "12cc2d80ecaa3fa2c45dbe35755783695db1d62f6277568d39f00c352f8a6ffe",
+      "audit_sha256": "e0882ec55f8168ff28bd1e8300b561bb505f42a8235ed155d660a4bc3d00049a"
     },
     {
       "prefix": "pipeline_pilot_qwen_k3",
