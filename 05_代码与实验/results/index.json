@@ -616,13 +616,13 @@
       "scenario_set": "nl-evidence-v2",
       "model": null,
       "provider": null,
-      "git_commit": "30237d3b850e6ed0a4576a1b4c2a77e4430028e2",
+      "git_commit": "ec3999601f5c284beae9630dca18bf6df17a3024",
       "measured_generation_calls": 0,
       "prompt_tokens": 0,
       "completion_tokens": 0,
       "external_api_cost_usd": 0.0,
-      "started_at": "2026-11-11T14:22:44.370551+00:00",
-      "finished_at": "2026-11-11T14:22:44.370551+00:00",
+      "started_at": "2026-11-11T15:11:45.307228+00:00",
+      "finished_at": "2026-11-11T15:11:45.307228+00:00",
       "audit_status": "PASS",
       "recommendation": null,
       "claim_scope": "Post-hoc development re-parse of 24 frozen outputs. The v3 parser was designed after reading these outputs; numbers diagnose failure layers and are not validation, held-out or model-quality evidence.",
@@ -632,7 +632,7 @@
         "summary": "results/nl_extraction_dev_reparse_v3_posthoc_v1_summary.csv",
         "audit": "results/nl_extraction_dev_reparse_v3_posthoc_v1_audit.json"
       },
-      "manifest_sha256": "0eacbd040a01c4d65fb5a9426e9de938333b95f9ee3059dd775c70aac164417c",
+      "manifest_sha256": "e4b685ba921ad86a3252e130487bf98857ee130172f3126d880b6816542f5275",
       "audit_sha256": "c8f13227efa91531470f235cad31e0877fb2a46c59ad45c8ef278d1c22011eb6"
     },
     {

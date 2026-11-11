@@ -235,6 +235,11 @@ Dataset export also refuses to overwrite existing versioned files.
 
 ### Interface v3 and the failure-layer re-parse
 
+> **Experimental and unvalidated.** Interface v3, the conservative-hold rule and
+> `run_nl_extraction_v3.py` were designed on the four already-seen development
+> families. No validation run has completed. Frozen v1/v2 code and results are
+> unchanged and remain the citable evidence.
+
 `src/platform_agent_eval/nl_extraction_v3.py` changes the interface only. The
 validator and the frozen v2 parser are unchanged.
 
