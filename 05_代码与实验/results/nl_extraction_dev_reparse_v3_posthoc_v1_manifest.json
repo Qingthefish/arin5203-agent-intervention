@@ -1,0 +1,42 @@
+{
+  "status": "COMPLETED",
+  "experiment": "nl_extraction_dev_reparse_v3_posthoc",
+  "scenario_set": "nl-evidence-v2",
+  "evaluation_phase": "posthoc_development_reparse",
+  "parser_version": "nl-evidence-parser-v3",
+  "pipelines": [
+    "strict_v2",
+    "monotone_v3",
+    "monotone_v3_grounded",
+    "monotone_v3_grounded_holdsafe"
+  ],
+  "provider": null,
+  "model": null,
+  "source_model_outputs": "nl_extraction_dev_diagnostic_qwen_v1",
+  "source_sha256": {
+    "results/nl_extraction_dev_diagnostic_qwen_v1_raw.jsonl": "20502598045e6c1b2f1a5d8cfe9df9250b23f14bd67de7e3148d42c78a0044e3",
+    "results/nl_extraction_dev_diagnostic_qwen_v1_manifest.json": "68a605e31aada243b4337a79ded12cc607369e64882f4829071faf9696488028",
+    "results/nl_extraction_dev_diagnostic_qwen_v1_audit.json": "94a85b78eae1973aeb528862fe9375368acf48526d72d4207cf718ea03fe66ec"
+  },
+  "implementation_sha256": {
+    "scripts/reparse_nl_diagnostic_v3.py": "9335535e4f7ae629d6aa1d2418efa9bf04ca1af213f4d8148ba838a80af58568",
+    "src/platform_agent_eval/nl_extraction_v3.py": "11e4ba7f285cc5fab8d2fdf3afab8cb7b5c19e7d0ddf65893b29bc7878a99f04",
+    "src/platform_agent_eval/natural_language_evidence.py": "eee39e97ee435b44f24d15697314e47d5b246555b04c0113188b534b8694bdb0",
+    "src/platform_agent_eval/evidence_grounding.py": "ef377759b80c40c54e86bd3020366d7e4672171977b441ffea907f8e830324af",
+    "src/platform_agent_eval/proof_cards.py": "88cb4a2ea44856bc652fc1d46c788f1be3da6ba8e40c3846e7eed8aada29fd2f"
+  },
+  "measured_generation_calls_completed": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "external_api_cost_usd": 0.0,
+  "git_commit": "30237d3b850e6ed0a4576a1b4c2a77e4430028e2",
+  "started_at_utc": "2026-11-11T14:22:44.370551+00:00",
+  "finished_at_utc": "2026-11-11T14:22:44.370551+00:00",
+  "claim_scope": "Post-hoc development re-parse of 24 frozen outputs. The v3 parser was designed after reading these outputs; numbers diagnose failure layers and are not validation, held-out or model-quality evidence.",
+  "outputs": {
+    "raw": "results/nl_extraction_dev_reparse_v3_posthoc_v1_raw.jsonl",
+    "summary": "results/nl_extraction_dev_reparse_v3_posthoc_v1_summary.csv",
+    "audit": "results/nl_extraction_dev_reparse_v3_posthoc_v1_audit.json",
+    "manifest": "results/nl_extraction_dev_reparse_v3_posthoc_v1_manifest.json"
+  }
+}
