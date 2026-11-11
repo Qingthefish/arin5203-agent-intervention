@@ -233,6 +233,90 @@ discoverable. Audit PASS is an instrumentation result, not an extraction
 quality claim. After any actual run, regenerate and check `results/index.json`.
 Dataset export also refuses to overwrite existing versioned files.
 
+### Interface v3 and the failure-layer re-parse
+
+`src/platform_agent_eval/nl_extraction_v3.py` changes the interface only. The
+validator and the frozen v2 parser are unchanged.
+
+- Lossless scope normalization: int, integral float and bool become strings,
+  and each coercion is recorded.
+- Each rejected claim gets a failure code.
+- A monotone fail-closed policy drops malformed *permissive* claims but fails
+  closed on any rejected claim that is, or may be, a hold.
+- A JSON Schema is provided for Ollama `format`.
+- Prompt v3 aligns the subject and `signed`/`verified` conventions with the
+  generator and the grounding gate.
+- `conservative_hold_claims` blocks on an extracted hold that names the action
+  target even when a sloppy field would make the exact-match validator ignore it.
+
+The zero-call re-parse reads only the frozen v1 raw outputs. Its `strict_v2`
+pipeline must reproduce every saved score:
+
+```bash
+python3 scripts/reparse_nl_diagnostic_v3.py          # print
+python3 -m unittest tests.test_nl_extraction_v3 -v
+```
+
+Its bundle is `nl_extraction_dev_reparse_v3_posthoc_v1`. It is a post-hoc
+development diagnosis: the parser was designed after reading those outputs.
+
+`scripts/run_nl_extraction_v3.py` is plan-only and enforces the split in code:
+
+| Phase | Families | Use |
+| --- | --- | --- |
+| `fit` | `v7 c4 d8 r5` | Already seen; zero-call re-parse only. |
+| `validation` | `a6 h9 n3 o1 s2` | Never sent to an extraction model; 30 contexts. |
+| `test` | 11 `nl-held-*` | 66 contexts; refused until a COMPLETED validation manifest of the same model/prompt/parser is passed. |
+
+The primary pipeline is pre-registered as `monotone_v3_grounded_holdsafe`.
+Validation plans are frozen under `configs/nl_extraction_v3_validation_*.json`.
+Reprint/verify one without contacting a model:
+
+```bash
+python3 scripts/run_nl_extraction_v3.py --phase validation --model qwen3.5:9b \
+  --output-prefix nl_extraction_v3_validation_qwen3_5_9b_v1 \
+  --plan-file configs/nl_extraction_v3_validation_qwen3_5_9b_v1.json
+```
+
+A real run additionally needs `--run --acknowledge-experiment-plan` and team
+approval. `qwen3.5:9b` must be present locally; record its digest, because a
+re-pulled build may differ from the frozen run's `6488c96f`.
+
+## Memory x Verification Factorial
+
+```bash
+python3 scripts/analyze_factorial_ablation.py         # print; --write once for a new prefix
+python3 -m unittest tests.test_factorial_ablation -v
+```
+
+This reads only `typed_exact_budget_heldout_qwen_v1`. It crosses
+summary/typed memory with three decision layers: direct model route; audit,
+meaning canonical lookup by retained source ID plus the deterministic
+validator; and audit plus hold-registry re-read. It reports paired,
+family-clustered contrasts and the interaction, plus efficiency figures. Router
+usage is measured per record. Compactor usage is the run total minus router
+usage. Validator time is a post-hoc local timing. Dollar figures use declared
+illustrative prices. The teammate router ablation uses a different model
+build, so it is reported only as a separate within-build contrast. Bundle:
+`factorial_ablation_heldout_posthoc_v1`.
+
+## Artifact Integrity and CI
+
+`results/SHA256SUMS` is an append-only ledger of every results file except the
+generated index. Its first 172 entries are the tracked files at commit
+`30237d3`.
+
+```bash
+python3 scripts/verify_results_integrity.py --check    # fails on any changed/missing/unledgered file
+python3 scripts/verify_results_integrity.py --append   # after reviewing a NEW bundle; never rewrites entries
+```
+
+`.github/workflows/research-checks.yml` runs from this directory on Python 3.12
+and 3.13. It runs the unit tests, the integrity ledger, the index check, the
+dataset audit, the zero-call post-hoc analyses, plan-only runner checks, the
+red/green toolkit gate and the hotel example. `ci/github-actions.yml` remains
+the copy-ready template for the standalone toolkit.
+
 ## Commit-Time Evidence Freshness Gate
 
 The durable store answers what the registry said at one instant. The commit-time
@@ -463,6 +547,8 @@ after adding artifacts. Do not edit it manually.
 | External proof lookup | `durable_proof_store_deterministic_v1` | Deterministic architecture gate assuming authenticated cards; no LLM extraction or distributed-systems claim. |
 | Commit-time freshness | `commit_time_gate_deterministic_v1` | Model-free development acceptance over authored schedules; in-process atomicity only, no live-tool or distributed guarantee. |
 | Natural-language extraction | `nl_extraction_dev_diagnostic_qwen_v1` | Development-only JSON-mode interface diagnostic; uniform Handoff and contract failures, not end-to-end readiness. |
+| NL failure layers (post-hoc) | `nl_extraction_dev_reparse_v3_posthoc_v1` | Zero-call re-parse of the 24 frozen outputs; all 76 rejections are scope typing. Development diagnosis, not validation. |
+| Component factorial (post-hoc) | `factorial_ablation_heldout_posthoc_v1` | Zero-call memory x decision-layer x registry reading of the frozen held-out run, with efficiency accounting. Not pre-registered. |
 | Confirmation lifecycle | `human_intervention_deterministic_v1` | Deterministic protocol evaluation with scripted responders; full workflow vs stop-at-confirm, naive resume and single-check ablations. No LLM, user-study or real-identity claim. |
 | Claim grounding before validation | `evidence_grounding_deterministic_v1` | Deterministic baseline-vs-grounding comparison on 58 author-written cases and derived corruptions of the NL templates; no extraction-model or general-NLI claim. |
 | Correct route with weak grounding | `grounded_hitl_qwen_v4` | Development counterexample motivating joint evidence/route scoring. |
