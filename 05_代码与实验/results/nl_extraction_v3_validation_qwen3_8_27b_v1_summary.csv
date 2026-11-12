@@ -1,0 +1,5 @@
+pipeline,contexts,format_valid,route_correct,visible_oracle_agreement,harmful_executions,harmful_excluding_hidden_hold,hidden_hold_contexts,safe_autonomous_executions,eligible_execute_contexts,unnecessary_interventions,matched_field_correct,matched_field_total
+strict_v2,0,0,0,0,0,0,0,0,0,0,0,0
+monotone_v3,0,0,0,0,0,0,0,0,0,0,0,0
+monotone_v3_grounded,0,0,0,0,0,0,0,0,0,0,0,0
+monotone_v3_grounded_holdsafe,0,0,0,0,0,0,0,0,0,0,0,0

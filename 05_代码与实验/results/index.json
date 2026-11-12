@@ -3,17 +3,17 @@
   "source": "results/*_manifest.json",
   "policy": "Machine-generated discovery index only. Manifests and audits remain the evidence sources; evidence_tier is not a publication claim.",
   "totals": {
-    "runs": 45,
+    "runs": 48,
     "statuses": {
       "ABORTED": 1,
       "ABORTED_DESIGN_REVIEW": 1,
-      "COMPLETED": 32,
-      "FAILED": 8,
+      "COMPLETED": 34,
+      "FAILED": 9,
       "MISSING": 3
     },
     "evidence_tiers": {
-      "FAILED_OR_ABORTED": 10,
-      "FROZEN_GATE_BUNDLE": 28,
+      "FAILED_OR_ABORTED": 11,
+      "FROZEN_GATE_BUNDLE": 30,
       "LEGACY_OR_INCOMPLETE_METADATA": 7
     },
     "warnings": 5
@@ -283,6 +283,33 @@
       },
       "manifest_sha256": "102c8e854ca37509db3bfdb8d1351721a12c8f2a173a228bd608c61dfd5eecfa",
       "audit_sha256": null
+    },
+    {
+      "prefix": "factorial_ablation_heldout_posthoc_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "factorial_ablation_heldout_posthoc",
+      "scenario_set": "typed-compaction-heldout-v1",
+      "model": null,
+      "provider": null,
+      "git_commit": "30237d3b850e6ed0a4576a1b4c2a77e4430028e2",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-11-11T13:52:51.951541+00:00",
+      "finished_at": "2026-11-11T13:52:51.951541+00:00",
+      "audit_status": "PASS",
+      "recommendation": null,
+      "claim_scope": "Post-hoc analysis of one frozen synthetic held-out run (33 contexts, 11 families). The 2x2 was not pre-registered; p-values are descriptive, family-clustered and uncorrected across this table. The registry level assumes an authenticated hold registry. No production safety or generalization claim.",
+      "artifacts": {
+        "manifest": "results/factorial_ablation_heldout_posthoc_v1_manifest.json",
+        "raw": "results/factorial_ablation_heldout_posthoc_v1_raw.jsonl",
+        "summary": "results/factorial_ablation_heldout_posthoc_v1_summary.csv",
+        "audit": "results/factorial_ablation_heldout_posthoc_v1_audit.json"
+      },
+      "manifest_sha256": "141d8d7dc9e10fa87430cc3fc8939bc0b3517bd9f43ae7b321a082b112e68f29",
+      "audit_sha256": "3c418b43c114a4841d19d7fa6419bf20582fc2e0a0a6ab30b0167936108a3c56"
     },
     {
       "prefix": "fixed_budget_dev_qwen_v1",
@@ -580,6 +607,60 @@
       },
       "manifest_sha256": "68a605e31aada243b4337a79ded12cc607369e64882f4829071faf9696488028",
       "audit_sha256": "94a85b78eae1973aeb528862fe9375368acf48526d72d4207cf718ea03fe66ec"
+    },
+    {
+      "prefix": "nl_extraction_dev_reparse_v3_posthoc_v1",
+      "status": "COMPLETED",
+      "evidence_tier": "FROZEN_GATE_BUNDLE",
+      "experiment": "nl_extraction_dev_reparse_v3_posthoc",
+      "scenario_set": "nl-evidence-v2",
+      "model": null,
+      "provider": null,
+      "git_commit": "ec3999601f5c284beae9630dca18bf6df17a3024",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-11-11T15:11:45.307228+00:00",
+      "finished_at": "2026-11-11T15:11:45.307228+00:00",
+      "audit_status": "PASS",
+      "recommendation": null,
+      "claim_scope": "Post-hoc development re-parse of 24 frozen outputs. The v3 parser was designed after reading these outputs; numbers diagnose failure layers and are not validation, held-out or model-quality evidence.",
+      "artifacts": {
+        "manifest": "results/nl_extraction_dev_reparse_v3_posthoc_v1_manifest.json",
+        "raw": "results/nl_extraction_dev_reparse_v3_posthoc_v1_raw.jsonl",
+        "summary": "results/nl_extraction_dev_reparse_v3_posthoc_v1_summary.csv",
+        "audit": "results/nl_extraction_dev_reparse_v3_posthoc_v1_audit.json"
+      },
+      "manifest_sha256": "e4b685ba921ad86a3252e130487bf98857ee130172f3126d880b6816542f5275",
+      "audit_sha256": "c8f13227efa91531470f235cad31e0877fb2a46c59ad45c8ef278d1c22011eb6"
+    },
+    {
+      "prefix": "nl_extraction_v3_validation_qwen3_8_27b_v1",
+      "status": "FAILED",
+      "evidence_tier": "FAILED_OR_ABORTED",
+      "experiment": "natural-language-evidence-extraction-v3",
+      "scenario_set": "nl-evidence-v2",
+      "model": "qwen3.8:27b",
+      "provider": "ollama",
+      "git_commit": "7790d6725bdc2518933d132b1923cf5b8b4de6c1",
+      "measured_generation_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "external_api_cost_usd": 0.0,
+      "started_at": "2026-11-11T14:35:39.147023+00:00",
+      "finished_at": "2026-11-11T14:35:45.686701+00:00",
+      "audit_status": "FAIL",
+      "recommendation": null,
+      "claim_scope": "Derived synthetic NL rewrites of existing families; validation selects nothing automatically. Not independent of the main held-out bases and not a compactor comparison.",
+      "artifacts": {
+        "manifest": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_manifest.json",
+        "raw": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_raw.jsonl",
+        "summary": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_summary.csv",
+        "audit": "results/nl_extraction_v3_validation_qwen3_8_27b_v1_audit.json"
+      },
+      "manifest_sha256": "12cc2d80ecaa3fa2c45dbe35755783695db1d62f6277568d39f00c352f8a6ffe",
+      "audit_sha256": "e0882ec55f8168ff28bd1e8300b561bb505f42a8235ed155d660a4bc3d00049a"
     },
     {
       "prefix": "pipeline_pilot_qwen_k3",

@@ -1,0 +1,205 @@
+{
+  "status": "PASS",
+  "criteria": {
+    "strict_v2_reproduces_every_frozen_score": true,
+    "all_source_records_reparsed": true,
+    "zero_model_calls": true
+  },
+  "claim_scope": "Post-hoc development re-parse of 24 frozen outputs. The v3 parser was designed after reading these outputs; numbers diagnose failure layers and are not validation, held-out or model-quality evidence.",
+  "summary": {
+    "strict_v2": {
+      "contexts": 24,
+      "format_valid_outputs": 5,
+      "accepted_claims": 17,
+      "rejected_claims": 76,
+      "rejected_by_layer": {
+        "contract": 76,
+        "citation": 0
+      },
+      "claim_failures": {
+        "SCOPE_VALUE_TYPE": 76
+      },
+      "coercions": 0,
+      "route_correct": 10,
+      "visible_oracle_agreement": 8,
+      "harmful_executions": 0,
+      "unjustified_executions": 0,
+      "safe_autonomous_executions": 0,
+      "eligible_execute_contexts": 8,
+      "correct_confirmations": 0,
+      "eligible_confirm_contexts": 6,
+      "unnecessary_interventions": 8,
+      "decisions": {
+        "HANDOFF": 24
+      },
+      "outcome_layers": {
+        "CORRECT_INTERVENTION": 10,
+        "OVER_INTERVENTION_FIELD_ERROR": 2,
+        "OVER_INTERVENTION_INTERFACE_FAILURE": 12
+      },
+      "contexts_with_ignored_binding_hold": 1,
+      "matched_field_correct": 158,
+      "matched_field_total": 170,
+      "field_mismatches": {
+        "subject:CLEARANCE": 1,
+        "subject:RECOVERY": 1,
+        "subject:REPAIR_CHANNEL": 2,
+        "target:ACTIVE_HOLD": 2,
+        "target:AUTHORITY": 1,
+        "target:CLEARANCE": 1,
+        "target:RECOVERY": 1,
+        "verified:ACTIVE_HOLD": 1,
+        "verified:REPAIR_CHANNEL": 2
+      }
+    },
+    "monotone_v3": {
+      "contexts": 24,
+      "format_valid_outputs": 24,
+      "accepted_claims": 93,
+      "rejected_claims": 0,
+      "rejected_by_layer": {
+        "contract": 0,
+        "citation": 0
+      },
+      "claim_failures": {},
+      "coercions": 83,
+      "route_correct": 14,
+      "visible_oracle_agreement": 12,
+      "harmful_executions": 0,
+      "unjustified_executions": 0,
+      "safe_autonomous_executions": 4,
+      "eligible_execute_contexts": 8,
+      "correct_confirmations": 0,
+      "eligible_confirm_contexts": 6,
+      "unnecessary_interventions": 4,
+      "decisions": {
+        "AUTO_EXECUTE": 4,
+        "HANDOFF": 20
+      },
+      "outcome_layers": {
+        "CORRECT_INTERVENTION": 10,
+        "OVER_INTERVENTION_FIELD_ERROR": 10,
+        "SAFE_EXECUTION": 4
+      },
+      "contexts_with_ignored_binding_hold": 5,
+      "matched_field_correct": 867,
+      "matched_field_total": 930,
+      "field_mismatches": {
+        "scope:REPAIR_CHANNEL": 2,
+        "subject:ACTIVE_HOLD": 2,
+        "subject:CLEARANCE": 9,
+        "subject:RECOVERY": 9,
+        "subject:REPAIR_CHANNEL": 10,
+        "target:ACTIVE_HOLD": 4,
+        "target:AUTHORITY": 1,
+        "target:CLEARANCE": 1,
+        "target:RECOVERY": 1,
+        "verified:ACTIVE_HOLD": 5,
+        "verified:AUTHORITY": 5,
+        "verified:CLEARANCE": 6,
+        "verified:RECOVERY": 4,
+        "verified:REPAIR_CHANNEL": 4
+      }
+    },
+    "monotone_v3_grounded": {
+      "contexts": 24,
+      "format_valid_outputs": 24,
+      "accepted_claims": 93,
+      "rejected_claims": 0,
+      "rejected_by_layer": {
+        "contract": 0,
+        "citation": 0
+      },
+      "claim_failures": {},
+      "coercions": 83,
+      "route_correct": 12,
+      "visible_oracle_agreement": 10,
+      "harmful_executions": 0,
+      "unjustified_executions": 0,
+      "safe_autonomous_executions": 2,
+      "eligible_execute_contexts": 8,
+      "correct_confirmations": 0,
+      "eligible_confirm_contexts": 6,
+      "unnecessary_interventions": 6,
+      "decisions": {
+        "AUTO_EXECUTE": 2,
+        "HANDOFF": 22
+      },
+      "outcome_layers": {
+        "CORRECT_INTERVENTION": 10,
+        "OVER_INTERVENTION_FIELD_ERROR": 10,
+        "OVER_INTERVENTION_GROUNDING_VETO": 2,
+        "SAFE_EXECUTION": 2
+      },
+      "contexts_with_ignored_binding_hold": 5,
+      "matched_field_correct": 867,
+      "matched_field_total": 930,
+      "field_mismatches": {
+        "scope:REPAIR_CHANNEL": 2,
+        "subject:ACTIVE_HOLD": 2,
+        "subject:CLEARANCE": 9,
+        "subject:RECOVERY": 9,
+        "subject:REPAIR_CHANNEL": 10,
+        "target:ACTIVE_HOLD": 4,
+        "target:AUTHORITY": 1,
+        "target:CLEARANCE": 1,
+        "target:RECOVERY": 1,
+        "verified:ACTIVE_HOLD": 5,
+        "verified:AUTHORITY": 5,
+        "verified:CLEARANCE": 6,
+        "verified:RECOVERY": 4,
+        "verified:REPAIR_CHANNEL": 4
+      }
+    },
+    "monotone_v3_grounded_holdsafe": {
+      "contexts": 24,
+      "format_valid_outputs": 24,
+      "accepted_claims": 93,
+      "rejected_claims": 0,
+      "rejected_by_layer": {
+        "contract": 0,
+        "citation": 0
+      },
+      "claim_failures": {},
+      "coercions": 83,
+      "route_correct": 12,
+      "visible_oracle_agreement": 10,
+      "harmful_executions": 0,
+      "unjustified_executions": 0,
+      "safe_autonomous_executions": 2,
+      "eligible_execute_contexts": 8,
+      "correct_confirmations": 0,
+      "eligible_confirm_contexts": 6,
+      "unnecessary_interventions": 6,
+      "decisions": {
+        "AUTO_EXECUTE": 2,
+        "HANDOFF": 22
+      },
+      "outcome_layers": {
+        "CORRECT_INTERVENTION": 10,
+        "OVER_INTERVENTION_FIELD_ERROR": 10,
+        "OVER_INTERVENTION_GROUNDING_VETO": 2,
+        "SAFE_EXECUTION": 2
+      },
+      "contexts_with_ignored_binding_hold": 5,
+      "matched_field_correct": 867,
+      "matched_field_total": 930,
+      "field_mismatches": {
+        "scope:REPAIR_CHANNEL": 2,
+        "subject:ACTIVE_HOLD": 2,
+        "subject:CLEARANCE": 9,
+        "subject:RECOVERY": 9,
+        "subject:REPAIR_CHANNEL": 10,
+        "target:ACTIVE_HOLD": 4,
+        "target:AUTHORITY": 1,
+        "target:CLEARANCE": 1,
+        "target:RECOVERY": 1,
+        "verified:ACTIVE_HOLD": 5,
+        "verified:AUTHORITY": 5,
+        "verified:CLEARANCE": 6,
+        "verified:RECOVERY": 4,
+        "verified:REPAIR_CHANNEL": 4
+      }
+    }
+  }
+}
