@@ -2,11 +2,13 @@
 
 This directory turns the frozen held-out experiment into a presentation that is useful to Agent developers. It does not add a new model run or reinterpret the test set.
 
-Current priority: a correct, short Milestone and a legible replay. The existing
-Final working draft is parked; the team will hand-build its slides later.
-No official per-team project-sharing duration or demo rule was found in the
-27 Oct course-site, Canvas and mailbox check. The syllabus lists project
-sharing in Week 13; the timing plan below is internal, not an instructor rule.
+Current priority, 19 November: assemble the Final report and supplement, then
+support the team's hand-built project slides. The separate ACE paper sharing
+has finished. The live syllabus still lists project sharing in Week 13; no
+exact date, per-team duration, slide submission destination or demo rule was
+found in the course site, Canvas announcements or relevant email checked today.
+The timing plan below is internal. The completed ACE task had its own 10-minute
+limit.
 
 ## One-sentence story
 
@@ -177,14 +179,16 @@ Do not claim production safety, universal model generalization, or that compacti
 
 ## Final report assembly map
 
-Target about **7.5 pages including references** until the reference-page rule is
-confirmed. Methods and Experiments carry 60% of the rubric. The report owns the
+Keep the report within **eight pages including references**, as the course
+page gives no explicit reference-page exemption. Methods and Experiments carry 60% of the rubric. The report owns the
 full protocol and results; hand-made slides keep the main story above, and the
-two-page Milestone remains a development checkpoint.
+submitted three-page Milestone remains a development checkpoint.
 
-A seven-page [working draft](../03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf)
-now exists, with [editable LaTeX](../03_最终报告/final_report.tex). It is not a
-submission-ready artifact; live template alignment and team review remain open.
+An eight-page [team-review draft](../03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf)
+now exists, with [editable LaTeX](../03_最终报告/final_report.tex). It uses the course-linked CVPR template. The 19 Nov rebuild includes teammate
+component and NL failure-layer analyses. Team review and the report-sharing
+declaration remain open. The separate supplementary ZIP is linked from the
+root README.
 
 | Report content | Pages | Source owner / material to assemble |
 | --- | ---: | --- |

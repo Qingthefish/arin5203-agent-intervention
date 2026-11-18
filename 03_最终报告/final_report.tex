@@ -23,32 +23,33 @@ The Hong Kong University of Science and Technology}
 \date{}
 \begin{document}
 \maketitle
-\noindent\textbf{Working draft -- 31 October 2026.}
-This manuscript is not submission-ready. Live template requirements, team
-review, report-sharing preference, and final references require confirmation
-before submission.
+\noindent\textbf{Team review draft -- 19 November 2026.}
+Course template and submission requirements checked. Team review and the
+report-sharing declaration remain open.
 
 \begin{abstract}
 An agent can preserve a user's goal while forgetting the evidence needed to
-authorize its next tool call. We study this failure through a controlled,
-course-scale evaluation of context retention and intervention before
-state-changing operations. Twenty synthetic scenario families yield 60 matched
-contexts: complete evidence, one critical deletion, and one word-matched noise
-deletion. Six compressed strategies share a 384-token active-memory budget;
-full history provides an unbudgeted reference. We compare direct model routing
-with a deterministic audit that looks up the full proof record for every
-source the compacted memory still cites. On eleven held-out families, typed proof memory
-and several strong summaries all achieve 22/22 audited stable routes. Across
-all 33 contexts, U-Fold-lite achieves 31/33 versus typed memory's 30/33. Typed
-memory has perfect measured proof-source selection, but this metric does not
-establish semantic entailment. Three upstream hold deletions still cause harmful
-Execute routes; a separate deterministic registry test illustrates an
-architectural response. Our contribution is an auditable integration of matched
-perturbations, action-specific proof, repairability-aware routing, and regression
-replay. A separate 24-context free-text diagnostic releases only Handoff,
-revealing a brittle extraction interface rather than end-to-end readiness.
-The main findings assume pre-existing authenticated records and external
-lookup outside the active-memory budget; they do not certify production safety.
+authorize its next tool call. We ask how an agent can safely execute
+state-changing operations when its memory is incomplete or unreliable, and
+separate what it remembered, what evidence was available, whether that
+evidence justified the action, and whether an execution-time check stopped an
+unsafe one. Twenty synthetic families yield 60 matched contexts: complete
+evidence, one critical deletion, and one word-matched noise deletion. Six
+compressed strategies share a 384-token active-memory budget. On eleven
+held-out families, a post-hoc component comparison measures the joint effect
+of canonical lookup and deterministic checking. With direct model
+routing, typed proof memory beats a task-aware summary (20 vs.\ 11 of 33
+correct; 7 vs.\ 18 harmful Executes). Under a deterministic audit that re-reads
+canonical records by retained source ID, both reach 30/33 with three harmful
+Executes, and strong summaries tie typed memory. In a separate model build,
+handing the model the same re-read records did not reproduce the gain. The
+three residual harms are holds removed before compaction; a simulated
+registry re-read prevents them under a complete-record assumption. A free-text extraction diagnostic released only
+Handoff. A zero-call re-parse attributes all 76 rejected claims to nonstring
+scope values; a monotone fail-closed parser recovers 4 of 8 eligible Executes
+without harm, leaving subject and authentication field errors. Findings assume
+pre-existing authenticated records, are labeled post-hoc where applicable, and
+do not certify production safety.
 \end{abstract}
 
 \section{Introduction}
@@ -59,19 +60,23 @@ review. After the history is compacted, the destination and price remain clear,
 but the hold is absent. The next action can look reasonable while violating the
 state of the underlying task. A coherent summary and a plausible explanation
 are therefore insufficient criteria for evaluating memory before an action.
-Compaction itself is unavoidable: self-attention cost grows quadratically
-with sequence length and context windows are finite, so a long-running agent
-must decide what its next step can still see. Our question is what that
-decision does to the evidence behind a state-changing tool call.
+Finite context windows and increasing inference cost make active-history
+management a practical design choice for long-running agents. Our question
+concerns the evidence available to their next state-changing tool call.
 
 The practical question is what evidence must remain available at a tool
 boundary. Authorization has an actor, operation, target, scope, and validity
 window. Policy clearance does not create authority; a requester cannot repair a
 missing delegation simply by saying yes. A safe intervention policy must also
 avoid unnecessary questions when valid evidence already permits execution.
-These distinctions motivate our research question: under a fixed active-memory
-budget, how do retention strategies and an action-specific evidence audit affect
-Execute, Confirm, and Handoff decisions?
+Under a fixed active-memory budget, how do retention strategies and an
+action-specific evidence check affect Execute, Confirm, and Handoff decisions?
+We examine five quantities:
+(1)~what the agent \emph{remembered}, its active memory;
+(2)~what evidence was \emph{available}, the canonical records reachable from it;
+(3)~whether that evidence \emph{justified} the proposed action under its policy;
+(4)~whether the \emph{pre-action audit} withheld an unsafe proposed operation; and
+(5)~which failures neither memory compression nor downstream auditing can fix.
 
 Our evaluation separates five choices: memory representation, critical versus
 noise deletion, direct versus audited routing, token pressure, and the source
@@ -91,10 +96,13 @@ the cited methods, or claim a state-of-the-art result.
 
 The empirical conclusion is deliberately narrower than ``typed memory wins.''
 Strong summaries tie on audited stable routing, and U-Fold-lite does better
-across all held-out conditions. The useful findings concern which proof survives,
-what the citation metric measures, and where validation stops helping. A
-separate durable-record test supports treating conversational memory as a cache
-and checking current authoritative proof beside the mutating tool.
+across all held-out conditions. A component comparison of the same frozen run
+(Section~\ref{sec:factorial}) finds an advantage for typed memory over the
+task-aware summary under direct routing, and identical audited routes for
+those two methods. Their remaining harmful decisions concern holds removed
+upstream. A separate
+durable-record test supports treating conversational memory as a cache and
+checking current authoritative proof beside the mutating tool.
 
 \section{Related Work}
 \paragraph{Memory and compaction.}
@@ -368,6 +376,8 @@ Artifact prefix & Evidence role \\
 \path{durable_proof_store_deterministic_v1} & Deterministic architecture test with authenticated-record assumptions. \\
 \path{nl_extraction_dev_diagnostic_qwen_v1} & Development-only extraction diagnostic; JSON-mode interface failure. \\
 \path{heldout_bootstrap_ci_v1} & Post-hoc family-clustered intervals derived from the frozen held-out trace; zero model calls. \\
+\path{factorial_ablation_heldout_posthoc_v1} & Post-hoc memory $\times$ verifier $\times$ registry factorial and efficiency accounting from the frozen held-out trace; zero model calls. \\
+\path{nl_extraction_dev_reparse_v3_posthoc_v1} & Post-hoc re-parse of the 24 frozen extraction outputs under the v3 interface; development diagnosis, zero model calls. \\
 \bottomrule
 \end{tabular}
 \caption{Compact provenance map. Historical negative gates are identified in the
@@ -414,6 +424,54 @@ pinning's audit also spoils ten direct decisions while correcting fifteen.
 These results distinguish useful restraint from indiscriminate withholding.
 An evidence checker cannot preserve autonomy if the memory no longer supplies
 required positive proof.
+
+\subsection{Which component carries the gain?}
+\label{sec:factorial}
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Memory & Decision layer & Correct & Harmful & Safe /10 \\
+\midrule
+Task-aware & Direct model & 11 & 18 & 10 \\
+ & Lookup + audit & 30 & 3 & 10 \\
+ & + hold registry & 33 & 0 & 10 \\
+\midrule
+Typed proof & Direct model & 20 & 7 & 8 \\
+ & Lookup + audit & 30 & 3 & 10 \\
+ & + hold registry & 33 & 0 & 10 \\
+\bottomrule
+\end{tabular}
+\caption{Post-hoc component comparison over 33 frozen contexts. Safe denotes
+correct autonomous Execute. The registry arm replays a declared complete,
+authenticated hold store and makes no model calls.}
+\label{tab:factorial}
+\end{table}
+
+Table~\ref{tab:factorial} examines whether representation helps after the audit
+is present. Typed direct routing yields nine more correct decisions and eleven
+fewer harmful Executes than the task-aware summary. Their audited routes
+coincide on every context. Canonical lookup and checking are bundled in the
+primary run, establishing their joint effect. Family-clustered contrasts and
+efficiency estimates are available in the post-hoc supplementary artifacts.
+
+A later router ablation uses the same frozen memories with another model build,
+digest \texttt{56671c2a}. Within that build, supplying canonical records to the
+model changes typed routing from 19 to 14 correct and from 11 to 15 harmful;
+task-aware routing moves from 11 to 10 correct with 18 harmful in both. That
+prompt and model do not reproduce the deterministic audit's gain through
+lookup alone. Comparing these arms with the primary run would confound model
+build and decision interface.
+
+The registry replay restores the three hidden holds for both methods while
+preserving all ten eligible Executes, conditional on a complete authentic
+registry. Audited routes then request human contact on 23/33 contexts, matching
+this risk-enriched set's authored intervention rate. Contact counts are route
+proxies; user effort and production false-alarm costs remain unmeasured.
+Supplementary timing measures local validation only, and summary-compactor
+costs are estimated from aggregate usage. External lookup, authentication and
+evidence creation require separate deployment accounting.
 
 \subsection{Source selection is not entailment}
 \begin{table}[t]
@@ -524,46 +582,59 @@ additional held-out comparisons. They motivate distinct evidence types and a
 deterministic mapper, while warning against interpreting a high routing score
 or parser fallback as a general reasoning capability.
 
-\subsection{Natural-language diagnostic: a brittle upstream interface}
-The main study does not test card creation. A frozen extension selects four
-existing development families, all three siblings, and clean/distractor
-variants: 24 contexts, with no compactor comparison. The selection covers
-three domains, original route categories, and three distractor styles, not
-every domain-by-route cell. Literal fields and source quotes pass to the fixed
-validator; invalid distractors should be extracted faithfully and then rejected.
-The run completes all 24 calls in 1,782.22 seconds, using 42,498 input and 25,432
-output tokens at zero external API fee. Source, prompt, dataset and scoring
-hashes were frozen before generation; recording checks pass, with no retuning.
+\subsection{Natural-language evidence and failure layers}
+\label{sec:nl}
+The main study assumes supplied cards. A frozen upstream diagnostic instead
+extracts fields and source quotes from 24 contexts: four existing development
+families, all siblings, and clean/distractor variants. Using JSON-object mode,
+it completes 24 local calls in 1,782.22 seconds, recording 42,498 input and
+25,432 output tokens. The unchanged validator releases Handoff throughout:
+10/24 routes match world-gold and 8/24 the visible-evidence oracle. All eight
+eligible Executes and all six expected Confirms are withheld. Nineteen outputs
+violate the contract. The 158/170 conditional matched-field score covers only
+17 parsed cards out of 94 reference cards.
 
-All 24 released routes are Handoff: 10/24 agree with world-gold and 8/24 with
-the visible-evidence oracle. All eight eligible Execute cases are withheld,
-and six expected Confirm routes become Handoff. Nineteen outputs violate the
-strict extraction contract. Macro literal-card exact recall is 11.5\%; the
-158/170 matched-field score is conditional on only 17 parsed cards out of 94
-declared literal cards, not overall extraction accuracy. A post-hoc raw review
-finds 93 claim occurrences at declared sources; 76 are rejected for nonstring
-scope values. Most post-parser omissions are therefore contract rejection, not
-missing source recognition. Zero harmful Execute,
-zero accepted distractors and invariant noise routes do not establish useful
-safety discrimination when every action is withheld.
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Same 24 outputs & Strict v2 & v3 & v3 + grounding \\
+\midrule
+Outputs accepted & 5 & 24 & 24 \\
+Correct routes & 10 & 14 & 12 \\
+Safe Execute /8 & 0 & 4 & 2 \\
+Correct Confirm /6 & 0 & 0 & 0 \\
+Harmful Execute & 0 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\caption{Post-hoc re-parsing. Experimental v3 was designed after inspecting
+these development outputs. Counts describe fitted interface behavior.}
+\label{tab:nlreparse}
+\end{table}
 
-Raw review finds numeric scope values where the contract requires strings,
-plus subjects confused with the acting agent or an operation phrase. For
-example, record \texttt{D8-03} in the distractor/full condition names an
-authorized responder, but the extracted subject is the acting agent.
-Authentication needs
-separate caution: some synthetic messages say only ``signed,'' while their
-canonical gold marks authentication successful. The prompt asks for explicit
-verification, so conservative false flags can reflect a wording ambiguity.
-These canonical mismatches are not all evidence of a model mistake.
+A zero-call re-parse reproduces every strict score and attributes all 76
+rejected claims to nonstring scope values. Experimental v3 normalizes scalar
+values, records coercions, and discards invalid permissive claims while failing
+closed on possibly restrictive ones. It admits four eligible Executes
+(Table~\ref{tab:nlreparse}). Thirty subject mismatches and 24 false
+\texttt{verified} flags remain. Some messages say only ``signed'' while the
+original prompt asks for verification, making authentication interpretation
+ambiguous. Quote containment also leaves semantic support unresolved.
 
-This is a negative result for the frozen extraction-and-validation interface,
-not arbitrary prose extraction or schema-constrained decoding. The client
-requests JSON-object mode; Ollama's schema-constrained option is a distinct
-mechanism~\cite{ollama-schema}. The result does not alter the original held-out
-scores, and no automatic follow-up run is performed. It narrows the engineering
-claim: a validator for supplied proof cards is not a reliable text-to-proof
-system by itself.
+Four binding holds are extracted but ignored because their fields fail the
+validator's applicability check. Other missing proof prevents execution, so
+the zero-harm aggregate conceals a defective blocking reason. An experimental
+conservative-hold rule blocks these four plus one false alarm, without changing
+the final routes here. It favors abstention on uncertain extracted holds,
+with a corresponding usefulness cost.
+
+These rules were fitted to observed development failures. A schema-constrained
+validation attempt on a local 27B backend failed before generation with HTTP
+501; its zero-generation artifact is preserved. JSON-object mode and
+schema-constrained decoding are distinct~\cite{ollama-schema}. Independent
+validation remains pending. The negative result motivates reporting parser,
+field and action errors separately.
 
 \section{Limitations and Developer Implications}
 The benchmark is small, synthetic, risk-enriched, and evaluated with one local
@@ -584,6 +655,12 @@ a declared transition. Neither measures an independent real-world outcome.
 Confirm and Handoff are route semantics, not a measured human workflow or
 evidence that intervention burden is acceptable to users.
 
+The component comparison in Section~\ref{sec:factorial} is post-hoc.
+Canonical lookup and deterministic checking remain coupled in the primary run;
+the separate router ablation uses another model build. The registry replay
+assumes complete authentic records. The v3 extraction rules were fitted after
+reading development outputs, with independent validation still pending.
+
 The reusable toolkit expresses mutation, obligations, matched deletions, and
 retained-source snapshots as a JSON contract and emits JSON/JUnit reports.
 Those report formats and CI gates are ordinary engineering choices, already
@@ -603,14 +680,16 @@ storage, and execution permission are separate decisions; a summary is not an
 authorization database.
 
 \section{Conclusion}
-This project provides a controlled action-evidence test contract and an
-inspectable implementation at course scale. Deterministic auditing repairs
-many direct-route mistakes when sufficient source-linked proof survives,
-while strong summaries remain competitive and upstream hold loss remains a
-hard boundary. The strongest supported lesson is to preserve or revalidate
-the evidence required by the next action, and evaluate its availability,
-interpretation, and completeness separately. Extending that lesson to arbitrary
-text or deployed systems requires evidence beyond this study.
+This project contributes an action-evidence regression contract and an
+inspectable course-scale implementation. With the same active-memory budget,
+typed memory improves direct routing over the task-aware summary in this run,
+while strong summaries and typed memory yield identical audited routes.
+Canonical lookup plus deterministic validation repairs many errors, and a
+separate simulated registry addresses upstream hold loss under explicit trust
+assumptions. The free-text diagnostic exposes a remaining evidence-creation
+gap. Developers can bind proof to tool arguments, preserve authoritative
+sources, distinguish repairable gaps from required handoff, and test complete,
+critical-deletion and noise-deletion histories when memory policies change.
 
 {\small
 \begin{thebibliography}{15}

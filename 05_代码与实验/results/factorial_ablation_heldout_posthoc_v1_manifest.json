@@ -1,0 +1,31 @@
+{
+  "status": "COMPLETED",
+  "experiment": "factorial_ablation_heldout_posthoc",
+  "scenario_set": "typed-compaction-heldout-v1",
+  "evaluation_phase": "posthoc_analysis_of_frozen_heldout",
+  "provider": null,
+  "model": null,
+  "source_sha256": {
+    "results/typed_exact_budget_heldout_qwen_v1_raw.jsonl": "a3616c7d266ecda937fab33f24bea48e9ac2be8ad15e0510cc2ecaeee12059d5",
+    "results/router_ablation_heldout_qwen3_5_9b_v1_raw.jsonl": "310a222ef6c3ad908974fc2c96fef4a6e5b72c8e8e7d48fdf28305ae0ba2ed50"
+  },
+  "implementation_sha256": {
+    "scripts/analyze_factorial_ablation.py": "9a1f5b090de263b04b3663be26ad37e3e5a195015232bcb49cdcaa8a931d3f9c",
+    "scripts/analyze_paired_routes.py": "7f11cbfb9c8c034f67a53dd9af60a9855654a93443083b50fa94a96998c3143a",
+    "src/platform_agent_eval/proof_cards.py": "88cb4a2ea44856bc652fc1d46c788f1be3da6ba8e40c3846e7eed8aada29fd2f"
+  },
+  "measured_generation_calls_completed": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "external_api_cost_usd": 0.0,
+  "git_commit": "30237d3b850e6ed0a4576a1b4c2a77e4430028e2",
+  "started_at_utc": "2026-11-11T13:52:51.951541+00:00",
+  "finished_at_utc": "2026-11-11T13:52:51.951541+00:00",
+  "claim_scope": "Post-hoc analysis of one frozen synthetic held-out run (33 contexts, 11 families). The 2x2 was not pre-registered; p-values are descriptive, family-clustered and uncorrected across this table. The registry level assumes an authenticated hold registry. No production safety or generalization claim.",
+  "outputs": {
+    "raw": "results/factorial_ablation_heldout_posthoc_v1_raw.jsonl",
+    "summary": "results/factorial_ablation_heldout_posthoc_v1_summary.csv",
+    "audit": "results/factorial_ablation_heldout_posthoc_v1_audit.json",
+    "manifest": "results/factorial_ablation_heldout_posthoc_v1_manifest.json"
+  }
+}

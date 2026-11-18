@@ -1,0 +1,5 @@
+pipeline,contexts,format_valid_outputs,accepted_claims,rejected_claims,coercions,route_correct,visible_oracle_agreement,harmful_executions,unjustified_executions,safe_autonomous_executions,eligible_execute_contexts,correct_confirmations,eligible_confirm_contexts,unnecessary_interventions,matched_field_correct,matched_field_total
+strict_v2,24,5,17,76,0,10,8,0,0,0,8,0,6,8,158,170
+monotone_v3,24,24,93,0,83,14,12,0,0,4,8,0,6,4,867,930
+monotone_v3_grounded,24,24,93,0,83,12,10,0,0,2,8,0,6,6,867,930
+monotone_v3_grounded_holdsafe,24,24,93,0,83,12,10,0,0,2,8,0,6,6,867,930

@@ -1,0 +1,61 @@
+name: research-checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    # The package, tests and results live below the repository root.
+    working-directory: 05_代码与实验
+
+jobs:
+  deterministic:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install research preview (no runtime dependencies)
+        run: python -m pip install -e .
+      - name: Unit and acceptance tests (no model calls)
+        run: python -m unittest discover -s tests -v
+      - name: Frozen artifacts unchanged (append-only SHA-256 ledger)
+        run: python scripts/verify_results_integrity.py --check
+      - name: Experiment index is current
+        run: python scripts/index_experiment_artifacts.py --check
+      - name: Synthetic dataset audit
+        run: python scripts/audit_dataset.py --scenario-set research_v3 --strict
+      - name: Post-hoc analyses reproduce from frozen traces
+        run: |
+          python scripts/reparse_nl_diagnostic_v3.py > /dev/null
+          python scripts/analyze_factorial_ablation.py > /dev/null
+          python scripts/analyze_paired_routes.py > /dev/null
+      - name: Model runners stay plan-only without explicit flags
+        run: |
+          python scripts/run_typed_exact_budget_gate.py --config configs/typed_exact_budget_heldout.json > /dev/null
+          python scripts/run_nl_evidence_extraction.py --split dev --variant clean --limit 6 > /dev/null
+      - name: Toolkit contract gate (red then green)
+        run: |
+          agent-memory-crash-test --spec examples/memory_crash_test.json --validate-only
+          agent-memory-crash-test --spec examples/memory_crash_test.json --output-dir reports/memory --proof-source memory --strategy typed-proof-memory --allow-fail
+          agent-memory-crash-test --spec examples/memory_crash_test.json --output-dir reports/registry --proof-source registry --strategy typed-proof-memory
+      - name: Composed workflow example
+        run: python examples/guarded_hotel_workflow.py --json > /dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: memory-crash-reports-py${{ matrix.python-version }}
+          path: 05_代码与实验/reports/
+          if-no-files-found: ignore

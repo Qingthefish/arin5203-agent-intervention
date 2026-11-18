@@ -21,23 +21,25 @@ Teammate `qingyg086` contributed report figures and bootstrap intervals, paired
 trace analysis, a post-hoc router ablation and Milestone revisions. PRs #2–#6
 are merged; the original frozen methods, data and scores are unchanged.
 
-## Current Snapshot — 2026-11-06
+## Current Snapshot — 2026-11-19
 
 | Workstream | Status | Evidence or entry point |
 | --- | --- | --- |
 | Proposal | Submitted; 92/100. No attributable instructor explanation for the deduction was found. | [Proposal files](01_提案/) |
 | Core evaluation | Development protocol frozen; one-shot held-out evaluation complete. | [Held-out audit](05_代码与实验/results/typed_exact_budget_heldout_qwen_v1_audit.json) |
 | Additional evidence | Budget sweep and durable-store test complete; teammate post-hoc paired/bootstrap analyses and router ablation are archived separately. The ablation uses a different model build and is not another untouched test. | [Experiment index](05_代码与实验/results/index.json), [Ablation summary](05_代码与实验/results/router_ablation_heldout_qwen3_5_9b_v1_summary.json) |
-| Milestone | Latest Canvas receipt verified: Qingcheng submitted the three-page revision on 6 Nov at 17:50, before the 23:59 deadline. The downloaded submitted attachment is byte-identical to the repository PDF and includes the teammate additions. | [Canvas item](https://canvas.ust.hk/courses/71916/assignments/461590), [Submitted PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
-| AI paper/model sharing | Separate from the course-project presentation: this team is scheduled for 16 Nov, 10 minutes, on one or two related papers/models; 5% of the course grade. Title and slides URL were blank in the schedule checked on 6 Nov. | [Schedule, row 19](https://docs.google.com/spreadsheets/d/1dGBKnn5RbBlhXROIEPmw-c7BQL4mejrDl5gUnpB1UDo/edit#gid=0&range=A19:F19); instructor email dated 30 Oct |
+| Milestone | Submitted 6 Nov at 17:50; Canvas now shows 92/100. The visible comments contain team-member information. No instructor explanation was visible; PDF annotation access could not be completed. | [Canvas item](https://canvas.ust.hk/courses/71916/assignments/461590), [Submitted PDF](02_里程碑/Project_Milestone_Yu_Yeung_Guo.pdf), [LaTeX source](02_里程碑/milestone.tex) |
+| AI paper/model sharing | Completed, per the team's 19 Nov update. The ACE title/link in row 19 and anonymous view/download were verified on 16 Nov. This was the separate 10-minute, 5% paper-sharing task. | [Schedule, row 19](https://docs.google.com/spreadsheets/d/1dGBKnn5RbBlhXROIEPmw-c7BQL4mejrDl5gUnpB1UDo/edit#gid=0&range=A19:F19) |
 | Presentation | Low-density three-step replay; case/strategy matrix and trace details remain expandable. Seven evidence figures are available; team hand-builds PPT. | [Presentation guide](04_项目展示/README.md), [Playbook](04_项目展示/Agent_Memory_Playbook.md) |
 | Reusable toolkit | Public research preview; contract-validation hardening is in patch v0.1.1. | [Standalone repository](https://github.com/Qingthefish/agent-memory-crash-test) |
 | Commit-time gate | Integrated; original v1 deterministic evidence is preserved, with current applied-receipt and retry fixes checked separately. In-process simulation only. | [Original audit](05_代码与实验/results/commit_time_gate_deterministic_v1_audit.json), [Runbook](05_代码与实验/README.md#commit-time-evidence-freshness-gate) |
 | Confirmation lifecycle | Integrated with strict reply-decision validation, channel-bound responder fixtures, action binding, expiry, revalidation and execute-once simulation. | [Technical notes](05_代码与实验/docs/human-intervention.md) |
 | Field grounding | Integrated optional English cue-based checker; failures and intervention costs remain visible. No general semantic-verification or authentication claim. | [Technical notes and archived failures](05_代码与实验/docs/evidence-grounding.md) |
 | Composed action loop | Synthetic hotel workflow with grounding, confirmation and commit-time mutation; known applied receipts reconcile errors, unknown outcomes stop automatic resume. | [Runnable example](05_代码与实验/examples/guarded_hotel_workflow.py), [Outcome handling](05_代码与实验/docs/integration.md#reconcile-an-error-after-the-side-effect) |
-| Natural-language extension | Frozen development diagnostic complete: all routes Handoff; strict contract failures dominate. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Frozen plan](05_代码与实验/configs/nl_extraction_dev_diagnostic_v1.json) |
-| Final report | Working draft now includes teammate figures and bootstrap analysis; further assembly and team review remain. Not submission-ready; due 5 Dec, 23:59. | [Draft PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
+| Natural-language extension | Frozen development diagnostic complete: all routes Handoff. A zero-call post-hoc re-parse (11 Nov) attributes every rejected claim to scope typing and exposes ignored holds; interface v3 is implemented and unit-tested but **experimental and unvalidated**. Its validation run on five unseen dev families was attempted on local `qwen3.8:27b` and failed before any generation: this Ollama build's MLX backend lacks structured-output support (HTTP 501, 0/30 calls). The failed bundle is preserved, and no validation result exists yet. No end-to-end readiness claim. | [Diagnostic audit](05_代码与实验/results/nl_extraction_dev_diagnostic_qwen_v1_audit.json), [Re-parse audit](05_代码与实验/results/nl_extraction_dev_reparse_v3_posthoc_v1_audit.json), [v3 runbook](05_代码与实验/README.md#interface-v3-and-the-failure-layer-re-parse) |
+| Component comparison | Post-hoc, zero-call reading of the frozen run. Typed direct routing exceeds the task-aware summary; their audited routes coincide. The primary audit bundles lookup and checking. Hidden holds account for their remaining harm. | [Factorial audit](05_代码与实验/results/factorial_ablation_heldout_posthoc_v1_audit.json), [Runbook](05_代码与实验/README.md#memory-x-verification-factorial) |
+| Final report | Eight-page team-review draft including references, rebuilt and visually checked in the course-linked CVPR template. Includes teammate component and extraction analyses. Team review and report-sharing declaration remain. Due 5 Dec, 23:59 Hong Kong time. | [Review PDF](03_最终报告/Project_Final_Report_Yu_Yeung_Guo_DRAFT.pdf), [LaTeX source](03_最终报告/final_report.tex) |
+| Supplement | Separate review ZIP contains source, frozen evidence, failure records, tests, replay and template sources, with file hashes and reproduction instructions. Both ZIP and code are below 10 MB. | [Supplement ZIP](03_最终报告/Project_Final_Supplement_Yu_Yeung_Guo.zip), [Packaging instructions](05_代码与实验/README.md#package-the-final-supplement) |
 
 Exact calls, timings, tokens and scores live in manifests, summaries and audits. Historical pilots, failed gates and design changes are recorded in [项目复盘.md](项目复盘.md); the homepage is a current map, not a second experiment diary.
 
@@ -45,7 +47,7 @@ Exact calls, timings, tokens and scores live in manifests, summaries and audits.
 
 1. Removing one action-critical fact can change the next tool decision; removing matched noise provides the causal control.
 2. Earlier grounded-routing gates show that a correct route can still claim unsupported approval. In the frozen comparison, proof-source citation precision measures selection of proof sources, not semantic entailment; every method's parsed citations stayed inside its active source-ID set.
-3. Typed retention and deterministic checking provide an inspectable proof chain. Strong summaries tie on audited stable routes; an inspired baseline does better across all conditions. The result does not establish typed-memory or state-of-the-art superiority.
+3. Typed retention and deterministic checking provide an inspectable proof chain. Strong summaries tie on audited stable routes; an inspired baseline does better across all conditions. The result does not establish typed-memory or state-of-the-art superiority. A post-hoc factorial of the same run shows why. Typed direct routing exceeds the task-aware summary in this run (20 vs 11 of 33 correct). Their lookup-plus-audit routes both reach 30/33. In a separate model build, giving the model the same re-read records did not reproduce the gain.
 4. An audit cannot recover a hold removed before it receives the history. The durable-store test demonstrates one response under a declared authenticated-record assumption.
 
 The benchmark contains 20 synthetic base families and 60 matched contexts: nine development bases and eleven held-out bases, with siblings kept together. Critical/noise events are word-count matched, not exact-token matched. The six compressed strategies share a 384 raw-Qwen-token budget; full history is an unbudgeted reference. These are correlated variants of a small, risk-enriched, single-model benchmark.
@@ -66,15 +68,20 @@ The [related-work review](05_代码与实验/docs/related-work.md) distinguishes
 
 ## Next Work and Stopping Rule
 
-The core experimental question is answered at course-project scale. The
-Milestone submission receipt is verified. The immediate course task is the
-separate AI paper/model sharing on 16 Nov: select one or two related papers,
-prepare the team's hand-made slides, and fill the title and accessible slides
-URL in the schedule before presenting. The three runtime extensions are
-integrated and checked as bounded research modules. Final-report assembly and
-course-project slides resume separately. The 2026-10-23 review corrects
-interpretation, not frozen scores or method selection; its source-existence
-recount is explicitly post-hoc.
+The core experimental comparison and the separate ACE sharing are complete.
+The next deliverables are the Final report and separate supplementary file,
+followed by the course-project presentation. The team's 19 Nov integration
+review checks the new PR #7 analyses and experimental interface, preserves the
+original evidence, and rebuilds the report within the page limit. The
+component comparison supports the joint lookup-plus-checking effect in this
+run. Its post-hoc status and the different-build router ablation remain visible.
+
+The remaining work is team review of the eight-page manuscript, a report-sharing
+declaration, hand-built project slides, and the actual Canvas upload when the
+Final item opens. The presentation uses one familiar travel case, the matched
+comparison, the hidden-hold boundary, and an actionable developer procedure.
+Further model experiments require an unanswered question that could change a
+design decision. The experimental v3 extraction validation remains optional.
 
 The optional **development-only natural-language extraction diagnostic** has
 completed once on four existing families, both variants and all siblings.
@@ -117,35 +124,30 @@ explicit adapter contracts. A live compactor adapter remains optional.
 
 Further experiments need a concrete unanswered question that could change a design decision or claim. Extra model calls, models or charts alone are not a reason to run them.
 
-### Milestone submission checklist
+### Final submission checklist, verified 19 Nov 2026
 
-- The [live project page](https://cqf.io/ARIN5203/project.html), checked on
-  6 Nov, requires 2–3 pages in the provided template, all three names, and one
-  submitting member. A report PDF is sufficient; no extra GitHub/ZIP/demo
-  requirement appears in the Milestone section or Canvas item.
-- Canvas assignment 461590 shows a successful 6 Nov 17:50 submission, the report
-  attachment and all three team members. The downloaded attachment
-  `Project_Milestone_Yu_Yeung_Guo-1.pdf` is byte-identical to the repository PDF:
-  three pages, 47,660 bytes, SHA-256
-  `f1e202c84a20ba082f2af5e9eac0d1f6d775708b5648838ff050ca2a7c5f9f3a`.
-  Its page count, authors, required sections and visible layout were checked.
-  The `-1` filename suffix does not indicate different content. Use the
-  repository PDF as the shared team submission file.
-- The deadline is 6 Nov at 23:59 Hong Kong time. The upload window ends on
-  10 Nov at 23:59; that later closing time is not the ordinary deadline.
-- The instructor's 30 Oct email schedules AI paper/model sharing on 9, 16 and
-  23 Nov, with this team listed on 16 Nov. It asks for the presentation title
-  and an online slides URL before presenting; a USB/downloadable backup is
-  requested. Sharing presentation parts among members is suggested, not
-  required. This is separate from the syllabus's Week 13 course-project
-  sharing, whose per-team duration and demo requirements remain unconfirmed.
+The [live project instructions](https://cqf.io/ARIN5203/project.html) require
+these deliverables. The [Canvas assignment list](https://canvas.ust.hk/courses/71916/assignments)
+currently contains Proposal and Milestone, with no Final Report upload item.
 
-Final is ready when:
+| Deliverable | Instructor requirement | Current action |
+| --- | --- | --- |
+| Final report | PDF, 6–8 pages, provided template, abstract at most 300 words, all three names; one member submits. Due 5 Dec 2026 at 23:59 Hong Kong time. | Review the eight-page draft, including references within that limit, and settle the report-sharing declaration before exporting the submission copy. |
+| Supplement | Separate PDF or ZIP; relevant source, demos and visualizations. Code over 10 MB and model checkpoints are excluded by the course instructions. | Use the hashed ZIP and its code README. Rebuild after changing included files. |
+| Course-project sharing | Syllabus lists Week 13. | Exact date, team duration, slide-upload destination and demo rules have not been published in the sources checked. The ACE task's 10-minute rule belongs to that earlier task. |
 
-- the report states the proof-card, external-record and simulator assumptions explicitly;
-- each headline result maps to an immutable artifact, including strong-baseline ties and failures;
-- the replay and clean-install toolkit example reproduce the documented behavior;
-- the presentation ends with a procedure classmates can use when designing or iterating an Agent.
+The report rubric is Introduction 10%, Related Work 10%, Data 10%, Methods 30%,
+Experiments 30%, Conclusion 5%, and Writing/Formatting 5%. The source does not
+explicitly exempt references from the page limit; the review draft includes
+them within eight pages. It asks authors to state whether the report may be
+shared with classmates. Source reuse must be cited in the report body.
+
+Before upload, all members should review the same report and supplement from
+`03_最终报告/`. One submitting member is sufficient under the official rule.
+The local DRAFT filename marks team-review status. A successful Canvas receipt
+and uploaded-file comparison complete submission verification once the item
+opens. The completed Milestone remains the three-page PDF submitted at 17:50
+on 6 Nov and graded 92/100.
 
 ## Start Here
 
