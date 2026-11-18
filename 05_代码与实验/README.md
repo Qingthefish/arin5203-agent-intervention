@@ -443,6 +443,33 @@ plan or be presented as reproducing its scores. No new formal v2 run was made.
 
 ## Reproduction
 
+### Package the Final supplement
+
+From this directory, build the separate course ZIP without contacting a model:
+
+```bash
+python3 scripts/verify_results_integrity.py --check
+python3 scripts/index_experiment_artifacts.py --check
+python3 scripts/package_final_supplement.py
+```
+
+The ZIP is written to
+`../03_最终报告/Project_Final_Supplement_Yu_Yeung_Guo.zip`. It includes tracked
+research source, tests, configs, all archived results and failures, replay,
+technical documentation, the manuscript source and the retained course-template
+sources. A manifest records the source Git revision, modified included paths
+and SHA-256 of each file. The builder verifies every archived hash and enforces
+10 MB limits for both the ZIP and included source code. Stage newly authored
+source files before building so they appear in the tracked-file inventory.
+The report PDF is the separate course deliverable.
+
+After extracting, enter `ARIN5203_Supplement/05_代码与实验/` with Python 3.12+
+and use the reproduction commands below. Optional plot regeneration uses
+`requirements-presentation.txt`. The checked-in report figure can be used
+directly. To rebuild the manuscript with Tectonic, enter `03_最终报告/` and run
+`tectonic final_report.tex`; the included template sources resolve relatively.
+The report-sharing declaration and team review are recorded in the root README.
+
 ### Run one composed action workflow
 
 ```bash
